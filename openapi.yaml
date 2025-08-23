@@ -6775,11 +6775,9 @@ components:
           type: string
           title: Text
         language:
-          anyOf:
-            - type: string
-              pattern: '^\w{2}$'
-            - type: 'null'
           title: Language
+          type: string
+          pattern: '^\w{2}$'
         segments:
           items:
             $ref: '#/components/schemas/TranscriptionSegmentChunk'
@@ -6833,17 +6831,11 @@ components:
           title: Total Tokens
           default: 0
         prompt_audio_seconds:
-          anyOf:
-            - type: integer
-            - type: 'null'
           title: Prompt Audio Seconds
+          type: integer
       additionalProperties: false
       type: object
       title: UsageInfo
-      required:
-        - prompt_tokens
-        - completion_tokens
-        - total_tokens
     UserMessage:
       properties:
         content:
@@ -6889,42 +6881,27 @@ components:
           title: Model
           type: string
         file:
-          anyOf:
-            - $ref: '#/components/schemas/File'
-            - type: 'null'
-          default: null
+          $ref: '#/components/schemas/File'
           title: File
         file_url:
-          anyOf:
-            - format: uri
-              maxLength: 2083
-              minLength: 1
-              type: string
-            - type: 'null'
-          default: null
           description: Url of a file to be transcribed
           title: File Url
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 2083
         file_id:
-          anyOf:
-            - type: string
-            - type: 'null'
-          default: null
           description: ID of a file uploaded to /v1/files
           title: File Id
+          type: string
         language:
-          anyOf:
-            - pattern: '^\w{2}$'
-              type: string
-            - type: 'null'
-          default: null
           description: 'Language of the audio, e.g. ''en''. Providing the language can boost accuracy.'
           title: Language
+          type: string
+          pattern: '^\w{2}$'
         temperature:
-          anyOf:
-            - type: number
-            - type: 'null'
-          default: null
           title: Temperature
+          type: number
         stream:
           const: false
           default: false
@@ -6946,42 +6923,27 @@ components:
           title: Model
           type: string
         file:
-          anyOf:
-            - $ref: '#/components/schemas/File'
-            - type: 'null'
-          default: null
+          $ref: '#/components/schemas/File'
           title: File
         file_url:
-          anyOf:
-            - format: uri
-              maxLength: 2083
-              minLength: 1
-              type: string
-            - type: 'null'
-          default: null
           description: Url of a file to be transcribed
           title: File Url
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 2083
         file_id:
-          anyOf:
-            - type: string
-            - type: 'null'
-          default: null
           description: ID of a file uploaded to /v1/files
           title: File Id
+          type: string
         language:
-          anyOf:
-            - pattern: '^\w{2}$'
-              type: string
-            - type: 'null'
-          default: null
           description: 'Language of the audio, e.g. ''en''. Providing the language can boost accuracy.'
           title: Language
+          type: string
+          pattern: '^\w{2}$'
         temperature:
-          anyOf:
-            - type: number
-            - type: 'null'
-          default: null
           title: Temperature
+          type: number
         stream:
           const: true
           default: true

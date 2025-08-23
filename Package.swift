@@ -41,7 +41,8 @@ let package = Package(
         ),
         .testTarget(
             name: "MistralAPITests",
-            dependencies: ["MistralAPI", .product(name: "UsefulThings", package: "UsefulThings")]
+            dependencies: ["MistralAPI", .product(name: "UsefulThings", package: "UsefulThings")],
+            resources: [.process("Resources")]
         ),
         .target(
             name: "MistralAPITypes",

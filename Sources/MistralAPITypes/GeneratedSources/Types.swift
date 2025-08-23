@@ -85,6 +85,8 @@ public enum Components {
             public var model: Swift.String
             /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/text`.
             public var text: Swift.String
+            /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/language`.
+            public var language: Swift.String
             /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/segments`.
             public var segments: [Components.Schemas.TranscriptionSegmentChunk]?
             /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/usage`.
@@ -94,22 +96,26 @@ public enum Components {
             /// - Parameters:
             ///   - model:
             ///   - text:
+            ///   - language:
             ///   - segments:
             ///   - usage:
             public init(
                 model: Swift.String,
                 text: Swift.String,
+                language: Swift.String,
                 segments: [Components.Schemas.TranscriptionSegmentChunk]? = nil,
                 usage: Components.Schemas.UsageInfo
             ) {
                 self.model = model
                 self.text = text
+                self.language = language
                 self.segments = segments
                 self.usage = usage
             }
             public enum CodingKeys: String, CodingKey {
                 case model
                 case text
+                case language
                 case segments
                 case usage
             }
@@ -123,6 +129,10 @@ public enum Components {
                     Swift.String.self,
                     forKey: .text
                 )
+                self.language = try container.decode(
+                    Swift.String.self,
+                    forKey: .language
+                )
                 self.segments = try container.decodeIfPresent(
                     [Components.Schemas.TranscriptionSegmentChunk].self,
                     forKey: .segments
@@ -134,6 +144,7 @@ public enum Components {
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "model",
                     "text",
+                    "language",
                     "segments",
                     "usage"
                 ])
@@ -206,49 +217,60 @@ public enum Components {
         /// - Remark: Generated from `#/components/schemas/UsageInfo`.
         public struct UsageInfo: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/UsageInfo/prompt_tokens`.
-            public var prompt_tokens: Swift.Int
+            public var prompt_tokens: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/UsageInfo/completion_tokens`.
-            public var completion_tokens: Swift.Int
+            public var completion_tokens: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/UsageInfo/total_tokens`.
-            public var total_tokens: Swift.Int
+            public var total_tokens: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/UsageInfo/prompt_audio_seconds`.
+            public var prompt_audio_seconds: Swift.Int?
             /// Creates a new `UsageInfo`.
             ///
             /// - Parameters:
             ///   - prompt_tokens:
             ///   - completion_tokens:
             ///   - total_tokens:
+            ///   - prompt_audio_seconds:
             public init(
-                prompt_tokens: Swift.Int,
-                completion_tokens: Swift.Int,
-                total_tokens: Swift.Int
+                prompt_tokens: Swift.Int? = nil,
+                completion_tokens: Swift.Int? = nil,
+                total_tokens: Swift.Int? = nil,
+                prompt_audio_seconds: Swift.Int? = nil
             ) {
                 self.prompt_tokens = prompt_tokens
                 self.completion_tokens = completion_tokens
                 self.total_tokens = total_tokens
+                self.prompt_audio_seconds = prompt_audio_seconds
             }
             public enum CodingKeys: String, CodingKey {
                 case prompt_tokens
                 case completion_tokens
                 case total_tokens
+                case prompt_audio_seconds
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
-                self.prompt_tokens = try container.decode(
+                self.prompt_tokens = try container.decodeIfPresent(
                     Swift.Int.self,
                     forKey: .prompt_tokens
                 )
-                self.completion_tokens = try container.decode(
+                self.completion_tokens = try container.decodeIfPresent(
                     Swift.Int.self,
                     forKey: .completion_tokens
                 )
-                self.total_tokens = try container.decode(
+                self.total_tokens = try container.decodeIfPresent(
                     Swift.Int.self,
                     forKey: .total_tokens
+                )
+                self.prompt_audio_seconds = try container.decodeIfPresent(
+                    Swift.Int.self,
+                    forKey: .prompt_audio_seconds
                 )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "prompt_tokens",
                     "completion_tokens",
-                    "total_tokens"
+                    "total_tokens",
+                    "prompt_audio_seconds"
                 ])
             }
         }
@@ -282,6 +304,66 @@ public enum Components {
                 }
             }
             case model(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequest.modelPayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequest/file`.
+            public struct filePayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `filePayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case file(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequest.filePayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequest/file_url`.
+            public struct file_urlPayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `file_urlPayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case file_url(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequest.file_urlPayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequest/file_id`.
+            public struct file_idPayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `file_idPayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case file_id(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequest.file_idPayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequest/language`.
+            public struct languagePayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `languagePayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case language(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequest.languagePayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequest/temperature`.
+            public struct temperaturePayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `temperaturePayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case temperature(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequest.temperaturePayload>)
             /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequest/stream`.
             public struct streamPayload: Sendable, Hashable {
                 public var body: OpenAPIRuntime.HTTPBody
@@ -322,6 +404,66 @@ public enum Components {
                 }
             }
             case model(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequestStream.modelPayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequestStream/file`.
+            public struct filePayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `filePayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case file(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequestStream.filePayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequestStream/file_url`.
+            public struct file_urlPayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `file_urlPayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case file_url(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequestStream.file_urlPayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequestStream/file_id`.
+            public struct file_idPayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `file_idPayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case file_id(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequestStream.file_idPayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequestStream/language`.
+            public struct languagePayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `languagePayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case language(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequestStream.languagePayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequestStream/temperature`.
+            public struct temperaturePayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `temperaturePayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case temperature(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequestStream.temperaturePayload>)
             /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequestStream/stream`.
             public struct streamPayload: Sendable, Hashable {
                 public var body: OpenAPIRuntime.HTTPBody

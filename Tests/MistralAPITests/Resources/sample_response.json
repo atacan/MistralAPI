@@ -1,0 +1,12 @@
+{
+    "language": "en",
+    "model": "voxtral-mini-2507",
+    "segments": [],
+    "text": "Here I just dictated a legal note naturally, no special phrasing, no formatting commands, and the app automatically rewrote it into formal legal language.",
+    "usage": {
+      "completion_tokens": 197,
+      "prompt_audio_seconds": 55,
+      "prompt_tokens": 4,
+      "total_tokens": 951
+    }
+  }

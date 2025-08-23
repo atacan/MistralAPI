@@ -10,11 +10,186 @@
             "remove": true
         },
         {
+            "target": "$.components.schemas.TranscriptionResponse.properties.language.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.TranscriptionResponse.properties.language",
+            "update": {
+                "type": "string",
+                "pattern": "^\\w{2}$",
+                "title": "Language"
+            }
+        },
+        {
             "target": "$.components.schemas.EmbeddingResponse.allOf[1].properties.data",
             "update": {
                 "items": {
                     "$ref": "#/components/schemas/EmbeddingResponseData"
                 }
+            }
+        },
+        {
+            "target": "$.components.schemas.UsageInfo.properties.prompt_audio_seconds",
+            "update": {
+                "type": "integer",
+                "title": "Prompt Audio Seconds"
+            }
+        },
+        {
+            "target": "$.components.schemas.UsageInfo.properties.prompt_audio_seconds.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.UsageInfo.properties.prompt_audio_seconds.nullable",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.file.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.file.default",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.file",
+            "update": {
+                "$ref": "#/components/schemas/File"
+            }
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.file_url.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.file_url.default",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.file_url",
+            "update": {
+                "type": "string",
+                "format": "uri",
+                "minLength": 1,
+                "maxLength": 2083
+            }
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.file_id.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.file_id.default",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.file_id",
+            "update": {
+                "type": "string"
+            }
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.language.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.language.default",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.language",
+            "update": {
+                "type": "string",
+                "pattern": "^\\w{2}$"
+            }
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.temperature.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.temperature.default",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequest.properties.temperature",
+            "update": {
+                "type": "number"
+            }
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.file.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.file.default",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.file",
+            "update": {
+                "$ref": "#/components/schemas/File"
+            }
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.file_url.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.file_url.default",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.file_url",
+            "update": {
+                "type": "string",
+                "format": "uri",
+                "minLength": 1,
+                "maxLength": 2083
+            }
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.file_id.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.file_id.default",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.file_id",
+            "update": {
+                "type": "string"
+            }
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.language.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.language.default",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.language",
+            "update": {
+                "type": "string",
+                "pattern": "^\\w{2}$"
+            }
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.temperature.anyOf",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.temperature.default",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.AudioTranscriptionRequestStream.properties.temperature",
+            "update": {
+                "type": "number"
             }
         }
     ]

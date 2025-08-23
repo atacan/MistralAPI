@@ -1,4 +1,5 @@
 import Foundation
+import MistralAPITypes
 import MistralAPI
 import OpenAPIAsyncHTTPClient
 import OpenAPIRuntime
@@ -37,5 +38,11 @@ struct MistralAPITests {
                 let string = String(buffer: collected!)
                 print(string)
         }
+    }
+
+    @Test func decodeResponse() async throws {
+        let jsonFileUrl = Bundle.module.url(forResource: "sample_response", withExtension: "json")!
+        let response = try JSONDecoder().decode(Components.Schemas.TranscriptionResponse.self, from: try Data(contentsOf: jsonFileUrl))
+        dump(response)
     }
 }
