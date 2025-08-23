@@ -22,7 +22,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-openapi-generator", from: "1.7.0"),
+        .package(url: "https://github.com/apple/swift-openapi-generator", from: "1.10.2"),
         .package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.8.0"),
         .package(url: "https://github.com/swift-server/swift-openapi-async-http-client", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-openapi-urlsession", from: "1.1.0"),
