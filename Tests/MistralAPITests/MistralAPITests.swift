@@ -37,7 +37,16 @@ struct MistralAPITests {
                         )
                     )
                 ),
-                .file(.init(payload: .init(body: HTTPBody(audioData)), filename: "speech.mp3")),
+                .file(
+                    .init(
+                        payload: .init(
+                            body: HTTPBody(
+                                audioData
+                            )
+                        ),
+                        filename: "speech.mp3"
+                    )
+                ),
             ])
         )
         switch response {
