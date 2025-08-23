@@ -217,11 +217,11 @@ public enum Components {
         /// - Remark: Generated from `#/components/schemas/UsageInfo`.
         public struct UsageInfo: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/UsageInfo/prompt_tokens`.
-            public var prompt_tokens: Swift.Int?
+            public var prompt_tokens: Swift.Int
             /// - Remark: Generated from `#/components/schemas/UsageInfo/completion_tokens`.
-            public var completion_tokens: Swift.Int?
+            public var completion_tokens: Swift.Int
             /// - Remark: Generated from `#/components/schemas/UsageInfo/total_tokens`.
-            public var total_tokens: Swift.Int?
+            public var total_tokens: Swift.Int
             /// - Remark: Generated from `#/components/schemas/UsageInfo/prompt_audio_seconds`.
             public var prompt_audio_seconds: Swift.Int?
             /// Creates a new `UsageInfo`.
@@ -232,9 +232,9 @@ public enum Components {
             ///   - total_tokens:
             ///   - prompt_audio_seconds:
             public init(
-                prompt_tokens: Swift.Int? = nil,
-                completion_tokens: Swift.Int? = nil,
-                total_tokens: Swift.Int? = nil,
+                prompt_tokens: Swift.Int,
+                completion_tokens: Swift.Int,
+                total_tokens: Swift.Int,
                 prompt_audio_seconds: Swift.Int? = nil
             ) {
                 self.prompt_tokens = prompt_tokens
@@ -250,15 +250,15 @@ public enum Components {
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
-                self.prompt_tokens = try container.decodeIfPresent(
+                self.prompt_tokens = try container.decode(
                     Swift.Int.self,
                     forKey: .prompt_tokens
                 )
-                self.completion_tokens = try container.decodeIfPresent(
+                self.completion_tokens = try container.decode(
                     Swift.Int.self,
                     forKey: .completion_tokens
                 )
-                self.total_tokens = try container.decodeIfPresent(
+                self.total_tokens = try container.decode(
                     Swift.Int.self,
                     forKey: .total_tokens
                 )
@@ -807,6 +807,47 @@ public enum Components {
             case transcription_period_text_period_delta = "transcription.text.delta"
             case transcription_period_done = "transcription.done"
         }
+        /// - Remark: Generated from `#/components/schemas/APIError`.
+        public struct APIError: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/APIError/code`.
+            public var code: Swift.String
+            /// - Remark: Generated from `#/components/schemas/APIError/message`.
+            public var message: Swift.String
+            /// - Remark: Generated from `#/components/schemas/APIError/object`.
+            public var object: Swift.String
+            /// - Remark: Generated from `#/components/schemas/APIError/param`.
+            public var param: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/APIError/type`.
+            public var _type: Swift.String
+            /// Creates a new `APIError`.
+            ///
+            /// - Parameters:
+            ///   - code:
+            ///   - message:
+            ///   - object:
+            ///   - param:
+            ///   - _type:
+            public init(
+                code: Swift.String,
+                message: Swift.String,
+                object: Swift.String,
+                param: Swift.String? = nil,
+                _type: Swift.String
+            ) {
+                self.code = code
+                self.message = message
+                self.object = object
+                self.param = param
+                self._type = _type
+            }
+            public enum CodingKeys: String, CodingKey {
+                case code
+                case message
+                case object
+                case param
+                case _type = "type"
+            }
+        }
     }
     /// Types generated from the `#/components/parameters` section of the OpenAPI document.
     public enum Parameters {}
@@ -905,6 +946,108 @@ public enum Operations {
                     default:
                         try throwUnexpectedResponseStatus(
                             expectedStatus: "ok",
+                            response: self
+                        )
+                    }
+                }
+            }
+            public struct BadRequest: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/v1/audio/transcriptions/POST/responses/400/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/v1/audio/transcriptions/POST/responses/400/content/application\/json`.
+                    case json(Components.Schemas.APIError)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    public var json: Components.Schemas.APIError {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                public var body: Operations.audio_api_v1_transcriptions_post.Output.BadRequest.Body
+                /// Creates a new `BadRequest`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                public init(body: Operations.audio_api_v1_transcriptions_post.Output.BadRequest.Body) {
+                    self.body = body
+                }
+            }
+            /// Bad Request - Invalid model or request parameters
+            ///
+            /// - Remark: Generated from `#/paths//v1/audio/transcriptions/post(audio_api_v1_transcriptions_post)/responses/400`.
+            ///
+            /// HTTP response code: `400 badRequest`.
+            case badRequest(Operations.audio_api_v1_transcriptions_post.Output.BadRequest)
+            /// The associated value of the enum case if `self` is `.badRequest`.
+            ///
+            /// - Throws: An error if `self` is not `.badRequest`.
+            /// - SeeAlso: `.badRequest`.
+            public var badRequest: Operations.audio_api_v1_transcriptions_post.Output.BadRequest {
+                get throws {
+                    switch self {
+                    case let .badRequest(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "badRequest",
+                            response: self
+                        )
+                    }
+                }
+            }
+            public struct UnprocessableContent: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/v1/audio/transcriptions/POST/responses/422/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/v1/audio/transcriptions/POST/responses/422/content/application\/json`.
+                    case json(Components.Schemas.APIError)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    public var json: Components.Schemas.APIError {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                public var body: Operations.audio_api_v1_transcriptions_post.Output.UnprocessableContent.Body
+                /// Creates a new `UnprocessableContent`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                public init(body: Operations.audio_api_v1_transcriptions_post.Output.UnprocessableContent.Body) {
+                    self.body = body
+                }
+            }
+            /// Unprocessable Entity - Missing required parameters
+            ///
+            /// - Remark: Generated from `#/paths//v1/audio/transcriptions/post(audio_api_v1_transcriptions_post)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableContent`.
+            case unprocessableContent(Operations.audio_api_v1_transcriptions_post.Output.UnprocessableContent)
+            /// The associated value of the enum case if `self` is `.unprocessableContent`.
+            ///
+            /// - Throws: An error if `self` is not `.unprocessableContent`.
+            /// - SeeAlso: `.unprocessableContent`.
+            public var unprocessableContent: Operations.audio_api_v1_transcriptions_post.Output.UnprocessableContent {
+                get throws {
+                    switch self {
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
                             response: self
                         )
                     }

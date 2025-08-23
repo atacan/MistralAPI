@@ -52,6 +52,10 @@ struct MistralAPITests {
         switch response {
         case .ok(let ok):
             dump(ok)
+        case .badRequest(let badRequest):
+            dump(badRequest)
+        case .unprocessableContent(let unprocessableContent):
+            dump(unprocessableContent)
         case .undocumented(let statusCode, let payload):
             print("statusCode", statusCode)
             let collected = try await payload.body?.collect(upTo: .max, using: .init())

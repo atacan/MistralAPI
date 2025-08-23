@@ -191,6 +191,64 @@
             "update": {
                 "type": "number"
             }
+        },
+        {
+            "target": "$.components.schemas",
+            "update": {
+                "APIError": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "type": "string",
+                            "title": "Code"
+                        },
+                        "message": {
+                            "type": "string",
+                            "title": "Message"
+                        },
+                        "object": {
+                            "type": "string",
+                            "title": "Object"
+                        },
+                        "param": {
+                            "type": "string",
+                            "nullable": true,
+                            "title": "Param"
+                        },
+                        "type": {
+                            "type": "string",
+                            "title": "Type"
+                        }
+                    },
+                    "required": ["code", "message", "object", "type"],
+                    "title": "APIError"
+                }
+            }
+        },
+        {
+            "target": "$.paths./v1/audio/transcriptions.post.responses",
+            "update": {
+                "400": {
+                    "description": "Bad Request - Invalid model or request parameters",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/APIError"
+                            }
+                        }
+                    }
+                },
+                "422": {
+                    "description": "Unprocessable Entity - Missing required parameters",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/APIError"
+                            }
+                        }
+                    }
+                }
+            }
         }
     ]
 }

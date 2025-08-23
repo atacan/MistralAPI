@@ -1480,6 +1480,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TranscriptionResponse'
+        '400':
+          description: Bad Request - Invalid model or request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '422':
+          description: Unprocessable Entity - Missing required parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
       tags:
         - audio.transcriptions
   /v1/audio/transcriptions#stream:
@@ -6836,6 +6848,10 @@ components:
       additionalProperties: false
       type: object
       title: UsageInfo
+      required:
+        - prompt_tokens
+        - completion_tokens
+        - total_tokens
     UserMessage:
       properties:
         content:
@@ -6881,8 +6897,8 @@ components:
           title: Model
           type: string
         file:
-          $ref: '#/components/schemas/File'
           title: File
+          $ref: '#/components/schemas/File'
         file_url:
           description: Url of a file to be transcribed
           title: File Url
@@ -6923,8 +6939,8 @@ components:
           title: Model
           type: string
         file:
-          $ref: '#/components/schemas/File'
           title: File
+          $ref: '#/components/schemas/File'
         file_url:
           description: Url of a file to be transcribed
           title: File Url
@@ -7857,6 +7873,31 @@ components:
             - data
             - model
             - usage
+    APIError:
+      type: object
+      properties:
+        code:
+          type: string
+          title: Code
+        message:
+          type: string
+          title: Message
+        object:
+          type: string
+          title: Object
+        param:
+          type: string
+          nullable: true
+          title: Param
+        type:
+          type: string
+          title: Type
+      required:
+        - code
+        - message
+        - object
+        - type
+      title: APIError
   securitySchemes:
     ApiKey:
       type: http
