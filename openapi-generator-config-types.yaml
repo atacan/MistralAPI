@@ -1,19 +1,6 @@
 generate:
   - types
 accessModifier: public
-# filter:
-#   tags:
-#     - Assistants
-#     - Audio
-#     - Audit Logs
-#     - Batch
-#     - Chat
-#     - Completions
-#     - Embeddings
-#     - Evals
-#     - Files
-#     - Fine-tuning
-#     - Images
-#     - Models
-#     - Moderations
-#     - Uploads
+filter:
+  tags:
+    - audio.transcriptions

@@ -4,5 +4,18 @@
         "title": "Fix OpenAPI spec",
         "version": "1.0.1"
     },
-    "actions": []
+    "actions": [
+        {
+            "target": "$.components.schemas.EmbeddingResponse.allOf[1].properties.data.items",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.EmbeddingResponse.allOf[1].properties.data",
+            "update": {
+                "items": {
+                    "$ref": "#/components/schemas/EmbeddingResponseData"
+                }
+            }
+        }
+    ]
 }

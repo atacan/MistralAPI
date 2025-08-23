@@ -7888,7 +7888,7 @@ components:
             data:
               type: array
               items:
-                - $ref: '#/components/schemas/EmbeddingResponseData'
+                $ref: '#/components/schemas/EmbeddingResponseData'
           required:
             - id
             - object
