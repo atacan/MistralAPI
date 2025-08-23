@@ -48,6 +48,11 @@ overlay-openapi:
 
 generate-openapi:
 	swift run swift-openapi-generator generate \
+	  --output-directory Sources/MistralAPITypes/GeneratedSources \
+	  --config ./openapi-generator-config-types.yaml \
+	  ./openapi.yaml
+	
+	swift run swift-openapi-generator generate \
 	  --output-directory Sources/MistralAPI/GeneratedSources \
 	  --config ./openapi-generator-config-client.yaml \
 	  ./openapi.yaml
@@ -55,11 +60,6 @@ generate-openapi:
 	swift run swift-openapi-generator generate \
 	  --output-directory Sources/MistralAPIUrlSessionClient/GeneratedSources \
 	  --config ./openapi-generator-config-client.yaml \
-	  ./openapi.yaml
-
-	swift run swift-openapi-generator generate \
-	  --output-directory Sources/MistralAPITypes/GeneratedSources \
-	  --config ./openapi-generator-config-types.yaml \
 	  ./openapi.yaml
 
 prepare-openapi:
