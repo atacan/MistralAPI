@@ -1,6 +1,6 @@
 import Foundation
-import MistralAPITypes
 import MistralAPI
+import MistralAPITypes
 import OpenAPIAsyncHTTPClient
 import OpenAPIRuntime
 import Testing
@@ -25,18 +25,29 @@ struct MistralAPITests {
 
     @Test func example() async throws {
         // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-        let response = try await client.audio_api_v1_transcriptions_post(body: .multipartForm([
-            .model(.init(payload: .init(body: HTTPBody(MistralModelID.voxtralMini2507)))),
-            .file(.init(payload: .init(body: HTTPBody(audioData)), filename: "speech.mp3")),
-        ]))
+        let response = try await client.audio_api_v1_transcriptions_post(
+            body: .multipartForm([
+                .model(
+                    .init(
+                        payload: .init(
+                            body: HTTPBody(
+                                // MistralModelID.Transcription.voxtralMini2507
+                                MistralModelID.Transcription.voxtralMiniLatest
+                            )
+                        )
+                    )
+                ),
+                .file(.init(payload: .init(body: HTTPBody(audioData)), filename: "speech.mp3")),
+            ])
+        )
         switch response {
-            case .ok(let ok):
-                dump(ok)
-            case .undocumented(statusCode: let statusCode, let payload):
-                print("statusCode", statusCode)
-                let collected = try await payload.body?.collect(upTo: .max, using: .init())
-                let string = String(buffer: collected!)
-                print(string)
+        case .ok(let ok):
+            dump(ok)
+        case .undocumented(let statusCode, let payload):
+            print("statusCode", statusCode)
+            let collected = try await payload.body?.collect(upTo: .max, using: .init())
+            let string = String(buffer: collected!)
+            print(string)
         }
     }
 
