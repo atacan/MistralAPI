@@ -47,6 +47,15 @@ struct MistralAPITests {
                         filename: "speech.mp3"
                     )
                 ),
+                .timestamp_granularities(
+                    .init(
+                        payload: .init(
+                            body: HTTPBody(
+                                MistralAPITypes.Components.Schemas.TimestampGranularity.segment.rawValue
+                            )
+                        )
+                    )
+                ),
             ])
         )
         switch response {
