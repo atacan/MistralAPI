@@ -6,6 +6,16 @@
     },
     "actions": [
         {
+            "target": "$.components.schemas.TranscriptionResponse.required",
+            "remove": true
+        },
+        {
+            "target": "$.components.schemas.TranscriptionResponse",
+            "update": {
+                "required": ["model", "text", "usage"]
+            }
+        },
+        {
             "target": "$.components.schemas.EmbeddingResponse.allOf[1].properties.data.items",
             "remove": true
         },

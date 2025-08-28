@@ -6799,12 +6799,11 @@ components:
           $ref: '#/components/schemas/UsageInfo'
       additionalProperties: false
       type: object
+      title: TranscriptionResponse
       required:
         - model
         - text
-        - language
         - usage
-      title: TranscriptionResponse
     TranscriptionSegmentChunk:
       properties:
         text:

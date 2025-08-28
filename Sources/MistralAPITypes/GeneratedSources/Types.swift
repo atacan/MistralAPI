@@ -86,7 +86,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/text`.
             public var text: Swift.String
             /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/language`.
-            public var language: Swift.String
+            public var language: Swift.String?
             /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/segments`.
             public var segments: [Components.Schemas.TranscriptionSegmentChunk]?
             /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/usage`.
@@ -102,7 +102,7 @@ public enum Components {
             public init(
                 model: Swift.String,
                 text: Swift.String,
-                language: Swift.String,
+                language: Swift.String? = nil,
                 segments: [Components.Schemas.TranscriptionSegmentChunk]? = nil,
                 usage: Components.Schemas.UsageInfo
             ) {
@@ -129,7 +129,7 @@ public enum Components {
                     Swift.String.self,
                     forKey: .text
                 )
-                self.language = try container.decode(
+                self.language = try container.decodeIfPresent(
                     Swift.String.self,
                     forKey: .language
                 )
