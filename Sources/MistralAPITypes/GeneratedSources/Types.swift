@@ -91,6 +91,8 @@ public enum Components {
             public var segments: [Components.Schemas.TranscriptionSegmentChunk]?
             /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/usage`.
             public var usage: Components.Schemas.UsageInfo
+            /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/finish_reason`.
+            public var finish_reason: Swift.String?
             /// Creates a new `TranscriptionResponse`.
             ///
             /// - Parameters:
@@ -99,18 +101,21 @@ public enum Components {
             ///   - language:
             ///   - segments:
             ///   - usage:
+            ///   - finish_reason:
             public init(
                 model: Swift.String,
                 text: Swift.String,
                 language: Swift.String? = nil,
                 segments: [Components.Schemas.TranscriptionSegmentChunk]? = nil,
-                usage: Components.Schemas.UsageInfo
+                usage: Components.Schemas.UsageInfo,
+                finish_reason: Swift.String? = nil
             ) {
                 self.model = model
                 self.text = text
                 self.language = language
                 self.segments = segments
                 self.usage = usage
+                self.finish_reason = finish_reason
             }
             public enum CodingKeys: String, CodingKey {
                 case model
@@ -118,6 +123,7 @@ public enum Components {
                 case language
                 case segments
                 case usage
+                case finish_reason
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -141,12 +147,17 @@ public enum Components {
                     Components.Schemas.UsageInfo.self,
                     forKey: .usage
                 )
+                self.finish_reason = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .finish_reason
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "model",
                     "text",
                     "language",
                     "segments",
-                    "usage"
+                    "usage",
+                    "finish_reason"
                 ])
             }
         }

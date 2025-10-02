@@ -6797,6 +6797,9 @@ components:
           title: Segments
         usage:
           $ref: '#/components/schemas/UsageInfo'
+        finish_reason:
+          type: string
+          title: Finish Reason
       additionalProperties: false
       type: object
       title: TranscriptionResponse

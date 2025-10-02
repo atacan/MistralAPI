@@ -12,7 +12,11 @@
         {
             "target": "$.components.schemas.TranscriptionResponse",
             "update": {
-                "required": ["model", "text", "usage"]
+                "required": [
+                    "model",
+                    "text",
+                    "usage"
+                ]
             }
         },
         {
@@ -230,7 +234,12 @@
                             "title": "Type"
                         }
                     },
-                    "required": ["code", "message", "object", "type"],
+                    "required": [
+                        "code",
+                        "message",
+                        "object",
+                        "type"
+                    ],
                     "title": "APIError"
                 }
             }
@@ -257,6 +266,15 @@
                             }
                         }
                     }
+                }
+            }
+        },
+        {
+            "target": "$.components.schemas.TranscriptionResponse.properties",
+            "update": {
+                "finish_reason": {
+                    "type": "string",
+                    "title": "Finish Reason"
                 }
             }
         }

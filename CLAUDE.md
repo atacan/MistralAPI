@@ -1,0 +1,1 @@
+We use the OpenAPI overlay specification to fix the original OpenAPI document. The specification can be found in https://github.com/OAI/Overlay-Specification/blob/main/versions/1.0.0.md. Please read it before you make changes to `overlay.json` file. Remember that `target` has to exist before you make the update. You cannot target a property you want to add, for example.
