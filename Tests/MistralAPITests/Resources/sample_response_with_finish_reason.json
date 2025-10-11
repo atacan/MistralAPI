@@ -1,0 +1,13 @@
+{
+  "finish_reason": null,
+  "language": null,
+  "model": "voxtral-mini-latest",
+  "segments": [],
+  "text": "Of course my expectations are really high. I'm going to just read something so that I can find something to read about. I just corrected myself and let's see if it doubles the words that I repeated. Apps can programmatically publish messages that include a table by providing a table block in the attachments field of a chat.postMessage request. You must include a value for one of either the top-level blocks or text arguments in the message payload, which is interesting because in the Python SDK, I don't see anything related to this table block. And I wonder if anybody is talking about it and if I'm the only one, because in the Python world, nobody cares about the types anymore. Nobody cares about the classes anymore. They just use a variable name just like it's something, but it can... turn out to be when you run the code nothing there is no such thing but you only know it when you run the code what kind of language and development is that and i think the other stuff is also maybe working that way it only gives you some warnings based on the language server protocol or whatever but i don't know what's going on man i don't know",
+  "usage": {
+    "completion_tokens": 235,
+    "prompt_audio_seconds": 86,
+    "prompt_tokens": 3,
+    "total_tokens": 1363
+  }
+}

@@ -78,4 +78,10 @@ struct MistralAPITests {
         let response = try JSONDecoder().decode(Components.Schemas.TranscriptionResponse.self, from: try Data(contentsOf: jsonFileUrl))
         dump(response)
     }
+    
+    @Test func decodeResponseWithFinishReason() async throws {
+        let jsonFileUrl = Bundle.module.url(forResource: "sample_response_with_finish_reason", withExtension: "json")!
+        let response = try JSONDecoder().decode(Components.Schemas.TranscriptionResponse.self, from: try Data(contentsOf: jsonFileUrl))
+        dump(response)
+    }
 }
