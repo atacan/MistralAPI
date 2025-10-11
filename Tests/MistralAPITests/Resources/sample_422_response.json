@@ -1,0 +1,29 @@
+{
+  "code": null,
+  "message": {
+    "detail": [
+      {
+        "ctx": {
+          "error": {}
+        },
+        "input": {
+          "audio": "--audio-bytes--",
+          "language": "en",
+          "model": "voxtral-mini-latest",
+          "return_language": false,
+          "stream": false,
+          "temperature": null,
+          "timestamp_granularities": [
+            "segment"
+          ]
+        },
+        "loc": [],
+        "msg": "Assertion failed, Timestamps are not compatible with language prediction. Either disable language prediction by setting `language=None` and `return_language=False`, or disable timestamp prediction by setting `timestamp_granularities=[]`.",
+        "type": "assertion_error"
+      }
+    ]
+  },
+  "object": "error",
+  "param": null,
+  "type": "invalid_request_error"
+}

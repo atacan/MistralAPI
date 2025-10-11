@@ -214,15 +214,57 @@
                     "properties": {
                         "code": {
                             "type": "string",
+                            "nullable": true,
                             "title": "Code"
                         },
                         "message": {
-                            "type": "string",
-                            "title": "Message"
+                            "type": "object",
+                            "title": "Message",
+                            "properties": {
+                                "detail": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "ctx": {
+                                                "type": "object",
+                                                "description": "Context information related to the error (e.g., error details from an underlying library)."
+                                            },
+                                            "input": {
+                                                "type": "object",
+                                                "description": "The input parameters that caused the error."
+                                            },
+                                            "loc": {
+                                                "type": "array",
+                                                "items": {},
+                                                "description": "Location of the error in the request data structure."
+                                            },
+                                            "msg": {
+                                                "type": "string",
+                                                "description": "The specific error message."
+                                            },
+                                            "type": {
+                                                "type": "string",
+                                                "description": "The type of the specific error (e.g., 'assertion_error')."
+                                            }
+                                        },
+                                        "required": [
+                                            "msg",
+                                            "type"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "detail"
+                            ]
                         },
                         "object": {
                             "type": "string",
-                            "title": "Object"
+                            "title": "Object",
+                            "enum": [
+                                "error"
+                            ]
                         },
                         "param": {
                             "type": "string",
@@ -235,7 +277,6 @@
                         }
                     },
                     "required": [
-                        "code",
                         "message",
                         "object",
                         "type"

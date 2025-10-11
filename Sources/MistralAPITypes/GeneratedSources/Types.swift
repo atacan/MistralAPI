@@ -821,11 +821,83 @@ public enum Components {
         /// - Remark: Generated from `#/components/schemas/APIError`.
         public struct APIError: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/APIError/code`.
-            public var code: Swift.String
+            public var code: Swift.String?
             /// - Remark: Generated from `#/components/schemas/APIError/message`.
-            public var message: Swift.String
+            public struct messagePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload`.
+                public struct detailPayloadPayload: Codable, Hashable, Sendable {
+                    /// Context information related to the error (e.g., error details from an underlying library).
+                    ///
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload/ctx`.
+                    public var ctx: OpenAPIRuntime.OpenAPIObjectContainer?
+                    /// The input parameters that caused the error.
+                    ///
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload/input`.
+                    public var input: OpenAPIRuntime.OpenAPIObjectContainer?
+                    /// Location of the error in the request data structure.
+                    ///
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload/loc`.
+                    public var loc: [OpenAPIRuntime.OpenAPIValueContainer]?
+                    /// The specific error message.
+                    ///
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload/msg`.
+                    public var msg: Swift.String
+                    /// The type of the specific error (e.g., 'assertion_error').
+                    ///
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload/type`.
+                    public var _type: Swift.String
+                    /// Creates a new `detailPayloadPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - ctx: Context information related to the error (e.g., error details from an underlying library).
+                    ///   - input: The input parameters that caused the error.
+                    ///   - loc: Location of the error in the request data structure.
+                    ///   - msg: The specific error message.
+                    ///   - _type: The type of the specific error (e.g., 'assertion_error').
+                    public init(
+                        ctx: OpenAPIRuntime.OpenAPIObjectContainer? = nil,
+                        input: OpenAPIRuntime.OpenAPIObjectContainer? = nil,
+                        loc: [OpenAPIRuntime.OpenAPIValueContainer]? = nil,
+                        msg: Swift.String,
+                        _type: Swift.String
+                    ) {
+                        self.ctx = ctx
+                        self.input = input
+                        self.loc = loc
+                        self.msg = msg
+                        self._type = _type
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case ctx
+                        case input
+                        case loc
+                        case msg
+                        case _type = "type"
+                    }
+                }
+                /// - Remark: Generated from `#/components/schemas/APIError/message/detail`.
+                public typealias detailPayload = [Components.Schemas.APIError.messagePayload.detailPayloadPayload]
+                /// - Remark: Generated from `#/components/schemas/APIError/message/detail`.
+                public var detail: Components.Schemas.APIError.messagePayload.detailPayload
+                /// Creates a new `messagePayload`.
+                ///
+                /// - Parameters:
+                ///   - detail:
+                public init(detail: Components.Schemas.APIError.messagePayload.detailPayload) {
+                    self.detail = detail
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case detail
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/APIError/message`.
+            public var message: Components.Schemas.APIError.messagePayload
             /// - Remark: Generated from `#/components/schemas/APIError/object`.
-            public var object: Swift.String
+            @frozen public enum objectPayload: String, Codable, Hashable, Sendable, CaseIterable {
+                case error = "error"
+            }
+            /// - Remark: Generated from `#/components/schemas/APIError/object`.
+            public var object: Components.Schemas.APIError.objectPayload
             /// - Remark: Generated from `#/components/schemas/APIError/param`.
             public var param: Swift.String?
             /// - Remark: Generated from `#/components/schemas/APIError/type`.
@@ -839,9 +911,9 @@ public enum Components {
             ///   - param:
             ///   - _type:
             public init(
-                code: Swift.String,
-                message: Swift.String,
-                object: Swift.String,
+                code: Swift.String? = nil,
+                message: Components.Schemas.APIError.messagePayload,
+                object: Components.Schemas.APIError.objectPayload,
                 param: Swift.String? = nil,
                 _type: Swift.String
             ) {
