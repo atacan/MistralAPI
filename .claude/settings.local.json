@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gitleaks detect:*)",
+      "Bash(trufflehog git:*)"
+    ]
+  }
+}
