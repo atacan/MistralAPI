@@ -6847,6 +6847,10 @@ components:
         prompt_audio_seconds:
           title: Prompt Audio Seconds
           type: integer
+        num_cached_tokens:
+          type: integer
+          title: Num Cached Tokens
+          default: 0
       additionalProperties: false
       type: object
       title: UsageInfo
@@ -6899,8 +6903,8 @@ components:
           title: Model
           type: string
         file:
-          title: File
           $ref: '#/components/schemas/File'
+          title: File
         file_url:
           description: Url of a file to be transcribed
           title: File Url
@@ -6941,8 +6945,8 @@ components:
           title: Model
           type: string
         file:
-          title: File
           $ref: '#/components/schemas/File'
+          title: File
         file_url:
           description: Url of a file to be transcribed
           title: File Url
@@ -7910,12 +7914,16 @@ components:
                 required:
                   - msg
                   - type
+                  - msg
+                  - type
           required:
+            - detail
             - detail
         object:
           type: string
           title: Object
           enum:
+            - error
             - error
         param:
           type: string
@@ -7925,6 +7933,9 @@ components:
           type: string
           title: Type
       required:
+        - message
+        - object
+        - type
         - message
         - object
         - type

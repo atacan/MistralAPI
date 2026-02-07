@@ -318,6 +318,16 @@
                     "title": "Finish Reason"
                 }
             }
+        },
+        {
+            "target": "$.components.schemas.UsageInfo.properties",
+            "update": {
+                "num_cached_tokens": {
+                    "type": "integer",
+                    "title": "Num Cached Tokens",
+                    "default": 0
+                }
+            }
         }
     ]
 }

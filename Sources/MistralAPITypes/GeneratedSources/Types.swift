@@ -235,6 +235,8 @@ public enum Components {
             public var total_tokens: Swift.Int
             /// - Remark: Generated from `#/components/schemas/UsageInfo/prompt_audio_seconds`.
             public var prompt_audio_seconds: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/UsageInfo/num_cached_tokens`.
+            public var num_cached_tokens: Swift.Int?
             /// Creates a new `UsageInfo`.
             ///
             /// - Parameters:
@@ -242,22 +244,26 @@ public enum Components {
             ///   - completion_tokens:
             ///   - total_tokens:
             ///   - prompt_audio_seconds:
+            ///   - num_cached_tokens:
             public init(
                 prompt_tokens: Swift.Int,
                 completion_tokens: Swift.Int,
                 total_tokens: Swift.Int,
-                prompt_audio_seconds: Swift.Int? = nil
+                prompt_audio_seconds: Swift.Int? = nil,
+                num_cached_tokens: Swift.Int? = nil
             ) {
                 self.prompt_tokens = prompt_tokens
                 self.completion_tokens = completion_tokens
                 self.total_tokens = total_tokens
                 self.prompt_audio_seconds = prompt_audio_seconds
+                self.num_cached_tokens = num_cached_tokens
             }
             public enum CodingKeys: String, CodingKey {
                 case prompt_tokens
                 case completion_tokens
                 case total_tokens
                 case prompt_audio_seconds
+                case num_cached_tokens
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -277,11 +283,16 @@ public enum Components {
                     Swift.Int.self,
                     forKey: .prompt_audio_seconds
                 )
+                self.num_cached_tokens = try container.decodeIfPresent(
+                    Swift.Int.self,
+                    forKey: .num_cached_tokens
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "prompt_tokens",
                     "completion_tokens",
                     "total_tokens",
-                    "prompt_audio_seconds"
+                    "prompt_audio_seconds",
+                    "num_cached_tokens"
                 ])
             }
         }

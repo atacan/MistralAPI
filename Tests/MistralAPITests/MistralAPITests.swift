@@ -23,16 +23,18 @@ struct MistralAPITests {
     }()
     let audioData = try! Data(contentsOf: URL(fileURLWithPath: "/Users/atacan/Developer/Repositories/GoogleGenerativeLanguage/assets/speech.mp3"))
 
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+    @Test(arguments: [
+        MistralModelID.Transcription.voxtralMini2507,
+        MistralModelID.Transcription.voxtralMini2602,
+    ])
+    func transcription(model: String) async throws {
         let response = try await client.audio_api_v1_transcriptions_post(
             body: .multipartForm([
                 .model(
                     .init(
                         payload: .init(
                             body: HTTPBody(
-                                // MistralModelID.Transcription.voxtralMini2507
-                                MistralModelID.Transcription.voxtralMiniLatest
+                                model
                             )
                         )
                     )
