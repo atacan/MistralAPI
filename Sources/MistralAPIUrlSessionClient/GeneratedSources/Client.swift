@@ -74,6 +74,7 @@ public struct Client: APIProtocol {
                         ],
                         requiredAtLeastOncePartNames: [],
                         atMostOncePartNames: [
+                            "diarize",
                             "file",
                             "file_id",
                             "file_url",
@@ -82,6 +83,7 @@ public struct Client: APIProtocol {
                             "temperature"
                         ],
                         zeroOrMoreTimesPartNames: [
+                            "context_bias",
                             "timestamp_granularities"
                         ],
                         encoding: { part in
@@ -180,6 +182,34 @@ public struct Client: APIProtocol {
                                 )
                                 return .init(
                                     name: "stream",
+                                    filename: wrapped.filename,
+                                    headerFields: headerFields,
+                                    body: body
+                                )
+                            case let .diarize(wrapped):
+                                var headerFields: HTTPTypes.HTTPFields = .init()
+                                let value = wrapped.payload
+                                let body = try converter.setRequiredRequestBodyAsBinary(
+                                    value.body,
+                                    headerFields: &headerFields,
+                                    contentType: "text/plain"
+                                )
+                                return .init(
+                                    name: "diarize",
+                                    filename: wrapped.filename,
+                                    headerFields: headerFields,
+                                    body: body
+                                )
+                            case let .context_bias(wrapped):
+                                var headerFields: HTTPTypes.HTTPFields = .init()
+                                let value = wrapped.payload
+                                let body = try converter.setRequiredRequestBodyAsBinary(
+                                    value.body,
+                                    headerFields: &headerFields,
+                                    contentType: "text/plain"
+                                )
+                                return .init(
+                                    name: "context_bias",
                                     filename: wrapped.filename,
                                     headerFields: headerFields,
                                     body: body
@@ -286,7 +316,7 @@ public struct Client: APIProtocol {
             }
         )
     }
-    /// Create streaming transcription (SSE)
+    /// Create Streaming Transcription (SSE)
     ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions#stream`.
     /// - Remark: Generated from `#/paths//v1/audio/transcriptions#stream/post(audio_api_v1_transcriptions_post_stream)`.
@@ -321,6 +351,7 @@ public struct Client: APIProtocol {
                         ],
                         requiredAtLeastOncePartNames: [],
                         atMostOncePartNames: [
+                            "diarize",
                             "file",
                             "file_id",
                             "file_url",
@@ -329,6 +360,7 @@ public struct Client: APIProtocol {
                             "temperature"
                         ],
                         zeroOrMoreTimesPartNames: [
+                            "context_bias",
                             "timestamp_granularities"
                         ],
                         encoding: { part in
@@ -427,6 +459,34 @@ public struct Client: APIProtocol {
                                 )
                                 return .init(
                                     name: "stream",
+                                    filename: wrapped.filename,
+                                    headerFields: headerFields,
+                                    body: body
+                                )
+                            case let .diarize(wrapped):
+                                var headerFields: HTTPTypes.HTTPFields = .init()
+                                let value = wrapped.payload
+                                let body = try converter.setRequiredRequestBodyAsBinary(
+                                    value.body,
+                                    headerFields: &headerFields,
+                                    contentType: "text/plain"
+                                )
+                                return .init(
+                                    name: "diarize",
+                                    filename: wrapped.filename,
+                                    headerFields: headerFields,
+                                    body: body
+                                )
+                            case let .context_bias(wrapped):
+                                var headerFields: HTTPTypes.HTTPFields = .init()
+                                let value = wrapped.payload
+                                let body = try converter.setRequiredRequestBodyAsBinary(
+                                    value.body,
+                                    headerFields: &headerFields,
+                                    contentType: "text/plain"
+                                )
+                                return .init(
+                                    name: "context_bias",
                                     filename: wrapped.filename,
                                     headerFields: headerFields,
                                     body: body

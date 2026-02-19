@@ -34,7 +34,7 @@ format: check_uncommitted
 test-on-linux:
 	docker run -v "$PWD:/code" -w /code swift:latest swift test
 
-DOWNLOAD_OPENAPI_URL=https://docs.mistral.ai/redocusaurus/plugin-redoc-0.yaml
+DOWNLOAD_OPENAPI_URL=https://docs.mistral.ai/openapi.yaml
 download-openapi:
 	# Download the openapi.yaml file from remote repo as original.yaml file
 	curl -o original.yaml $(DOWNLOAD_OPENAPI_URL)

@@ -21,7 +21,7 @@ struct MistralAPITests {
         let envFileUrl = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent(".env")
         return try! createClient(apiKey: getEnvironmentVariable("MISTRAL_API_KEY", from: envFileUrl)!)
     }()
-    let audioData = try! Data(contentsOf: URL(fileURLWithPath: "/Users/atacan/Developer/Repositories/GoogleGenerativeLanguage/assets/speech.mp3"))
+    let audioData = try! Data(contentsOf: URL(fileURLWithPath: "/Users/atacan/Developer/Repositories/MistralAPI/60s_speech.wav"))
 
     @Test(arguments: [
         MistralModelID.Transcription.voxtralMini2507,

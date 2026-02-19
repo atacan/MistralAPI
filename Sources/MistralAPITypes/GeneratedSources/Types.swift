@@ -16,7 +16,7 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `POST /v1/audio/transcriptions`.
     /// - Remark: Generated from `#/paths//v1/audio/transcriptions/post(audio_api_v1_transcriptions_post)`.
     func audio_api_v1_transcriptions_post(_ input: Operations.audio_api_v1_transcriptions_post.Input) async throws -> Operations.audio_api_v1_transcriptions_post.Output
-    /// Create streaming transcription (SSE)
+    /// Create Streaming Transcription (SSE)
     ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions#stream`.
     /// - Remark: Generated from `#/paths//v1/audio/transcriptions#stream/post(audio_api_v1_transcriptions_post_stream)`.
@@ -38,7 +38,7 @@ extension APIProtocol {
             body: body
         ))
     }
-    /// Create streaming transcription (SSE)
+    /// Create Streaming Transcription (SSE)
     ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions#stream`.
     /// - Remark: Generated from `#/paths//v1/audio/transcriptions#stream/post(audio_api_v1_transcriptions_post_stream)`.
@@ -311,6 +311,7 @@ public enum Components {
         /// - Remark: Generated from `#/components/schemas/TimestampGranularity`.
         @frozen public enum TimestampGranularity: String, Codable, Hashable, Sendable, CaseIterable {
             case segment = "segment"
+            case word = "word"
         }
         /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequest`.
         @frozen public enum AudioTranscriptionRequest: Sendable, Hashable {
@@ -398,6 +399,30 @@ public enum Components {
                 }
             }
             case stream(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequest.streamPayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequest/diarize`.
+            public struct diarizePayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `diarizePayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case diarize(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequest.diarizePayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequest/context_bias`.
+            public struct context_biasPayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `context_biasPayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case context_bias(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequest.context_biasPayload>)
             /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequest/timestamp_granularities`.
             public struct timestamp_granularitiesPayload: Sendable, Hashable {
                 public var body: OpenAPIRuntime.HTTPBody
@@ -498,6 +523,30 @@ public enum Components {
                 }
             }
             case stream(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequestStream.streamPayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequestStream/diarize`.
+            public struct diarizePayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `diarizePayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case diarize(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequestStream.diarizePayload>)
+            /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequestStream/context_bias`.
+            public struct context_biasPayload: Sendable, Hashable {
+                public var body: OpenAPIRuntime.HTTPBody
+                /// Creates a new `context_biasPayload`.
+                ///
+                /// - Parameters:
+                ///   - body:
+                public init(body: OpenAPIRuntime.HTTPBody) {
+                    self.body = body
+                }
+            }
+            case context_bias(OpenAPIRuntime.MultipartPart<Components.Schemas.AudioTranscriptionRequestStream.context_biasPayload>)
             /// - Remark: Generated from `#/components/schemas/AudioTranscriptionRequestStream/timestamp_granularities`.
             public struct timestamp_granularitiesPayload: Sendable, Hashable {
                 public var body: OpenAPIRuntime.HTTPBody
@@ -1178,7 +1227,7 @@ public enum Operations {
             }
         }
     }
-    /// Create streaming transcription (SSE)
+    /// Create Streaming Transcription (SSE)
     ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions#stream`.
     /// - Remark: Generated from `#/paths//v1/audio/transcriptions#stream/post(audio_api_v1_transcriptions_post_stream)`.

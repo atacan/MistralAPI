@@ -1,11 +1,8 @@
 openapi: 3.1.0
 info:
   title: Mistral AI API
-  description: >-
-    Our Chat Completion and Embeddings APIs specification. Create your account
-    on [La Plateforme](https://console.mistral.ai) to get access and read the
-    [docs](https://docs.mistral.ai) to learn how to use it.
   version: 1.0.0
+  description: Our Chat Completion and Embeddings APIs specification. Create your account on [La Plateforme](https://console.mistral.ai) to get access and read the [docs](https://docs.mistral.ai) to learn how to use it.
 paths:
   /v1/models:
     get:
@@ -19,12 +16,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ModelList'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
+              examples:
+                userExample:
+                  value:
+                    - id: <model_id>
+                      capabilities:
+                        completion_chat: true
+                        completion_fim: false
+                        function_calling: false
+                        fine_tuning: false
+                        vision: false
+                        classification: false
+                      job: <job_id>
+                      root: open-mistral-7b
+                      object: model
+                      created: 1756746619
+                      owned_by: <owner_id>
+                      name: null
+                      description: null
+                      max_context_length: 32768
+                      aliases: []
+                      deprecation: null
+                      deprecation_replacement_model: null
+                      default_model_temperature: null
+                      TYPE: fine-tuned
+                      archived: false
       tags:
         - models
   /v1/models/{model_id}:
@@ -56,6 +72,31 @@ paths:
                     base: '#/components/schemas/BaseModelCard'
                     fine-tuned: '#/components/schemas/FTModelCard'
                 title: Response Retrieve Model V1 Models  Model Id  Get
+              examples:
+                userExample:
+                  value:
+                    id: <your_model_id>
+                    capabilities:
+                      completion_chat: true
+                      completion_fim: false
+                      function_calling: false
+                      fine_tuning: false
+                      vision: false
+                      classification: false
+                    job: <job_id>
+                    root: open-mistral-7b
+                    object: model
+                    created: 1756746619
+                    owned_by: <owner_id>
+                    name: null
+                    description: null
+                    max_context_length: 32768
+                    aliases: []
+                    deprecation: null
+                    deprecation_replacement_model: null
+                    default_model_temperature: null
+                    TYPE: fine-tuned
+                    archived: false
         '422':
           description: Validation Error
           content:
@@ -84,6 +125,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeleteModelOut'
+              examples:
+                userExample:
+                  value:
+                    id: ft:open-mistral-7b:587a6b29:20240514:7e773925
+                    object: model
+                    deleted: true
         '422':
           description: Validation Error
           content:
@@ -95,11 +142,7 @@ paths:
   /v1/conversations:
     post:
       summary: Create a conversation and append entries to it.
-      description: >-
-        Create a new conversation, using a base model or an agent and append
-        entries. Completion and tool executions are run and the response is
-        appended to the conversation.Use the returned conversation_id to
-        continue the conversation.
+      description: Create a new conversation, using a base model or an agent and append entries. Completion and tool executions are run and the response is appended to the conversation.Use the returned conversation_id to continue the conversation.
       operationId: agents_api_v1_conversations_start
       requestBody:
         required: true
@@ -141,6 +184,17 @@ paths:
             type: integer
             default: 100
             title: Page Size
+        - name: metadata
+          in: query
+          required: false
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - type: object
+                    additionalProperties: true
+                  - type: 'null'
+                title: Metadata
       responses:
         '200':
           description: Successful Response
@@ -164,9 +218,7 @@ paths:
   /v1/conversations/{conversation_id}:
     get:
       summary: Retrieve a conversation information.
-      description: >-
-        Given a conversation_id retrieve a conversation entity with its
-        attributes.
+      description: Given a conversation_id retrieve a conversation entity with its attributes.
       operationId: agents_api_v1_conversations_get
       parameters:
         - name: conversation_id
@@ -195,11 +247,33 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - beta.conversations
+    delete:
+      summary: Delete a conversation.
+      description: Delete a conversation given a conversation_id.
+      operationId: agents_api_v1_conversations_delete
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: ID of the conversation from which we are fetching metadata.
+            title: Conversation Id
+          description: ID of the conversation from which we are fetching metadata.
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - beta.conversations
     post:
       summary: Append new entries to an existing conversation.
-      description: >-
-        Run completion on the history of the conversation and the user entries.
-        Return the new created entries.
+      description: Run completion on the history of the conversation and the user entries. Return the new created entries.
       operationId: agents_api_v1_conversations_append
       parameters:
         - name: conversation_id
@@ -234,10 +308,7 @@ paths:
   /v1/conversations/{conversation_id}/history:
     get:
       summary: Retrieve all entries in a conversation.
-      description: >-
-        Given a conversation_id retrieve all the entries belonging to that
-        conversation. The entries are sorted in the order they were appended,
-        those can be messages, connectors or function_call.
+      description: Given a conversation_id retrieve all the entries belonging to that conversation. The entries are sorted in the order they were appended, those can be messages, connectors or function_call.
       operationId: agents_api_v1_conversations_history
       parameters:
         - name: conversation_id
@@ -266,10 +337,7 @@ paths:
   /v1/conversations/{conversation_id}/messages:
     get:
       summary: Retrieve all messages in a conversation.
-      description: >-
-        Given a conversation_id retrieve all the messages belonging to that
-        conversation. This is similar to retrieving all entries except we filter
-        the messages only.
+      description: Given a conversation_id retrieve all the messages belonging to that conversation. This is similar to retrieving all entries except we filter the messages only.
       operationId: agents_api_v1_conversations_messages
       parameters:
         - name: conversation_id
@@ -298,10 +366,7 @@ paths:
   /v1/conversations/{conversation_id}/restart:
     post:
       summary: Restart a conversation starting from a given entry.
-      description: >-
-        Given a conversation_id and an id, recreate a conversation from this
-        point and run completion. A new conversation is returned with the new
-        entries returned.
+      description: Given a conversation_id and an id, recreate a conversation from this point and run completion. A new conversation is returned with the new entries returned.
       operationId: agents_api_v1_conversations_restart
       parameters:
         - name: conversation_id
@@ -336,10 +401,7 @@ paths:
   /v1/agents:
     post:
       summary: Create a agent that can be used within a conversation.
-      description: >-
-        Create a new agent giving it instructions, tools, description. The agent
-        is then available to be used as a regular assistant in a conversation or
-        as part of an agent pool from which it can be used.
+      description: Create a new agent giving it instructions, tools, description. The agent is then available to be used as a regular assistant in a conversation or as part of an agent pool from which it can be used.
       operationId: agents_api_v1_agents_create
       requestBody:
         required: true
@@ -372,15 +434,67 @@ paths:
           required: false
           schema:
             type: integer
+            minimum: 0
+            description: Page number (0-indexed)
             default: 0
             title: Page
+          description: Page number (0-indexed)
         - name: page_size
           in: query
           required: false
           schema:
             type: integer
+            maximum: 1000
+            minimum: 1
+            description: Number of agents per page
             default: 20
             title: Page Size
+          description: Number of agents per page
+        - name: deployment_chat
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: boolean
+              - type: 'null'
+            title: Deployment Chat
+        - name: sources
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: array
+                items:
+                  $ref: '#/components/schemas/RequestSource'
+              - type: 'null'
+            title: Sources
+        - name: name
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            title: Name
+        - name: id
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            title: Id
+        - name: metadata
+          in: query
+          required: false
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - type: object
+                    additionalProperties: true
+                  - type: 'null'
+                title: Metadata
       responses:
         '200':
           description: Successful Response
@@ -402,7 +516,7 @@ paths:
   /v1/agents/{agent_id}:
     get:
       summary: Retrieve an agent entity.
-      description: Given an agent retrieve an agent entity with its attributes.
+      description: Given an agent, retrieve an agent entity with its attributes. The agent_version parameter can be an integer version number or a string alias.
       operationId: agents_api_v1_agents_get
       parameters:
         - name: agent_id
@@ -411,6 +525,15 @@ paths:
           schema:
             type: string
             title: Agent Id
+        - name: agent_version
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+              - type: string
+              - type: 'null'
+            title: Agent Version
       responses:
         '200':
           description: Successful Response
@@ -458,6 +581,27 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - beta.agents
+    delete:
+      summary: Delete an agent entity.
+      operationId: agents_api_v1_agents_delete
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Agent Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - beta.agents
   /v1/agents/{agent_id}/version:
     patch:
       summary: Update an agent version.
@@ -491,14 +635,165 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - beta.agents
+  /v1/agents/{agent_id}/versions:
+    get:
+      summary: List all versions of an agent.
+      description: Retrieve all versions for a specific agent with full agent context. Supports pagination.
+      operationId: agents_api_v1_agents_list_versions
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Agent Id
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            description: Page number (0-indexed)
+            default: 0
+            title: Page
+          description: Page number (0-indexed)
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            minimum: 1
+            description: Number of versions per page
+            default: 20
+            title: Page Size
+          description: Number of versions per page
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Agent'
+                title: Response V1 Agents List Versions
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - beta.agents
+  /v1/agents/{agent_id}/versions/{version}:
+    get:
+      summary: Retrieve a specific version of an agent.
+      description: Get a specific agent version by version number.
+      operationId: agents_api_v1_agents_get_version
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Agent Id
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Version
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - beta.agents
+  /v1/agents/{agent_id}/aliases:
+    put:
+      summary: Create or update an agent version alias.
+      description: Create a new alias or update an existing alias to point to a specific version. Aliases are unique per agent and can be reassigned to different versions.
+      operationId: agents_api_v1_agents_create_or_update_alias
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Agent Id
+        - name: alias
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 64
+            pattern: ^[a-z]([a-z0-9_-]*[a-z0-9])?$
+            title: Alias
+        - name: version
+          in: query
+          required: true
+          schema:
+            type: integer
+            title: Version
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentAliasResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - beta.agents
+    get:
+      summary: List all aliases for an agent.
+      description: Retrieve all version aliases for a specific agent.
+      operationId: agents_api_v1_agents_list_version_aliases
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Agent Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AgentAliasResponse'
+                title: Response V1 Agents List Version Aliases
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - beta.agents
   /v1/conversations#stream:
     post:
       summary: Create a conversation and append entries to it.
-      description: >-
-        Create a new conversation, using a base model or an agent and append
-        entries. Completion and tool executions are run and the response is
-        appended to the conversation.Use the returned conversation_id to
-        continue the conversation.
+      description: Create a new conversation, using a base model or an agent and append entries. Completion and tool executions are run and the response is appended to the conversation.Use the returned conversation_id to continue the conversation.
       operationId: agents_api_v1_conversations_start_stream
       requestBody:
         required: true
@@ -524,9 +819,7 @@ paths:
   /v1/conversations/{conversation_id}#stream:
     post:
       summary: Append new entries to an existing conversation.
-      description: >-
-        Run completion on the history of the conversation and the user entries.
-        Return the new created entries.
+      description: Run completion on the history of the conversation and the user entries. Return the new created entries.
       operationId: agents_api_v1_conversations_append_stream
       parameters:
         - name: conversation_id
@@ -561,10 +854,7 @@ paths:
   /v1/conversations/{conversation_id}/restart#stream:
     post:
       summary: Restart a conversation starting from a given entry.
-      description: >-
-        Given a conversation_id and an id, recreate a conversation from this
-        point and run completion. A new conversation is returned with the new
-        entries returned.
+      description: Given a conversation_id and an id, recreate a conversation from this point and run completion. A new conversation is returned with the new entries returned.
       operationId: agents_api_v1_conversations_restart_stream
       parameters:
         - name: conversation_id
@@ -607,15 +897,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UploadFileOut'
-      description: >-
-        Upload a file that can be used across various endpoints.
+              examples:
+                userExample:
+                  value:
+                    id: e85980c9-409e-4a46-9304-36588f6292b0
+                    object: file
+                    bytes: null
+                    created_at: 1759500189
+                    filename: example.file.jsonl
+                    purpose: fine-tune
+                    sample_type: instruct
+                    source: upload
+                    num_lines: 2
+                    mimetype: application/jsonl
+                    signature: d4821d2de1917341
+      description: 'Upload a file that can be used across various endpoints.
 
 
-        The size of individual files can be a maximum of 512 MB. The Fine-tuning
-        API only supports .jsonl files.
+        The size of individual files can be a maximum of 512 MB. The Fine-tuning API only supports .jsonl files.
 
 
-        Please contact us if you need to increase these storage limits.
+        Please contact us if you need to increase these storage limits.'
       requestBody:
         content:
           multipart/form-data:
@@ -649,6 +951,13 @@ paths:
             default: 100
             title: Page Size
             type: integer
+          required: false
+        - in: query
+          name: include_total
+          schema:
+            default: true
+            title: Include Total
+            type: boolean
           required: false
         - in: query
           name: sample_type
@@ -685,6 +994,16 @@ paths:
               - $ref: '#/components/schemas/FilePurpose'
               - type: 'null'
           required: false
+        - in: query
+          name: mimetypes
+          schema:
+            anyOf:
+              - items:
+                  type: string
+                type: array
+              - type: 'null'
+            title: Mimetypes
+          required: false
       responses:
         '200':
           description: OK
@@ -692,6 +1011,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListFilesOut'
+              examples:
+                userExample:
+                  value:
+                    data:
+                      - id: <your_file_id>
+                        object: file
+                        bytes: null
+                        created_at: 1759491994
+                        filename: <your_file_name>
+                        purpose: batch
+                        sample_type: batch_result
+                        source: mistral
+                        num_lines: 2
+                        mimetype: application/jsonl
+                        signature: null
+                      - id: <your_file_id>
+                        object: file
+                        bytes: null
+                        created_at: 1759491994
+                        filename: <your_file_name>
+                        purpose: batch
+                        sample_type: batch_result
+                        source: mistral
+                        num_lines: 2
+                        mimetype: application/jsonl
+                        signature: null
+                    object: list
+                    total: 2
       description: Returns a list of files that belong to the user's organization.
       tags:
         - files
@@ -714,6 +1061,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RetrieveFileOut'
+              examples:
+                userExample:
+                  value:
+                    id: e85980c9-409e-4a46-9304-36588f6292b0
+                    object: file
+                    bytes: null
+                    created_at: 1759500189
+                    filename: example.file.jsonl
+                    purpose: fine-tune
+                    sample_type: instruct
+                    source: upload
+                    deleted: false
+                    num_lines: 2
+                    mimetype: application/jsonl
+                    signature: d4821d2de1917341
       description: Returns information about a specific file.
       tags:
         - files
@@ -735,6 +1097,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeleteFileOut'
+              examples:
+                userExample:
+                  value:
+                    id: e85980c9-409e-4a46-9304-36588f6292b0
+                    object: file
+                    deleted: true
       description: Delete a file.
       tags:
         - files
@@ -789,6 +1157,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FileSignedURL'
+              examples:
+                userExample:
+                  value:
+                    url: https://mistralaifilesapiprodswe.blob.core.windows.net/fine-tune/.../.../e85980c9409e4a46930436588f6292b0.jsonl?se=2025-10-04T14%3A16%3A17Z&sp=r&sv=2025-01-05&sr=b&sig=...
       tags:
         - files
   /v1/fine_tuning/jobs:
@@ -820,9 +1192,7 @@ paths:
               - type: 'null'
             title: Model
           required: false
-          description: >-
-            The model name used for fine-tuning to filter on. When set, the
-            other results are not displayed.
+          description: The model name used for fine-tuning to filter on. When set, the other results are not displayed.
         - in: query
           name: created_after
           schema:
@@ -832,9 +1202,7 @@ paths:
               - type: 'null'
             title: Created After
           required: false
-          description: >-
-            The date/time to filter on. When set, the results for previous
-            creation times are not displayed.
+          description: The date/time to filter on. When set, the results for previous creation times are not displayed.
         - in: query
           name: created_before
           schema:
@@ -851,9 +1219,7 @@ paths:
             title: Created By Me
             type: boolean
           required: false
-          description: >-
-            When set, only return results for jobs created by the API caller.
-            Other results are not displayed.
+          description: When set, only return results for jobs created by the API caller. Other results are not displayed.
         - in: query
           name: status
           schema:
@@ -873,9 +1239,7 @@ paths:
               - type: 'null'
             title: Status
           required: false
-          description: >-
-            The current job state to filter on. When set, the other results are
-            not displayed.
+          description: The current job state to filter on. When set, the other results are not displayed.
         - in: query
           name: wandb_project
           schema:
@@ -884,9 +1248,7 @@ paths:
               - type: 'null'
             title: Wandb Project
           required: false
-          description: >-
-            The Weights and Biases project to filter on. When set, the other
-            results are not displayed.
+          description: The Weights and Biases project to filter on. When set, the other results are not displayed.
         - in: query
           name: wandb_name
           schema:
@@ -895,9 +1257,7 @@ paths:
               - type: 'null'
             title: Wandb Name
           required: false
-          description: >-
-            The Weight and Biases run name to filter on. When set, the other
-            results are not displayed.
+          description: The Weight and Biases run name to filter on. When set, the other results are not displayed.
         - in: query
           name: suffix
           schema:
@@ -906,9 +1266,7 @@ paths:
               - type: 'null'
             title: Suffix
           required: false
-          description: >-
-            The model suffix to filter on. When set, the other results are not
-            displayed.
+          description: The model suffix to filter on. When set, the other results are not displayed.
       responses:
         '200':
           description: OK
@@ -931,13 +1289,7 @@ paths:
               - type: 'null'
             title: Dry Run
           required: false
-          description: >
-            * If `true` the job is not spawned, instead the query returns a
-            handful of useful metadata
-              for the user to perform sanity checks (see `LegacyJobMetadataOut` response).
-            * Otherwise, the job is started and the query returns the job ID
-            along with some of the
-              input parameters (see `JobOut` response).
+          description: "* If `true` the job is not spawned, instead the query returns a handful of useful metadata\n  for the user to perform sanity checks (see `LegacyJobMetadataOut` response).\n* Otherwise, the job is started and the query returns the job ID along with some of the\n  input parameters (see `JobOut` response).\n"
       responses:
         '200':
           description: OK
@@ -1177,8 +1529,8 @@ paths:
           name: metadata
           schema:
             anyOf:
-              - type: object
-                additionalProperties: true
+              - additionalProperties: true
+                type: object
               - type: 'null'
             title: Metadata
           required: false
@@ -1249,6 +1601,14 @@ paths:
             title: Job Id
             type: string
           required: true
+        - in: query
+          name: inline
+          schema:
+            anyOf:
+              - type: boolean
+              - type: 'null'
+            title: Inline
+          required: false
       responses:
         '200':
           description: OK
@@ -1256,7 +1616,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BatchJobOut'
-      description: Get a batch job details by its UUID.
+      description: "Get a batch job details by its UUID.\n\nArgs:\n    inline: If True, return results inline in the response."
       tags:
         - batch
   /v1/batch/jobs/{job_id}/cancel:
@@ -1326,6 +1686,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FIMCompletionResponse'
+              examples:
+                userExample:
+                  value:
+                    id: 447e3e0d457e42e98248b5d2ef52a2a3
+                    object: chat.completion
+                    model: codestral-2508
+                    usage:
+                      prompt_tokens: 8
+                      completion_tokens: 91
+                      total_tokens: 99
+                    created: 1759496862
+                    choices:
+                      - index: 0
+                        message:
+                          content: "add_numbers(a: int, b: int) -> int:\n    \"\"\"\n    You are given two integers `a` and `b`. Your task is to write a function that\n    returns the sum of these two integers. The function should be implemented in a\n    way that it can handle very large integers (up to 10^18). As a reminder, your\n    code has to be in python\n    \"\"\"\n"
+                          tool_calls: null
+                          prefix: false
+                          role: assistant
+                        finish_reason: stop
             text/event-stream:
               schema:
                 $ref: '#/components/schemas/CompletionEvent'
@@ -1355,6 +1734,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChatCompletionResponse'
+              examples:
+                userExample:
+                  value:
+                    id: cf79f7daaee244b1a0ae5c7b1444424a
+                    object: chat.completion
+                    model: mistral-medium-latest
+                    usage:
+                      prompt_tokens: 24
+                      completion_tokens: 27
+                      total_tokens: 51
+                      prompt_audio_seconds: {}
+                    created: 1759500534
+                    choices:
+                      - index: 0
+                        message:
+                          content: Arrr, the scallywag Claude Monet be the finest French painter to ever splash colors on a canvas, savvy?
+                          tool_calls: null
+                          prefix: false
+                          role: assistant
+                        finish_reason: stop
         '422':
           description: Validation Error
           content:
@@ -1366,7 +1765,7 @@ paths:
   /v1/embeddings:
     post:
       summary: Embeddings
-      description: Embeddings
+      description: 'Embeddings'
       operationId: embeddings_v1_embeddings_post
       requestBody:
         content:
@@ -1381,6 +1780,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EmbeddingResponse'
+              examples:
+                userExample:
+                  value:
+                    data:
+                      - embedding:
+                          - -0.016632080078125
+                          - 0.0701904296875
+                          - 0.03143310546875
+                          - 0.01309967041015625
+                          - 0.0202789306640625
+                        index: 0
+                        object: embedding
+                      - embedding:
+                          - -0.0230560302734375
+                          - 0.039337158203125
+                          - 0.0521240234375
+                          - -0.0184783935546875
+                          - 0.034271240234375
+                        index: 1
+                        object: embedding
+                    model: mistral-embed
+                    object: list
+                    usage:
+                      prompt_tokens: 15
+                      completion_tokens: 0
+                      total_tokens: 15
+                      prompt_audio_seconds: null
         '422':
           description: Validation Error
           content:
@@ -1406,6 +1832,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ModerationResponse'
+              examples:
+                userExample:
+                  value:
+                    id: 4d71ae510af942108ef7344f903e2b88
+                    model: mistral-moderation-latest
+                    results:
+                      - categories:
+                          sexual: false
+                          hate_and_discrimination: false
+                          violence_and_threats: false
+                          dangerous_and_criminal_content: false
+                          selfharm: false
+                          health: false
+                          financial: false
+                          law: false
+                          pii: false
+                        category_scores:
+                          sexual: 0.0011335690505802631
+                          hate_and_discrimination: 0.0030753696337342262
+                          violence_and_threats: 0.0003569706459529698
+                          dangerous_and_criminal_content: 0.002251847181469202
+                          selfharm: 0.00017952796770259738
+                          health: 0.0002780309587251395
+                          financial: 8.481103577651083e-05
+                          law: 4.539786823443137e-05
+                          pii: 0.0023967307060956955
+                      - categories:
+                          sexual: false
+                          hate_and_discrimination: false
+                          violence_and_threats: false
+                          dangerous_and_criminal_content: false
+                          selfharm: false
+                          health: false
+                          financial: false
+                          law: false
+                          pii: false
+                        category_scores:
+                          sexual: 0.000626334105618298
+                          hate_and_discrimination: 0.0013670255430042744
+                          violence_and_threats: 0.0002611903182696551
+                          dangerous_and_criminal_content: 0.0030753696337342262
+                          selfharm: 0.00010889690747717395
+                          health: 0.00015843621804378927
+                          financial: 0.000191104321856983
+                          law: 4.006369272246957e-05
+                          pii: 0.0035936026833951473
         '422':
           description: Validation Error
           content:
@@ -1431,6 +1903,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ModerationResponse'
+              examples:
+                userExample:
+                  value:
+                    id: 352bce1a55814127a3b0bc4fb8f02a35
+                    model: mistral-moderation-latest
+                    results:
+                      - categories:
+                          sexual: false
+                          hate_and_discrimination: false
+                          violence_and_threats: false
+                          dangerous_and_criminal_content: false
+                          selfharm: false
+                          health: false
+                          financial: false
+                          law: false
+                          pii: false
+                        category_scores:
+                          sexual: 0.0010322310263291001
+                          hate_and_discrimination: 0.001597845577634871
+                          violence_and_threats: 0.00020342698553577065
+                          dangerous_and_criminal_content: 0.0029810327105224133
+                          selfharm: 0.00017952796770259738
+                          health: 0.0002959570847451687
+                          financial: 7.9673009167891e-05
+                          law: 4.539786823443137e-05
+                          pii: 0.004198795650154352
         '422':
           description: Validation Error
           content:
@@ -1456,6 +1954,109 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OCRResponse'
+              examples:
+                userExample:
+                  value:
+                    pages:
+                      - index: 1
+                        markdown: '# LEVERAGING UNLABELED DATA TO PREDICT OUT-OF-DISTRIBUTION PERFORMANCE
+
+                          Saurabh Garg*<br> Carnegie Mellon University<br> sgarg2@andrew.cmu.edu<br> Sivaraman Balakrishnan<br> Carnegie Mellon University<br> sbalakri@andrew.cmu.edu<br> Zachary C. Lipton<br> Carnegie Mellon University<br> zlipton@andrew.cmu.edu
+
+                          ## Behnam Neyshabur
+
+                          Google Research, Blueshift team<br> neyshabur@google.com
+
+                          Hanie Sedghi<br> Google Research, Brain team<br> hsedghi@google.com
+
+                          #### Abstract
+
+                          Real-world machine learning deployments are characterized by mismatches between the source (training) and target (test) distributions that may cause performance drops. In this work, we investigate methods for predicting the target domain accuracy using only labeled source data and unlabeled target data. We propose Average Thresholded Confidence (ATC), a practical method that learns a threshold on the model''s confidence, predicting accuracy as the fraction of unlabeled examples for which model confidence exceeds that threshold. ATC outperforms previous methods across several model architectures, types of distribution shifts (e.g., due to synthetic corruptions, dataset reproduction, or novel subpopulations), and datasets (WILDS, ImageNet, BREEDS, CIFAR, and MNIST). In our experiments, ATC estimates target performance $2-4 \times$ more accurately than prior methods. We also explore the theoretical foundations of the problem, proving that, in general, identifying the accuracy is just as hard as identifying the optimal predictor and thus, the efficacy of any method rests upon (perhaps unstated) assumptions on the nature of the shift. Finally, analyzing our method on some toy distributions, we provide insights concerning when it works ${ }^{1}$.
+
+                          ## 1 INTRODUCTION
+
+                          Machine learning models deployed in the real world typically encounter examples from previously unseen distributions. While the IID assumption enables us to evaluate models using held-out data from the source distribution (from which training data is sampled), this estimate is no longer valid in presence of a distribution shift. Moreover, under such shifts, model accuracy tends to degrade (Szegedy et al., 2014; Recht et al., 2019; Koh et al., 2021). Commonly, the only data available to the practitioner are a labeled training set (source) and unlabeled deployment-time data which makes the problem more difficult. In this setting, detecting shifts in the distribution of covariates is known to be possible (but difficult) in theory (Ramdas et al., 2015), and in practice (Rabanser et al., 2018). However, producing an optimal predictor using only labeled source and unlabeled target data is well-known to be impossible absent further assumptions (Ben-David et al., 2010; Lipton et al., 2018).
+
+                          Two vital questions that remain are: (i) the precise conditions under which we can estimate a classifier''s target-domain accuracy; and (ii) which methods are most practically useful. To begin, the straightforward way to assess the performance of a model under distribution shift would be to collect labeled (target domain) examples and then to evaluate the model on that data. However, collecting fresh labeled data from the target distribution is prohibitively expensive and time-consuming, especially if the target distribution is non-stationary. Hence, instead of using labeled data, we aim to use unlabeled data from the target distribution, that is comparatively abundant, to predict model performance. Note that in this work, our focus is not to improve performance on the target but, rather, to estimate the accuracy on the target for a given classifier.
+
+                          [^0]: Work done in part while Saurabh Garg was interning at Google ${ }^{1}$ Code is available at [https://github.com/saurabhgarg1996/ATC_code](https://github.com/saurabhgarg1996/ATC_code).
+
+'
+                        images: []
+                        dimensions:
+                          dpi: 200
+                          height: 2200
+                          width: 1700
+                      - index: 2
+                        markdown: '![img-0.jpeg](img-0.jpeg)
+
+                          Figure 1: Illustration of our proposed method ATC. Left: using source domain validation data, we identify a threshold on a score (e.g. negative entropy) computed on model confidence such that fraction of examples above the threshold matches the validation set accuracy. ATC estimates accuracy on unlabeled target data as the fraction of examples with the score above the threshold. Interestingly, this threshold yields accurate estimates on a wide set of target distributions resulting from natural and synthetic shifts. Right: Efficacy of ATC over previously proposed approaches on our testbed with a post-hoc calibrated model. To obtain errors on the same scale, we rescale all errors with Average Confidence (AC) error. Lower estimation error is better. See Table 1 for exact numbers and comparison on various types of distribution shift. See Sec. 5 for details on our testbed.
+
+                          Recently, numerous methods have been proposed for this purpose (Deng & Zheng, 2021; Chen et al., 2021b; Jiang et al., 2021; Deng et al., 2021; Guillory et al., 2021). These methods either require calibration on the target domain to yield consistent estimates (Jiang et al., 2021; Guillory et al., 2021) or additional labeled data from several target domains to learn a linear regression function on a distributional distance that then predicts model performance (Deng et al., 2021; Deng & Zheng, 2021; Guillory et al., 2021). However, methods that require calibration on the target domain typically yield poor estimates since deep models trained and calibrated on source data are not, in general, calibrated on a (previously unseen) target domain (Ovadia et al., 2019). Besides, methods that leverage labeled data from target domains rely on the fact that unseen target domains exhibit strong linear correlation with seen target domains on the underlying distance measure and, hence, can be rendered ineffective when such target domains with labeled data are unavailable (in Sec. 5.1 we demonstrate such a failure on a real-world distribution shift problem). Therefore, throughout the paper, we assume access to labeled source data and only unlabeled data from target domain(s).
+
+                          In this work, we first show that absent assumptions on the source classifier or the nature of the shift, no method of estimating accuracy will work generally (even in non-contrived settings). To estimate accuracy on target domain perfectly, we highlight that even given perfect knowledge of the labeled source distribution (i.e., $p_{s}(x, y)$ ) and unlabeled target distribution (i.e., $p_{t}(x)$ ), we need restrictions on the nature of the shift such that we can uniquely identify the target conditional $p_{t}(y \mid x)$. Thus, in general, identifying the accuracy of the classifier is as hard as identifying the optimal predictor.
+
+                          Second, motivated by the superiority of methods that use maximum softmax probability (or logit) of a model for Out-Of-Distribution (OOD) detection (Hendrycks & Gimpel, 2016; Hendrycks et al., 2019), we propose a simple method that leverages softmax probability to predict model performance. Our method, Average Thresholded Confidence (ATC), learns a threshold on a score (e.g., maximum confidence or negative entropy) of model confidence on validation source data and predicts target domain accuracy as the fraction of unlabeled target points that receive a score above that threshold. ATC selects a threshold on validation source data such that the fraction of source examples that receive the score above the threshold match the accuracy of those examples. Our primary contribution in ATC is the proposal of obtaining the threshold and observing its efficacy on (practical) accuracy estimation. Importantly, our work takes a step forward in positively answering the question raised in Deng & Zheng (2021); Deng et al. (2021) about a practical strategy to select a threshold that enables accuracy prediction with thresholded model confidence.
+
+'
+                        images:
+                          - id: img-0.jpeg
+                            top_left_x: 292
+                            top_left_y: 217
+                            bottom_right_x: 1405
+                            bottom_right_y: 649
+                            image_base64: '...'
+                        dimensions:
+                          dpi: 200
+                          height: 2200
+                          width: 1700
+                      - index: 3
+                        markdown: '...'
+                        images: []
+                        dimensions: {}
+                      - index: 27
+                        markdown: '![img-8.jpeg](img-8.jpeg)
+
+                          Figure 9: Scatter plot of predicted accuracy versus (true) OOD accuracy for vision datasets except MNIST with a ResNet50 model. Results reported by aggregating MAE numbers over 4 different seeds.
+
+'
+                        images:
+                          - id: img-8.jpeg
+                            top_left_x: 290
+                            top_left_y: 226
+                            bottom_right_x: 1405
+                            bottom_right_y: 1834
+                            image_base64: '...'
+                        dimensions:
+                          dpi: 200
+                          height: 2200
+                          width: 1700
+                      - index: 28
+                        markdown: '| Dataset | Shift | IM |  | AC |  | DOC |  | GDE | ATC-MC (Ours) |  | ATC-NE (Ours) |  | | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | |  |  | Pre T | Post T | Pre T | Post T | Pre T | Post T | Post T | Pre T | Post T | Pre T | Post T | | CIFAR10 | Natural | 6.60 | 5.74 | 9.88 | 6.89 | 7.25 | 6.07 | 4.77 | 3.21 | 3.02 | 2.99 | 2.85 | |  |  | (0.35) | (0.30) | (0.16) | (0.13) | (0.15) | (0.16) | (0.13) | (0.49) | (0.40) | (0.37) | (0.29) | |  | Synthetic | 12.33 | 10.20 | 16.50 | 11.91 | 13.87 | 11.08 | 6.55 | 4.65 | 4.25 | 4.21 | 3.87 | |  |  | (0.51) | (0.48) | (0.26) | (0.17) | (0.18) | (0.17) | (0.35) | (0.55) | (0.55) | (0.55) | (0.75) | | CIFAR100 | Synthetic | 13.69 | 11.51 | 23.61 | 13.10 | 14.60 | 10.14 | 9.85 | 5.50 | 4.75 | 4.72 | 4.94 | |  |  | (0.55) | (0.41) | (1.16) | (0.80) | (0.77) | (0.64) | (0.57) | (0.70) | (0.73) | (0.74) | (0.74) | | ImageNet200 | Natural | 12.37 | 8.19 | 22.07 | 8.61 | 15.17 | 7.81 | 5.13 | 4.37 | 2.04 | 3.79 | 1.45 | |  |  | (0.25) | (0.33) | (0.08) | (0.25) | (0.11) | (0.29) | (0.08) | (0.39) | (0.24) | (0.30) | (0.27) | |  | Synthetic | 19.86 | 12.94 | 32.44 | 13.35 | 25.02 | 12.38 | 5.41 | 5.93 | 3.09 | 5.00 | 2.68 | |  |  | (1.38) | (1.81) | (1.00) | (1.30) | (1.10) | (1.38) | (0.89) | (1.38) | (0.87) | (1.28) | (0.45) | | ImageNet | Natural | 7.77 | 6.50 | 18.13 | 6.02 | 8.13 | 5.76 | 6.23 | 3.88 | 2.17 | 2.06 | 0.80 | |  |  | (0.27) | (0.33) | (0.23) | (0.34) | (0.27) | (0.37) | (0.41) | (0.53) | (0.62) | (0.54) | (0.44) | |  | Synthetic | 13.39 | 10.12 | 24.62 | 8.51 | 13.55 | 7.90 | 6.32 | 3.34 | 2.53 | 2.61 | 4.89 | |  |  | (0.53) | (0.63) | (0.64) | (0.71) | (0.61) | (0.72) | (0.33) | (0.53) | (0.36) | (0.33) | (0.83) | | FMoW-WILDS | Natural | 5.53 | 4.31 | 33.53 | 12.84 | 5.94 | 4.45 | 5.74 | 3.06 | 2.70 | 3.02 | 2.72 | |  |  | (0.33) | (0.63) | (0.13) | (12.06) | (0.36) | (0.77) | (0.55) | (0.36) | (0.54) | (0.35) | (0.44) | | RxRx1-WILDS | Natural | 5.80 | 5.72 | 7.90 | 4.84 | 5.98 | 5.98 | 6.03 | 4.66 | 4.56 | 4.41 | 4.47 | |  |  | (0.17) | (0.15) | (0.24) | (0.09) | (0.15) | (0.13) | (0.08) | (0.38) | (0.38) | (0.31) | (0.26) | | Amazon-WILDS | Natural | 2.40 | 2.29 | 8.01 | 2.38 | 2.40 | 2.28 | 17.87 | 1.65 | 1.62 | 1.60 | 1.59 | |  |  | (0.08) | (0.09) | (0.53) | (0.17) | (0.09) | (0.09) | (0.18) | (0.06) | (0.05) | (0.14) | (0.15) | | CivilCom.-WILDS | Natural | 12.64 | 10.80 | 16.76 | 11.03 | 13.31 | 10.99 | 16.65 |  | 7.14 |  |  | |  |  | (0.52) | (0.48) | (0.53) | (0.49) | (0.52) | (0.49) | (0.25) |  | (0.41) |  |  | | MNIST | Natural | 18.48 | 15.99 | 21.17 | 14.81 | 20.19 | 14.56 | 24.42 | 5.02 | 2.40 | 3.14 | 3.50 | |  |  | (0.45) | (1.53) | (0.24) | (3.89) | (0.23) | (3.47) | (0.41) | (0.44) | (1.83) | (0.49) | (0.17) | | ENTITY-13 | Same | 16.23 | 11.14 | 24.97 | 10.88 | 19.08 | 10.47 | 10.71 | 5.39 | 3.88 | 4.58 | 4.19 | |  |  | (0.77) | (0.65) | (0.70) | (0.77) | (0.65) | (0.72) | (0.74) | (0.92) | (0.61) | (0.85) | (0.16) | |  | Novel | 28.53 | 22.02 | 38.33 | 21.64 | 32.43 | 21.22 | 20.61 | 13.58 | 10.28 | 12.25 | 6.63 | |  |  | (0.82) | (0.68) | (0.75) | (0.86) | (0.69) | (0.80) | (0.60) | (1.15) | (1.34) | (1.21) | (0.93) | | ENTITY-30 | Same | 18.59 | 14.46 | 28.82 | 14.30 | 21.63 | 13.46 | 12.92 | 9.12 | 7.75 | 8.15 | 7.64 | |  |  | (0.51) | (0.52) | (0.43) | (0.71) | (0.37) | (0.59) | (0.14) | (0.62) | (0.72) | (0.68) | (0.88) | |  | Novel | 32.34 | 26.85 | 44.02 | 26.27 | 36.82 | 25.42 | 23.16 | 17.75 | 14.30 | 15.60 | 10.57 | |  |  | (0.60) | (0.58) | (0.56) | (0.79) | (0.47) | (0.68) | (0.12) | (0.76) | (0.85) | (0.86) | (0.86) | | NONLIVING-26 | Same | 18.66 | 17.17 | 26.39 | 16.14 | 19.86 | 15.58 | 16.63 | 10.87 | 10.24 | 10.07 | 10.26 | |  |  | (0.76) | (0.74) | (0.82) | (0.81) | (0.67) | (0.76) | (0.45) | (0.98) | (0.83) | (0.92) | (1.18) | |  | Novel | 33.43 | 31.53 | 41.66 | 29.87 | 35.13 | 29.31 | 29.56 | 21.70 | 20.12 | 19.08 | 18.26 | |  |  | (0.67) | (0.65) | (0.67) | (0.71) | (0.54) | (0.64) | (0.21) | (0.86) | (0.75) | (0.82) | (1.12) | | LIVING-17 | Same | 12.63 | 11.05 | 18.32 | 10.46 | 14.43 | 10.14 | 9.87 | 4.57 | 3.95 | 3.81 | 4.21 | |  |  | (1.25) | (1.20) | (1.01) | (1.12) | (1.11) | (1.16) | (0.61) | (0.71) | (0.48) | (0.22) | (0.53) | |  | Novel | 29.03 | 26.96 | 35.67 | 26.11 | 31.73 | 25.73 | 23.53 | 16.15 | 14.49 | 12.97 | 11.39 | |  |  | (1.44) | (1.38) | (1.09) | (1.27) | (1.19) | (1.35) | (0.52) | (1.36) | (1.46) | (1.52) | (1.72) |
+
+                          Table 3: Mean Absolute estimation Error (MAE) results for different datasets in our setup grouped by the nature of shift. ''Same'' refers to same subpopulation shifts and ''Novel'' refers novel subpopulation shifts. We include details about the target sets considered in each shift in Table 2. Post T denotes use of TS calibration on source. For language datasets, we use DistilBERT-base-uncased, for vision dataset we report results with DenseNet model with the exception of MNIST where we use FCN. Across all datasets, we observe that ATC achieves superior performance (lower MAE is better). For GDE post T and pre T estimates match since TS doesn''t alter the argmax prediction. Results reported by aggregating MAE numbers over 4 different seeds. Values in parenthesis (i.e., $(\cdot)$ ) denote standard deviation values.
+
+'
+                        images: []
+                        dimensions:
+                          dpi: 200
+                          height: 2200
+                          width: 1700
+                      - index: 29
+                        markdown: '| Dataset | Shift | IM |  | AC |  | DOC |  | GDE | ATC-MC (Ours) |  | ATC-NE (Ours) |  | | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | |  |  | Pre T | Post T | Pre T | Post T | Pre T | Post T | Post T | Pre T | Post T | Pre T | Post T | | CIFAR10 | Natural | 7.14 | 6.20 | 10.25 | 7.06 | 7.68 | 6.35 | 5.74 | 4.02 | 3.85 | 3.76 | 3.38 | |  |  | (0.14) | (0.11) | (0.31) | (0.33) | (0.28) | (0.27) | (0.25) | (0.38) | (0.30) | (0.33) | (0.32) | |  | Synthetic | 12.62 | 10.75 | 16.50 | 11.91 | 13.93 | 11.20 | 7.97 | 5.66 | 5.03 | 4.87 | 3.63 | |  |  | (0.76) | (0.71) | (0.28) | (0.24) | (0.29) | (0.28) | (0.13) | (0.64) | (0.71) | (0.71) | (0.62) | | CIFAR100 | Synthetic | 12.77 | 12.34 | 16.89 | 12.73 | 11.18 | 9.63 | 12.00 | 5.61 | 5.55 | 5.65 | 5.76 | |  |  | (0.43) | (0.68) | (0.20) | (2.59) | (0.35) | (1.25) | (0.48) | (0.51) | (0.55) | (0.35) | (0.27) | | ImageNet200 | Natural | 12.63 | 7.99 | 23.08 | 7.22 | 15.40 | 6.33 | 5.00 | 4.60 | 1.80 | 4.06 | 1.38 | |  |  | (0.59) | (0.47) | (0.31) | (0.22) | (0.42) | (0.24) | (0.36) | (0.63) | (0.17) | (0.69) | (0.29) | |  | Synthetic | 20.17 | 11.74 | 33.69 | 9.51 | 25.49 | 8.61 | 4.19 | 5.37 | 2.78 | 4.53 | 3.58 | |  |  | (0.74) | (0.80) | (0.73) | (0.51) | (0.66) | (0.50) | (0.14) | (0.88) | (0.23) | (0.79) | (0.33) | | ImageNet | Natural | 8.09 | 6.42 | 21.66 | 5.91 | 8.53 | 5.21 | 5.90 | 3.93 | 1.89 | 2.45 | 0.73 | |  |  | (0.25) | (0.28) | (0.38) | (0.22) | (0.26) | (0.25) | (0.44) | (0.26) | (0.21) | (0.16) | (0.10) | |  | Synthetic | 13.93 | 9.90 | 28.05 | 7.56 | 13.82 | 6.19 | 6.70 | 3.33 | 2.55 | 2.12 | 5.06 | |  |  | (0.14) | (0.23) | (0.39) | (0.13) | (0.31) | (0.07) | (0.52) | (0.25) | (0.25) | (0.31) | (0.27) | | FMoW-WILDS | Natural | 5.15 | 3.55 | 34.64 | 5.03 | 5.58 | 3.46 | 5.08 | 2.59 | 2.33 | 2.52 | 2.22 | |  |  | (0.19) | (0.41) | (0.22) | (0.29) | (0.17) | (0.37) | (0.46) | (0.32) | (0.28) | (0.25) | (0.30) | | RxRx1-WILDS | Natural | 6.17 | 6.11 | 21.05 | 5.21 | 6.54 | 6.27 | 6.82 | 5.30 | 5.20 | 5.19 | 5.63 | |  |  | (0.20) | (0.24) | (0.31) | (0.18) | (0.21) | (0.20) | (0.31) | (0.30) | (0.44) | (0.43) | (0.55) | | Entity-13 | Same | 18.32 | 14.38 | 27.79 | 13.56 | 20.50 | 13.22 | 16.09 | 9.35 | 7.50 | 7.80 | 6.94 | |  |  | (0.29) | (0.53) | (1.18) | (0.58) | (0.47) | (0.58) | (0.84) | (0.79) | (0.65) | (0.62) | (0.71) | |  | Novel | 28.82 | 24.03 | 38.97 | 22.96 | 31.66 | 22.61 | 25.26 | 17.11 | 13.96 | 14.75 | 9.94 | |  |  | (0.30) | (0.55) | (1.32) | (0.59) | (0.54) | (0.58) | (1.08) | (0.93) | (0.64) | (0.78) |  | | Entity-30 | Same | 16.91 | 14.61 | 26.84 | 14.37 | 18.60 | 13.11 | 13.74 | 8.54 | 7.94 | 7.77 | 8.04 | |  |  | (1.33) | (1.11) | (2.15) | (1.34) | (1.69) | (1.30) | (1.07) | (1.47) | (1.38) | (1.44) | (1.51) | |  | Novel | 28.66 | 25.83 | 39.21 | 25.03 | 30.95 | 23.73 | 23.15 | 15.57 | 13.24 | 12.44 | 11.05 | |  |  | (1.16) | (0.88) | (2.03) | (1.11) | (1.64) | (1.11) | (0.51) | (1.44) | (1.15) | (1.26) | (1.13) | | NonLIVING-26 | Same | 17.43 | 15.95 | 27.70 | 15.40 | 18.06 | 14.58 | 16.99 | 10.79 | 10.13 | 10.05 | 10.29 | |  |  | (0.90) | (0.86) | (0.90) | (0.69) | (1.00) | (0.78) | (1.25) | (0.62) | (0.32) | (0.46) | (0.79) | |  | Novel | 29.51 | 27.75 | 40.02 | 26.77 | 30.36 | 25.93 | 27.70 | 19.64 | 17.75 | 16.90 | 15.69 | |  |  | (0.86) | (0.82) | (0.76) | (0.82) | (0.95) | (0.80) | (1.42) | (0.68) | (0.53) | (0.60) | (0.83) | | LIVING-17 | Same | 14.28 | 12.21 | 23.46 | 11.16 | 15.22 | 10.78 | 10.49 | 4.92 | 4.23 | 4.19 | 4.73 | |  |  | (0.96) | (0.93) | (1.16) | (0.90) | (0.96) | (0.99) | (0.97) | (0.57) | (0.42) | (0.35) | (0.24) | |  | Novel | 28.91 | 26.35 | 38.62 | 24.91 | 30.32 | 24.52 | 22.49 | 15.42 | 13.02 | 12.29 | 10.34 | |  |  | (0.66) | (0.73) | (1.01) | (0.61) | (0.59) | (0.74) | (0.85) | (0.59) | (0.53) | (0.73) | (0.62) |
+
+                          Table 4: Mean Absolute estimation Error (MAE) results for different datasets in our setup grouped by the nature of shift for ResNet model. ''Same'' refers to same subpopulation shifts and ''Novel'' refers novel subpopulation shifts. We include details about the target sets considered in each shift in Table 2. Post T denotes use of TS calibration on source. Across all datasets, we observe that ATC achieves superior performance (lower MAE is better). For GDE post T and pre T estimates match since TS doesn''t alter the argmax prediction. Results reported by aggregating MAE numbers over 4 different seeds. Values in parenthesis (i.e., $(\cdot)$ ) denote standard deviation values.
+
+'
+                        images: []
+                        dimensions:
+                          dpi: 200
+                          height: 2200
+                          width: 1700
+                    model: mistral-ocr-2503-completion
+                    usage_info:
+                      pages_processed: 29
+                      doc_size_bytes: null
         '422':
           description: Validation Error
           content:
@@ -1531,11 +2132,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TranscriptionResponse'
+              examples:
+                userExample:
+                  value:
+                    model: voxtral-mini-2507
+                    text: "This week, I traveled to Chicago to deliver my final farewell address to the nation, following in the tradition of presidents before me. It was an opportunity to say thank you. Whether we've seen eye to eye or rarely agreed at all, my conversations with you, the American people, in living rooms, in schools, at farms and on factory floors, at diners and on distant military outposts, All these conversations are what have kept me honest, kept me inspired, and kept me going. Every day, I learned from you. You made me a better President, and you made me a better man.\nOver the course of these eight years, I've seen the goodness, the resilience, and the hope of the American people. I've seen neighbors looking out for each other as we rescued our economy from the worst crisis of our lifetimes. I've hugged cancer survivors who finally know the security of affordable health care. I've seen communities like Joplin rebuild from disaster, and cities like Boston show the world that no terrorist will ever break the American spirit. I've seen the hopeful faces of young graduates and our newest military officers. I've mourned with grieving families searching for answers. And I found grace in a Charleston church. I've seen our scientists help a paralyzed man regain his sense of touch, and our wounded warriors walk again. I've seen our doctors and volunteers rebuild after earthquakes and stop pandemics in their tracks. I've learned from students who are building robots and curing diseases, and who will change the world in ways we can't even imagine. I've seen the youngest of children remind us of our obligations to care for our refugees, to work in peace, and above all, to look out for each other.\nThat's what's possible when we come together in the slow, hard, sometimes frustrating, but always vital work of self-government. But we can't take our democracy for granted. All of us, regardless of party, should throw ourselves into the work of citizenship. Not just when there is an election. Not just when our own narrow interest is at stake. But over the full span of a lifetime. If you're tired of arguing with strangers on the Internet, try to talk with one in real life. If something needs fixing, lace up your shoes and do some organizing. If you're disappointed by your elected officials, then grab a clipboard, get some signatures, and run for office yourself.\nOur success depends on our participation, regardless of which way the pendulum of power swings. It falls on each of us to be guardians of our democracy, to embrace the joyous task we've been given to continually try to improve this great nation of ours. Because for all our outward differences, we all share the same proud title – citizen.\nIt has been the honor of my life to serve you as President. Eight years later, I am even more optimistic about our country's promise. And I look forward to working along your side as a citizen for all my days that remain.\nThanks, everybody. God bless you. And God bless the United States of America.\n"
+                    language: en
+                    segments: []
+                    usage:
+                      prompt_audio_seconds: 203
+                      prompt_tokens: 4
+                      total_tokens: 3264
+                      completion_tokens: 635
       tags:
         - audio.transcriptions
   /v1/audio/transcriptions#stream:
     post:
-      summary: Create streaming transcription (SSE)
+      summary: Create Streaming Transcription (SSE)
       operationId: audio_api_v1_transcriptions_post_stream
       requestBody:
         content:
@@ -1568,10 +2181,7 @@ paths:
         - beta.libraries
     post:
       summary: Create a new Library.
-      description: >-
-        Create a new Library, you will be marked as the owner and only you will
-        have the possibility to share it with others. When first created this
-        will only be accessible by you.
+      description: Create a new Library, you will be marked as the owner and only you will have the possibility to share it with others. When first created this will only be accessible by you.
       operationId: libraries_create_v1
       requestBody:
         content:
@@ -1624,9 +2234,7 @@ paths:
         - beta.libraries
     delete:
       summary: Delete a library and all of it's document.
-      description: >-
-        Given a library id, deletes it together with all documents that have
-        been uploaded to that library.
+      description: Given a library id, deletes it together with all documents that have been uploaded to that library.
       operationId: libraries_delete_v1
       parameters:
         - name: library_id
@@ -1686,10 +2294,8 @@ paths:
         - beta.libraries
   /v1/libraries/{library_id}/documents:
     get:
-      summary: List document in a given library.
-      description: >-
-        Given a library, lists the document that have been uploaded to that
-        library.
+      summary: List documents in a given library.
+      description: Given a library, lists the document that have been uploaded to that library.
       operationId: libraries_documents_list_v1
       parameters:
         - name: library_id
@@ -1712,6 +2318,8 @@ paths:
           required: false
           schema:
             type: integer
+            maximum: 100
+            minimum: 1
             default: 100
             title: Page Size
         - name: page
@@ -1719,8 +2327,17 @@ paths:
           required: false
           schema:
             type: integer
+            minimum: 0
             default: 0
             title: Page
+        - name: filters_attributes
+          in: query
+          required: false
+          schema:
+            anyOf:
+              - type: string
+              - type: 'null'
+            title: Filters Attributes
         - name: sort_by
           in: query
           required: false
@@ -1752,10 +2369,7 @@ paths:
         - beta.libraries.documents
     post:
       summary: Upload a new document.
-      description: >-
-        Given a library, upload a new document to that library. It is queued for
-        processing, it status will change it has been processed. The processing
-        has to be completed in order be discoverable for the library search
+      description: Given a library, upload a new document to that library. It is queued for processing, it status will change it has been processed. The processing has to be completed in order be discoverable for the library search
       operationId: libraries_documents_upload_v1
       parameters:
         - name: library_id
@@ -1777,138 +2391,31 @@ paths:
                   $ref: '#/components/schemas/File'
               required:
                 - file
+      tags:
+        - beta.libraries.documents
       responses:
-        '200':
-          description: >-
-            A document with the same hash was found in this library. Returns the
-            existing document.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DocumentOut'
         '201':
           description: Upload successful, returns the created document information's.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DocumentOut'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      tags:
-        - beta.libraries.documents
-  /v1/libraries/{library_id}/share:
-    get:
-      summary: List all of the access to this library.
-      description: >-
-        Given a library, list all of the Entity that have access and to what
-        level.
-      operationId: libraries_share_list_v1
-      parameters:
-        - name: library_id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-            title: Library Id
-      responses:
         '200':
-          description: Successful Response
+          description: A document with the same hash was found in this library. Returns the existing document.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListSharingOut'
+                $ref: '#/components/schemas/DocumentOut'
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-      tags:
-        - beta.libraries.accesses
-    put:
-      summary: Create or update an access level.
-      description: >-
-        Given a library id, you can create or update the access level of an
-        entity. You have to be owner of the library to share a library. An owner
-        cannot change their own role. A library cannot be shared outside of the
-        organization.
-      operationId: libraries_share_create_v1
-      parameters:
-        - name: library_id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-            title: Library Id
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SharingIn'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SharingOut'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      tags:
-        - beta.libraries.accesses
-    delete:
-      summary: Delete an access level.
-      description: >-
-        Given a library id, you can delete the access level of an entity. An
-        owner cannot delete it's own access. You have to be the owner of the
-        library to delete an acces other than yours.
-      operationId: libraries_share_delete_v1
-      parameters:
-        - name: library_id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-            title: Library Id
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SharingDelete'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SharingOut'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      tags:
-        - beta.libraries.accesses
   /v1/libraries/{library_id}/documents/{document_id}:
     get:
       summary: Retrieve the metadata of a specific document.
-      description: >-
-        Given a library and a document in this library, you can retrieve the
-        metadata of that document.
+      description: Given a library and a document in this library, you can retrieve the metadata of that document.
       operationId: libraries_documents_get_v1
       parameters:
         - name: library_id
@@ -1942,9 +2449,7 @@ paths:
         - beta.libraries.documents
     put:
       summary: Update the metadata of a specific document.
-      description: >-
-        Given a library and a document in that library, update the name of that
-        document.
+      description: Given a library and a document in that library, update the name of that document.
       operationId: libraries_documents_update_v1
       parameters:
         - name: library_id
@@ -1984,9 +2489,7 @@ paths:
         - beta.libraries.documents
     delete:
       summary: Delete a document.
-      description: >-
-        Given a library and a document in that library, delete that document.
-        The document will be deleted from the library and the search index.
+      description: Given a library and a document in that library, delete that document. The document will be deleted from the library and the search index.
       operationId: libraries_documents_delete_v1
       parameters:
         - name: library_id
@@ -2017,10 +2520,7 @@ paths:
   /v1/libraries/{library_id}/documents/{document_id}/text_content:
     get:
       summary: Retrieve the text content of a specific document.
-      description: >-
-        Given a library and a document in that library, you can retrieve the
-        text content of that document if it exists. For documents like pdf, docx
-        and pptx the text content results from our processing using Mistral OCR.
+      description: Given a library and a document in that library, you can retrieve the text content of that document if it exists. For documents like pdf, docx and pptx the text content results from our processing using Mistral OCR.
       operationId: libraries_documents_get_text_content_v1
       parameters:
         - name: library_id
@@ -2055,9 +2555,7 @@ paths:
   /v1/libraries/{library_id}/documents/{document_id}/status:
     get:
       summary: Retrieve the processing status of a specific document.
-      description: >-
-        Given a library and a document in that library, retrieve the processing
-        status of that document.
+      description: Given a library and a document in that library, retrieve the processing status of that document.
       operationId: libraries_documents_get_status_v1
       parameters:
         - name: library_id
@@ -2092,10 +2590,7 @@ paths:
   /v1/libraries/{library_id}/documents/{document_id}/signed-url:
     get:
       summary: Retrieve the signed URL of a specific document.
-      description: >-
-        Given a library and a document in that library, retrieve the signed URL
-        of a specific document.The url will expire after 30 minutes and can be
-        accessed by anyone with the link.
+      description: Given a library and a document in that library, retrieve the signed URL of a specific document.The url will expire after 30 minutes and can be accessed by anyone with the link.
       operationId: libraries_documents_get_signed_url_v1
       parameters:
         - name: library_id
@@ -2119,7 +2614,7 @@ paths:
             application/json:
               schema:
                 type: string
-                title: Response V1 Libraries Documents Get Signed Url
+                title: Response Libraries Documents Get Signed Url V1
         '422':
           description: Validation Error
           content:
@@ -2131,10 +2626,7 @@ paths:
   /v1/libraries/{library_id}/documents/{document_id}/extracted-text-signed-url:
     get:
       summary: Retrieve the signed URL of text extracted from a given document.
-      description: >-
-        Given a library and a document in that library, retrieve the signed URL
-        of text extracted. For documents that are sent to the OCR this returns
-        the result of the OCR queries.
+      description: Given a library and a document in that library, retrieve the signed URL of text extracted. For documents that are sent to the OCR this returns the result of the OCR queries.
       operationId: libraries_documents_get_extracted_text_signed_url_v1
       parameters:
         - name: library_id
@@ -2158,7 +2650,7 @@ paths:
             application/json:
               schema:
                 type: string
-                title: Response V1 Libraries Documents Get Extracted Text Signed Url
+                title: Response Libraries Documents Get Extracted Text Signed Url V1
         '422':
           description: Validation Error
           content:
@@ -2170,9 +2662,7 @@ paths:
   /v1/libraries/{library_id}/documents/{document_id}/reprocess:
     post:
       summary: Reprocess a document.
-      description: >-
-        Given a library and a document in that library, reprocess that document,
-        it will be billed again.
+      description: Given a library and a document in that library, reprocess that document, it will be billed again.
       operationId: libraries_documents_reprocess_v1
       parameters:
         - name: library_id
@@ -2200,6 +2690,100 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
       tags:
         - beta.libraries.documents
+  /v1/libraries/{library_id}/share:
+    get:
+      summary: List all of the access to this library.
+      description: Given a library, list all of the Entity that have access and to what level.
+      operationId: libraries_share_list_v1
+      parameters:
+        - name: library_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Library Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListSharingOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - beta.libraries.accesses
+    put:
+      summary: Create or update an access level.
+      description: Given a library id, you can create or update the access level of an entity. You have to be owner of the library to share a library. An owner cannot change their own role. A library cannot be shared outside of the organization.
+      operationId: libraries_share_create_v1
+      parameters:
+        - name: library_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Library Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharingIn'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharingOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - beta.libraries.accesses
+    delete:
+      summary: Delete an access level.
+      description: Given a library id, you can delete the access level of an entity. An owner cannot delete it's own access. You have to be the owner of the library to delete an acces other than yours.
+      operationId: libraries_share_delete_v1
+      parameters:
+        - name: library_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Library Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharingDelete'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharingOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      tags:
+        - beta.libraries.accesses
 components:
   schemas:
     BaseModelCard:
@@ -2385,15 +2969,15 @@ components:
         completion_chat:
           type: boolean
           title: Completion Chat
-          default: true
-        completion_fim:
-          type: boolean
-          title: Completion Fim
           default: false
         function_calling:
           type: boolean
           title: Function Calling
-          default: true
+          default: false
+        completion_fim:
+          type: boolean
+          title: Completion Fim
+          default: false
         fine_tuning:
           type: boolean
           title: Fine Tuning
@@ -2402,9 +2986,25 @@ components:
           type: boolean
           title: Vision
           default: false
+        ocr:
+          type: boolean
+          title: Ocr
+          default: false
         classification:
           type: boolean
           title: Classification
+          default: false
+        moderation:
+          type: boolean
+          title: Moderation
+          default: false
+        audio:
+          type: boolean
+          title: Audio
+          default: false
+        audio_transcription:
+          type: boolean
+          title: Audio Transcription
           default: false
       type: object
       title: ModelCapabilities
@@ -2477,14 +3077,10 @@ components:
                 web_search_premium: '#/components/schemas/WebSearchPremiumTool'
           type: array
           title: Tools
-          description: >-
-            List of tools which are available to the model during the
-            conversation.
+          description: List of tools which are available to the model during the conversation.
         completion_args:
           $ref: '#/components/schemas/CompletionArgs'
-          description: >-
-            Completion arguments that will be used to generate assistant
-            responses. Can be overridden at each message request.
+          description: Completion arguments that will be used to generate assistant responses. Can be overridden at each message request.
         model:
           type: string
           title: Model
@@ -2504,6 +3100,10 @@ components:
               minItems: 1
             - type: 'null'
           title: Handoffs
+        metadata:
+          anyOf:
+            - $ref: '#/components/schemas/MetadataDict'
+            - type: 'null'
         object:
           type: string
           enum:
@@ -2513,6 +3113,46 @@ components:
         id:
           type: string
           title: Id
+        version:
+          type: integer
+          title: Version
+        versions:
+          items:
+            type: integer
+          type: array
+          title: Versions
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+        deployment_chat:
+          type: boolean
+          title: Deployment Chat
+        source:
+          type: string
+          title: Source
+      additionalProperties: false
+      type: object
+      required:
+        - model
+        - name
+        - id
+        - version
+        - versions
+        - created_at
+        - updated_at
+        - deployment_chat
+        - source
+      title: Agent
+    AgentAliasResponse:
+      properties:
+        alias:
+          type: string
+          title: Alias
         version:
           type: integer
           title: Version
@@ -2527,13 +3167,11 @@ components:
       additionalProperties: false
       type: object
       required:
-        - model
-        - name
-        - id
+        - alias
         - version
         - created_at
         - updated_at
-      title: Agent
+      title: AgentAliasResponse
     AgentConversation:
       properties:
         name:
@@ -2548,6 +3186,11 @@ components:
             - type: 'null'
           title: Description
           description: Description of the what the conversation is about.
+        metadata:
+          anyOf:
+            - $ref: '#/components/schemas/MetadataDict'
+            - type: 'null'
+          description: Custom metadata for the conversation.
         object:
           type: string
           enum:
@@ -2568,6 +3211,12 @@ components:
         agent_id:
           type: string
           title: Agent Id
+        agent_version:
+          anyOf:
+            - type: string
+            - type: integer
+            - type: 'null'
+          title: Agent Version
       additionalProperties: false
       type: object
       required:
@@ -2604,14 +3253,10 @@ components:
                 web_search_premium: '#/components/schemas/WebSearchPremiumTool'
           type: array
           title: Tools
-          description: >-
-            List of tools which are available to the model during the
-            conversation.
+          description: List of tools which are available to the model during the conversation.
         completion_args:
           $ref: '#/components/schemas/CompletionArgs'
-          description: >-
-            Completion arguments that will be used to generate assistant
-            responses. Can be overridden at each message request.
+          description: Completion arguments that will be used to generate assistant responses. Can be overridden at each message request.
         model:
           type: string
           title: Model
@@ -2631,6 +3276,10 @@ components:
               minItems: 1
             - type: 'null'
           title: Handoffs
+        metadata:
+          anyOf:
+            - $ref: '#/components/schemas/MetadataDict'
+            - type: 'null'
       additionalProperties: false
       type: object
       required:
@@ -2712,14 +3361,10 @@ components:
                 web_search_premium: '#/components/schemas/WebSearchPremiumTool'
           type: array
           title: Tools
-          description: >-
-            List of tools which are available to the model during the
-            conversation.
+          description: List of tools which are available to the model during the conversation.
         completion_args:
           $ref: '#/components/schemas/CompletionArgs'
-          description: >-
-            Completion arguments that will be used to generate assistant
-            responses. Can be overridden at each message request.
+          description: Completion arguments that will be used to generate assistant responses. Can be overridden at each message request.
         model:
           anyOf:
             - type: string
@@ -2743,6 +3388,15 @@ components:
               minItems: 1
             - type: 'null'
           title: Handoffs
+        deployment_chat:
+          anyOf:
+            - type: boolean
+            - type: 'null'
+          title: Deployment Chat
+        metadata:
+          anyOf:
+            - $ref: '#/components/schemas/MetadataDict'
+            - type: 'null'
       additionalProperties: false
       type: object
       title: AgentUpdateRequest
@@ -2950,9 +3604,9 @@ components:
           title: Strict
           default: false
         parameters:
+          additionalProperties: true
           type: object
           title: Parameters
-          additionalProperties: true
       additionalProperties: false
       type: object
       required:
@@ -3096,9 +3750,9 @@ components:
             - type: 'null'
           title: Description
         schema:
+          additionalProperties: true
           type: object
           title: Schema
-          additionalProperties: true
           x-speakeasy-name-override: schema_definition
         strict:
           type: boolean
@@ -3212,6 +3866,11 @@ components:
       required:
         - content
       title: MessageOutputEntry
+    MetadataDict:
+      additionalProperties: true
+      type: object
+      title: MetadataDict
+      description: Custom type for metadata with embedded validation.
     ModelConversation:
       properties:
         instructions:
@@ -3240,14 +3899,10 @@ components:
                 web_search_premium: '#/components/schemas/WebSearchPremiumTool'
           type: array
           title: Tools
-          description: >-
-            List of tools which are available to the model during the
-            conversation.
+          description: List of tools which are available to the model during the conversation.
         completion_args:
           $ref: '#/components/schemas/CompletionArgs'
-          description: >-
-            Completion arguments that will be used to generate assistant
-            responses. Can be overridden at each message request.
+          description: Completion arguments that will be used to generate assistant responses. Can be overridden at each message request.
         name:
           anyOf:
             - type: string
@@ -3260,6 +3915,11 @@ components:
             - type: 'null'
           title: Description
           description: Description of the what the conversation is about.
+        metadata:
+          anyOf:
+            - $ref: '#/components/schemas/MetadataDict'
+            - type: 'null'
+          description: Custom metadata for the conversation.
         object:
           type: string
           enum:
@@ -3302,6 +3962,14 @@ components:
       additionalProperties: false
       type: object
       title: Prediction
+      description: Enable users to specify an expected completion, optimizing response times by leveraging known or predictable content.
+    RequestSource:
+      type: string
+      title: RequestSource
+      enum:
+        - api
+        - playground
+        - agent_builder_v1
     ResponseFormat:
       properties:
         type:
@@ -3314,6 +3982,30 @@ components:
       additionalProperties: false
       type: object
       title: ResponseFormat
+      description: 'Specify the format that the model must output. By default it will use `{ "type": "text" }`. Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the message the model generates is in JSON. When using JSON mode you MUST also instruct the model to produce JSON yourself with a system or a user message. Setting to `{ "type": "json_schema" }` enables JSON schema mode, which guarantees the message the model generates is in JSON and follows the schema you provide.'
+      examples:
+        - type: text
+        - type: json_object
+        - type: json_schema
+          json_schema:
+            schema:
+              properties:
+                name:
+                  title: Name
+                  type: string
+                authors:
+                  items:
+                    type: string
+                  title: Authors
+                  type: array
+              required:
+                - name
+                - authors
+              title: Book
+              type: object
+              additionalProperties: false
+            name: book
+            strict: true
     ResponseFormats:
       type: string
       enum:
@@ -3321,12 +4013,6 @@ components:
         - json_object
         - json_schema
       title: ResponseFormats
-      description: >-
-        An object specifying the format that the model must output. Setting to
-        `{ "type": "json_object" }` enables JSON mode, which guarantees the
-        message the model generates is in JSON. When using JSON mode you MUST
-        also instruct the model to produce JSON yourself with a system or a user
-        message.
     TextChunk:
       properties:
         text:
@@ -3343,6 +4029,31 @@ components:
       required:
         - text
       title: TextChunk
+    ThinkChunk:
+      properties:
+        thinking:
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/ReferenceChunk'
+              - $ref: '#/components/schemas/TextChunk'
+          type: array
+          title: Thinking
+        closed:
+          type: boolean
+          title: Closed
+          description: Whether the thinking chunk is closed or not. Currently only used for prefixing.
+          default: true
+        type:
+          type: string
+          enum:
+            - thinking
+          title: Type
+          default: thinking
+      additionalProperties: false
+      type: object
+      required:
+        - thinking
+      title: ThinkChunk
     ToolChoiceEnum:
       type: string
       enum:
@@ -3379,7 +4090,10 @@ components:
           type: string
           title: Id
         name:
-          $ref: '#/components/schemas/BuiltInConnectors'
+          anyOf:
+            - $ref: '#/components/schemas/BuiltInConnectors'
+            - type: string
+          title: Name
         arguments:
           type: string
           title: Arguments
@@ -3400,7 +4114,10 @@ components:
           title: Type
           default: tool_file
         tool:
-          $ref: '#/components/schemas/BuiltInConnectors'
+          anyOf:
+            - $ref: '#/components/schemas/BuiltInConnectors'
+            - type: string
+          title: Tool
         file_id:
           type: string
           title: File Id
@@ -3429,7 +4146,10 @@ components:
           title: Type
           default: tool_reference
         tool:
-          $ref: '#/components/schemas/BuiltInConnectors'
+          anyOf:
+            - $ref: '#/components/schemas/BuiltInConnectors'
+            - type: string
+          title: Tool
         title:
           type: string
           title: Title
@@ -3495,17 +4215,15 @@ components:
           anyOf:
             - type: integer
             - type: 'null'
-          default: null
+          default:
           title: Connector Tokens
         connectors:
           anyOf:
             - additionalProperties:
                 type: integer
-              propertyNames:
-                $ref: '#/components/schemas/BuiltInConnectors'
               type: object
             - type: 'null'
-          default: null
+          default:
           title: Connectors
       title: ConversationUsageInfo
       type: object
@@ -3677,13 +4395,13 @@ components:
           anyOf:
             - type: string
             - type: 'null'
-          default: null
+          default:
           title: Model
         agent_id:
           anyOf:
             - type: string
             - type: 'null'
-          default: null
+          default:
           title: Agent Id
         role:
           default: assistant
@@ -3800,7 +4518,10 @@ components:
           title: Id
           type: string
         name:
-          $ref: '#/components/schemas/BuiltInConnectors'
+          anyOf:
+            - $ref: '#/components/schemas/BuiltInConnectors'
+            - type: string
+          title: Name
         arguments:
           title: Arguments
           type: string
@@ -3831,7 +4552,10 @@ components:
           title: Id
           type: string
         name:
-          $ref: '#/components/schemas/BuiltInConnectors'
+          anyOf:
+            - $ref: '#/components/schemas/BuiltInConnectors'
+            - type: string
+          title: Name
         info:
           $ref: '#/components/schemas/ToolExecutionInfo'
       title: ToolExecutionDoneEvent
@@ -3860,7 +4584,10 @@ components:
           title: Id
           type: string
         name:
-          $ref: '#/components/schemas/BuiltInConnectors'
+          anyOf:
+            - $ref: '#/components/schemas/BuiltInConnectors'
+            - type: string
+          title: Name
         arguments:
           title: Arguments
           type: string
@@ -3912,6 +4639,7 @@ components:
           - $ref: '#/components/schemas/ImageURLChunk'
           - $ref: '#/components/schemas/ToolFileChunk'
           - $ref: '#/components/schemas/DocumentURLChunk'
+          - $ref: '#/components/schemas/ThinkChunk'
       type: array
       title: MessageInputContentChunks
     MessageOutputContentChunks:
@@ -3921,6 +4649,7 @@ components:
           - $ref: '#/components/schemas/ImageURLChunk'
           - $ref: '#/components/schemas/ToolFileChunk'
           - $ref: '#/components/schemas/DocumentURLChunk'
+          - $ref: '#/components/schemas/ThinkChunk'
           - $ref: '#/components/schemas/ToolReferenceChunk'
       type: array
       title: MessageOutputContentChunks
@@ -3930,6 +4659,7 @@ components:
         - $ref: '#/components/schemas/ImageURLChunk'
         - $ref: '#/components/schemas/ToolFileChunk'
         - $ref: '#/components/schemas/DocumentURLChunk'
+        - $ref: '#/components/schemas/ThinkChunk'
         - $ref: '#/components/schemas/ToolReferenceChunk'
       title: OutputContentChunks
     MessageEntries:
@@ -3981,13 +4711,13 @@ components:
           anyOf:
             - type: boolean
             - type: 'null'
-          default: null
+          default:
           title: Stream
         store:
           anyOf:
             - type: boolean
             - type: 'null'
-          default: null
+          default:
           title: Store
         handoff_execution:
           anyOf:
@@ -3996,65 +4726,75 @@ components:
                 - server
               type: string
             - type: 'null'
-          default: null
+          default:
           title: Handoff Execution
         instructions:
           anyOf:
             - type: string
             - type: 'null'
-          default: null
+          default:
           title: Instructions
         tools:
-          anyOf:
-            - items:
-                discriminator:
-                  mapping:
-                    code_interpreter: '#/components/schemas/CodeInterpreterTool'
-                    document_library: '#/components/schemas/DocumentLibraryTool'
-                    function: '#/components/schemas/FunctionTool'
-                    image_generation: '#/components/schemas/ImageGenerationTool'
-                    web_search: '#/components/schemas/WebSearchTool'
-                    web_search_premium: '#/components/schemas/WebSearchPremiumTool'
-                  propertyName: type
-                oneOf:
-                  - $ref: '#/components/schemas/FunctionTool'
-                  - $ref: '#/components/schemas/WebSearchTool'
-                  - $ref: '#/components/schemas/WebSearchPremiumTool'
-                  - $ref: '#/components/schemas/CodeInterpreterTool'
-                  - $ref: '#/components/schemas/ImageGenerationTool'
-                  - $ref: '#/components/schemas/DocumentLibraryTool'
-              type: array
-            - type: 'null'
-          default: null
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/FunctionTool'
+              - $ref: '#/components/schemas/WebSearchTool'
+              - $ref: '#/components/schemas/WebSearchPremiumTool'
+              - $ref: '#/components/schemas/CodeInterpreterTool'
+              - $ref: '#/components/schemas/ImageGenerationTool'
+              - $ref: '#/components/schemas/DocumentLibraryTool'
+            discriminator:
+              propertyName: type
+              mapping:
+                code_interpreter: '#/components/schemas/CodeInterpreterTool'
+                document_library: '#/components/schemas/DocumentLibraryTool'
+                function: '#/components/schemas/FunctionTool'
+                image_generation: '#/components/schemas/ImageGenerationTool'
+                web_search: '#/components/schemas/WebSearchTool'
+                web_search_premium: '#/components/schemas/WebSearchPremiumTool'
+          type: array
           title: Tools
+          description: List of tools which are available to the model during the conversation.
         completion_args:
           anyOf:
             - $ref: '#/components/schemas/CompletionArgs'
             - type: 'null'
-          default: null
+          default:
         name:
           anyOf:
             - type: string
             - type: 'null'
-          default: null
+          default:
           title: Name
         description:
           anyOf:
             - type: string
             - type: 'null'
-          default: null
+          default:
           title: Description
+        metadata:
+          anyOf:
+            - $ref: '#/components/schemas/MetadataDict'
+            - type: 'null'
+          default:
         agent_id:
           anyOf:
             - type: string
             - type: 'null'
-          default: null
+          default:
           title: Agent Id
+        agent_version:
+          anyOf:
+            - type: string
+            - type: integer
+            - type: 'null'
+          default:
+          title: Agent Version
         model:
           anyOf:
             - type: string
             - type: 'null'
-          default: null
+          default:
           title: Model
       required:
         - inputs
@@ -4077,10 +4817,7 @@ components:
         stream:
           type: boolean
           title: Stream
-          description: >-
-            Whether to stream back partial progress. Otherwise, the server will
-            hold the request open until the timeout or until completion, with
-            the response containing the full result as JSON.
+          description: Whether to stream back partial progress. Otherwise, the server will hold the request open until the timeout or until completion, with the response containing the full result as JSON.
           default: false
         store:
           type: boolean
@@ -4096,9 +4833,7 @@ components:
           default: server
         completion_args:
           $ref: '#/components/schemas/CompletionArgs'
-          description: >-
-            Completion arguments that will be used to generate assistant
-            responses. Can be overridden at each message request.
+          description: Completion arguments that will be used to generate assistant responses. Can be overridden at each message request.
       additionalProperties: false
       type: object
       required:
@@ -4121,10 +4856,7 @@ components:
         stream:
           type: boolean
           title: Stream
-          description: >-
-            Whether to stream back partial progress. Otherwise, the server will
-            hold the request open until the timeout or until completion, with
-            the response containing the full result as JSON.
+          description: Whether to stream back partial progress. Otherwise, the server will hold the request open until the timeout or until completion, with the response containing the full result as JSON.
           default: false
         store:
           type: boolean
@@ -4140,21 +4872,29 @@ components:
           default: server
         completion_args:
           $ref: '#/components/schemas/CompletionArgs'
-          description: >-
-            Completion arguments that will be used to generate assistant
-            responses. Can be overridden at each message request.
+          description: Completion arguments that will be used to generate assistant responses. Can be overridden at each message request.
+        metadata:
+          anyOf:
+            - $ref: '#/components/schemas/MetadataDict'
+            - type: 'null'
+          description: Custom metadata for the conversation.
         from_entry_id:
           type: string
           title: From Entry Id
+        agent_version:
+          anyOf:
+            - type: string
+            - type: integer
+            - type: 'null'
+          title: Agent Version
+          description: Specific version of the agent to use when restarting. If not provided, uses the current version.
       additionalProperties: false
       type: object
       required:
         - inputs
         - from_entry_id
       title: ConversationRestartRequest
-      description: >-
-        Request to restart a new conversation from a given entry in the
-        conversation.
+      description: Request to restart a new conversation from a given entry in the conversation.
     ConversationRestartStreamRequest:
       allOf:
         - $ref: '#/components/schemas/ConversationRestartRequestBase'
@@ -4223,11 +4963,12 @@ components:
             - files_upload.jsonl
         purpose:
           $ref: '#/components/schemas/FilePurpose'
-          description: >-
-            The intended purpose of the uploaded file. Only accepts fine-tuning
-            (`fine-tune`) for now.
+          description: The intended purpose of the uploaded file, currently supports fine-tuning (`fine-tune`), OCR (`ocr`), Audio/Transcription (`audio`) and batch inference (`batch`).
           examples:
             - fine-tune
+            - ocr
+            - batch
+            - audio
         sample_type:
           $ref: '#/components/schemas/SampleType'
         num_lines:
@@ -4293,11 +5034,12 @@ components:
             - files_upload.jsonl
         purpose:
           $ref: '#/components/schemas/FilePurpose'
-          description: >-
-            The intended purpose of the uploaded file. Only accepts fine-tuning
-            (`fine-tune`) for now.
+          description: The intended purpose of the uploaded file, currently supports fine-tuning (`fine-tune`), OCR (`ocr`), Audio/Transcription (`audio`) and batch inference (`batch`).
           examples:
             - fine-tune
+            - ocr
+            - batch
+            - audio
         sample_type:
           $ref: '#/components/schemas/SampleType'
         num_lines:
@@ -4339,12 +5081,13 @@ components:
           title: Object
           type: string
         total:
+          anyOf:
+            - type: integer
+            - type: 'null'
           title: Total
-          type: integer
       required:
         - data
         - object
-        - total
       title: ListFilesOut
       type: object
     RetrieveFileOut:
@@ -4382,11 +5125,12 @@ components:
             - files_upload.jsonl
         purpose:
           $ref: '#/components/schemas/FilePurpose'
-          description: >-
-            The intended purpose of the uploaded file. Only accepts fine-tuning
-            (`fine-tune`) for now.
+          description: The intended purpose of the uploaded file, currently supports fine-tuning (`fine-tune`), OCR (`ocr`), Audio/Transcription (`audio`) and batch inference (`batch`).
           examples:
             - fine-tune
+            - ocr
+            - batch
+            - audio
         sample_type:
           $ref: '#/components/schemas/SampleType'
         num_lines:
@@ -4493,24 +5237,18 @@ components:
         created_at:
           title: Created At
           type: integer
-          description: >-
-            The UNIX timestamp (in seconds) for when the fine-tuning job was
-            created.
+          description: The UNIX timestamp (in seconds) for when the fine-tuning job was created.
         modified_at:
           title: Modified At
           type: integer
-          description: >-
-            The UNIX timestamp (in seconds) for when the fine-tuning job was
-            last modified.
+          description: The UNIX timestamp (in seconds) for when the fine-tuning job was last modified.
         training_files:
           items:
             format: uuid
             type: string
           title: Training Files
           type: array
-          description: >-
-            A list containing the IDs of uploaded files that contain training
-            data.
+          description: A list containing the IDs of uploaded files that contain training data.
         validation_files:
           anyOf:
             - items:
@@ -4520,34 +5258,26 @@ components:
             - type: 'null'
           default: []
           title: Validation Files
-          description: >-
-            A list containing the IDs of uploaded files that contain validation
-            data.
+          description: A list containing the IDs of uploaded files that contain validation data.
         object:
           default: job
           title: Object
           type: string
-          description: The object type of the fine-tuning job.
           enum:
             - job
+          description: The object type of the fine-tuning job.
         fine_tuned_model:
           anyOf:
             - type: string
             - type: 'null'
           title: Fine Tuned Model
-          description: >-
-            The name of the fine-tuned model that is being created. The value
-            will be `null` if the fine-tuning job is still running.
+          description: The name of the fine-tuned model that is being created. The value will be `null` if the fine-tuning job is still running.
         suffix:
           anyOf:
             - type: string
             - type: 'null'
           title: Suffix
-          description: >-
-            Optional text/code that adds more context for the model. When given
-            a `prompt` and a `suffix` the model will fill what is between them.
-            When `suffix` is not provided, the model will simply execute
-            completion starting with `prompt`.
+          description: Optional text/code that adds more context for the model. When given a `prompt` and a `suffix` the model will fill what is between them. When `suffix` is not provided, the model will simply execute completion starting with `prompt`.
         integrations:
           anyOf:
             - items:
@@ -4575,9 +5305,9 @@ components:
           default: classifier
           title: Job Type
           type: string
-          description: The type of job (`FT` for fine-tuning).
           enum:
             - classifier
+          description: The type of job (`FT` for fine-tuning).
         hyperparameters:
           $ref: '#/components/schemas/ClassifierTrainingParameters'
       required:
@@ -4602,7 +5332,7 @@ components:
         learning_rate:
           default: 0.0001
           maximum: 1
-          minimum: 1.e-8
+          minimum: 0.00000001
           title: Learning Rate
           type: number
         weight_decay:
@@ -4665,24 +5395,18 @@ components:
         created_at:
           title: Created At
           type: integer
-          description: >-
-            The UNIX timestamp (in seconds) for when the fine-tuning job was
-            created.
+          description: The UNIX timestamp (in seconds) for when the fine-tuning job was created.
         modified_at:
           title: Modified At
           type: integer
-          description: >-
-            The UNIX timestamp (in seconds) for when the fine-tuning job was
-            last modified.
+          description: The UNIX timestamp (in seconds) for when the fine-tuning job was last modified.
         training_files:
           items:
             format: uuid
             type: string
           title: Training Files
           type: array
-          description: >-
-            A list containing the IDs of uploaded files that contain training
-            data.
+          description: A list containing the IDs of uploaded files that contain training data.
         validation_files:
           anyOf:
             - items:
@@ -4692,34 +5416,26 @@ components:
             - type: 'null'
           default: []
           title: Validation Files
-          description: >-
-            A list containing the IDs of uploaded files that contain validation
-            data.
+          description: A list containing the IDs of uploaded files that contain validation data.
         object:
           default: job
           title: Object
           type: string
-          description: The object type of the fine-tuning job.
           enum:
             - job
+          description: The object type of the fine-tuning job.
         fine_tuned_model:
           anyOf:
             - type: string
             - type: 'null'
           title: Fine Tuned Model
-          description: >-
-            The name of the fine-tuned model that is being created. The value
-            will be `null` if the fine-tuning job is still running.
+          description: The name of the fine-tuned model that is being created. The value will be `null` if the fine-tuning job is still running.
         suffix:
           anyOf:
             - type: string
             - type: 'null'
           title: Suffix
-          description: >-
-            Optional text/code that adds more context for the model. When given
-            a `prompt` and a `suffix` the model will fill what is between them.
-            When `suffix` is not provided, the model will simply execute
-            completion starting with `prompt`.
+          description: Optional text/code that adds more context for the model. When given a `prompt` and a `suffix` the model will fill what is between them. When `suffix` is not provided, the model will simply execute completion starting with `prompt`.
         integrations:
           anyOf:
             - items:
@@ -4747,9 +5463,9 @@ components:
           default: completion
           title: Job Type
           type: string
-          description: The type of job (`FT` for fine-tuning).
           enum:
             - completion
+          description: The type of job (`FT` for fine-tuning).
         hyperparameters:
           $ref: '#/components/schemas/CompletionTrainingParameters'
         repositories:
@@ -4785,7 +5501,7 @@ components:
         learning_rate:
           default: 0.0001
           maximum: 1
-          minimum: 1.e-8
+          minimum: 0.00000001
           title: Learning Rate
           type: number
         weight_decay:
@@ -4860,7 +5576,7 @@ components:
             - type: 'null'
           title: Ref
         weight:
-          default: 1
+          default: 1.0
           exclusiveMinimum: 0
           title: Weight
           type: number
@@ -4959,9 +5675,7 @@ components:
             - type: string
             - type: 'null'
           title: Name
-          description: >-
-            A display name to set for the run. If not set, will use the job ID
-            as the name.
+          description: A display name to set for the run. If not set, will use the job ID as the name.
         run_name:
           anyOf:
             - type: string
@@ -4983,9 +5697,7 @@ components:
             - type: integer
             - type: 'null'
           title: Expected Duration Seconds
-          description: >-
-            The approximated time (in seconds) for the fine-tuning process to
-            complete.
+          description: The approximated time (in seconds) for the fine-tuning process to complete.
           examples:
             - 220
         cost:
@@ -5053,11 +5765,7 @@ components:
             - type: integer
             - type: 'null'
           title: Training Steps
-          description: >-
-            The number of training steps to perform. A training step refers to a
-            single update of the model weights during the fine-tuning process.
-            This update is typically calculated using a batch of samples from
-            the training dataset.
+          description: The number of training steps to perform. A training step refers to a single update of the model weights during the fine-tuning process. This update is typically calculated using a batch of samples from the training dataset.
           examples:
             - 10
         object:
@@ -5081,7 +5789,7 @@ components:
           title: Labels
           type: array
         weight:
-          default: 1
+          default: 1.0
           minimum: 0
           title: Weight
           type: number
@@ -5102,21 +5810,14 @@ components:
               type: integer
             - type: 'null'
           title: Training Steps
-          description: >-
-            The number of training steps to perform. A training step refers to a
-            single update of the model weights during the fine-tuning process.
-            This update is typically calculated using a batch of samples from
-            the training dataset.
+          description: The number of training steps to perform. A training step refers to a single update of the model weights during the fine-tuning process. This update is typically calculated using a batch of samples from the training dataset.
         learning_rate:
           default: 0.0001
           maximum: 1
-          minimum: 1.e-8
+          minimum: 0.00000001
           title: Learning Rate
           type: number
-          description: >-
-            A parameter describing how much to adjust the pre-trained model's
-            weights in response to the estimated error each time the weights are
-            updated during the fine-tuning process.
+          description: A parameter describing how much to adjust the pre-trained model's weights in response to the estimated error each time the weights are updated during the fine-tuning process.
         weight_decay:
           anyOf:
             - maximum: 1
@@ -5125,11 +5826,7 @@ components:
             - type: 'null'
           default: 0.1
           title: Weight Decay
-          description: >-
-            (Advanced Usage) Weight decay adds a term to the loss function that
-            is proportional to the sum of the squared weights. This term reduces
-            the magnitude of the weights and prevents them from growing too
-            large.
+          description: (Advanced Usage) Weight decay adds a term to the loss function that is proportional to the sum of the squared weights. This term reduces the magnitude of the weights and prevents them from growing too large.
         warmup_fraction:
           anyOf:
             - maximum: 1
@@ -5138,13 +5835,7 @@ components:
             - type: 'null'
           default: 0.05
           title: Warmup Fraction
-          description: >-
-            (Advanced Usage) A parameter that specifies the percentage of the
-            total training steps at which the learning rate warm-up phase ends.
-            During this phase, the learning rate gradually increases from a
-            small value to the initial learning rate, helping to stabilize the
-            training process and improve convergence. Similar to `pct_start` in
-            [mistral-finetune](https://github.com/mistralai/mistral-finetune)
+          description: (Advanced Usage) A parameter that specifies the percentage of the total training steps at which the learning rate warm-up phase ends. During this phase, the learning rate gradually increases from a small value to the initial learning rate, helping to stabilize the training process and improve convergence. Similar to `pct_start` in [mistral-finetune](https://github.com/mistralai/mistral-finetune)
         epochs:
           anyOf:
             - exclusiveMinimum: 0
@@ -5159,9 +5850,7 @@ components:
           title: Seq Len
       title: ClassifierTrainingParametersIn
       type: object
-      description: >-
-        The fine-tuning hyperparameter settings used in a classifier fine-tune
-        job.
+      description: The fine-tuning hyperparameter settings used in a classifier fine-tune job.
     CompletionTrainingParametersIn:
       properties:
         training_steps:
@@ -5170,21 +5859,14 @@ components:
               type: integer
             - type: 'null'
           title: Training Steps
-          description: >-
-            The number of training steps to perform. A training step refers to a
-            single update of the model weights during the fine-tuning process.
-            This update is typically calculated using a batch of samples from
-            the training dataset.
+          description: The number of training steps to perform. A training step refers to a single update of the model weights during the fine-tuning process. This update is typically calculated using a batch of samples from the training dataset.
         learning_rate:
           default: 0.0001
           maximum: 1
-          minimum: 1.e-8
+          minimum: 0.00000001
           title: Learning Rate
           type: number
-          description: >-
-            A parameter describing how much to adjust the pre-trained model's
-            weights in response to the estimated error each time the weights are
-            updated during the fine-tuning process.
+          description: A parameter describing how much to adjust the pre-trained model's weights in response to the estimated error each time the weights are updated during the fine-tuning process.
         weight_decay:
           anyOf:
             - maximum: 1
@@ -5193,11 +5875,7 @@ components:
             - type: 'null'
           default: 0.1
           title: Weight Decay
-          description: >-
-            (Advanced Usage) Weight decay adds a term to the loss function that
-            is proportional to the sum of the squared weights. This term reduces
-            the magnitude of the weights and prevents them from growing too
-            large.
+          description: (Advanced Usage) Weight decay adds a term to the loss function that is proportional to the sum of the squared weights. This term reduces the magnitude of the weights and prevents them from growing too large.
         warmup_fraction:
           anyOf:
             - maximum: 1
@@ -5206,13 +5884,7 @@ components:
             - type: 'null'
           default: 0.05
           title: Warmup Fraction
-          description: >-
-            (Advanced Usage) A parameter that specifies the percentage of the
-            total training steps at which the learning rate warm-up phase ends.
-            During this phase, the learning rate gradually increases from a
-            small value to the initial learning rate, helping to stabilize the
-            training process and improve convergence. Similar to `pct_start` in
-            [mistral-finetune](https://github.com/mistralai/mistral-finetune)
+          description: (Advanced Usage) A parameter that specifies the percentage of the total training steps at which the learning rate warm-up phase ends. During this phase, the learning rate gradually increases from a small value to the initial learning rate, helping to stabilize the training process and improve convergence. Similar to `pct_start` in [mistral-finetune](https://github.com/mistralai/mistral-finetune)
         epochs:
           anyOf:
             - exclusiveMinimum: 0
@@ -5262,7 +5934,7 @@ components:
             - type: 'null'
           title: Ref
         weight:
-          default: 1
+          default: 1.0
           exclusiveMinimum: 0
           title: Weight
           type: number
@@ -5293,23 +5965,14 @@ components:
               type: array
             - type: 'null'
           title: Validation Files
-          description: >-
-            A list containing the IDs of uploaded files that contain validation
-            data. If you provide these files, the data is used to generate
-            validation metrics periodically during fine-tuning. These metrics
-            can be viewed in `checkpoints` when getting the status of a running
-            fine-tuning job. The same data should not be present in both train
-            and validation files.
+          description: A list containing the IDs of uploaded files that contain validation data. If you provide these files, the data is used to generate validation metrics periodically during fine-tuning. These metrics can be viewed in `checkpoints` when getting the status of a running fine-tuning job. The same data should not be present in both train and validation files.
         suffix:
           anyOf:
             - maxLength: 18
               type: string
             - type: 'null'
           title: Suffix
-          description: >-
-            A string that will be added to your fine-tuning model name. For
-            example, a suffix of "my-great-model" would produce a model name
-            like `ft:open-mistral-7b:my-great-model:xxx...`
+          description: A string that will be added to your fine-tuning model name. For example, a suffix of "my-great-model" would produce a model name like `ft:open-mistral-7b:my-great-model:xxx...`
         integrations:
           anyOf:
             - items:
@@ -5373,7 +6036,7 @@ components:
           title: File Id
           type: string
         weight:
-          default: 1
+          default: 1.0
           exclusiveMinimum: 0
           title: Weight
           type: number
@@ -5398,9 +6061,7 @@ components:
             - type: string
             - type: 'null'
           title: Name
-          description: >-
-            A display name to set for the run. If not set, will use the job ID
-            as the name.
+          description: A display name to set for the run. If not set, will use the job ID as the name.
         api_key:
           maxLength: 40
           minLength: 40
@@ -5534,9 +6195,7 @@ components:
             $ref: '#/components/schemas/EventOut'
           title: Events
           type: array
-          description: >-
-            Event items are created every time the status of a fine-tuning job
-            changes. The timestamped list of all events is accessible here.
+          description: Event items are created every time the status of a fine-tuning job changes. The timestamped list of all events is accessible here.
         checkpoints:
           default: []
           items:
@@ -5690,9 +6349,7 @@ components:
             $ref: '#/components/schemas/EventOut'
           title: Events
           type: array
-          description: >-
-            Event items are created every time the status of a fine-tuning job
-            changes. The timestamped list of all events is accessible here.
+          description: Event items are created every time the status of a fine-tuning job changes. The timestamped list of all events is accessible here.
         checkpoints:
           default: []
           items:
@@ -5718,8 +6375,8 @@ components:
           description: The name of the event.
         data:
           anyOf:
-            - type: object
-              additionalProperties: true
+            - additionalProperties: true
+              type: object
             - type: 'null'
           title: Data
         created_at:
@@ -5750,10 +6407,7 @@ components:
           title: Valid Mean Token Accuracy
       title: MetricOut
       type: object
-      description: >-
-        Metrics at the step number during the fine-tuning job. Use these metrics
-        to assess if the training is going smoothly (loss should decrease, token
-        accuracy should increase).
+      description: Metrics at the step number during the fine-tuning job. Use these metrics to assess if the training is going smoothly (loss should decrease, token accuracy should increase).
     ClassifierFTModelOut:
       properties:
         id:
@@ -6025,8 +6679,8 @@ components:
           type: array
         metadata:
           anyOf:
-            - type: object
-              additionalProperties: true
+            - additionalProperties: true
+              type: object
             - type: 'null'
           title: Metadata
         endpoint:
@@ -6059,6 +6713,14 @@ components:
             $ref: '#/components/schemas/BatchError'
           title: Errors
           type: array
+        outputs:
+          anyOf:
+            - items:
+                additionalProperties: true
+                type: object
+              type: array
+            - type: 'null'
+          title: Outputs
         status:
           $ref: '#/components/schemas/BatchJobStatus'
         created_at:
@@ -6129,26 +6791,52 @@ components:
         - /v1/fim/completions
         - /v1/moderations
         - /v1/chat/moderations
+        - /v1/ocr
+        - /v1/classifications
+        - /v1/chat/classifications
+        - /v1/conversations
+        - /v1/audio/transcriptions
     BatchJobIn:
       properties:
         input_files:
-          items:
-            format: uuid
-            type: string
+          anyOf:
+            - items:
+                format: uuid
+                type: string
+              type: array
+            - type: 'null'
           title: Input Files
-          type: array
+          description: 'The list of input files to be used for batch inference, these files should be `jsonl` files, containing the input data corresponding to the bory request for the batch inference in a "body" field. An example of such file is the following: ```json {"custom_id": "0", "body": {"max_tokens": 100, "messages": [{"role": "user", "content": "What is the best French cheese?"}]}} {"custom_id": "1", "body": {"max_tokens": 100, "messages": [{"role": "user", "content": "What is the best French wine?"}]}} ```'
+        requests:
+          anyOf:
+            - items:
+                $ref: '#/components/schemas/BatchRequest'
+              maxItems: 10000
+              type: array
+            - type: 'null'
+          title: Requests
         endpoint:
           $ref: '#/components/schemas/ApiEndpoint'
+          description: The endpoint to be used for batch inference.
+          examples:
+            - /v1/chat/completions
+            - /v1/embeddings
+            - /v1/fim/completions
         model:
           anyOf:
             - type: string
             - type: 'null'
           title: Model
+          description: The model to be used for batch inference.
+          examples:
+            - mistral-small-latest
+            - mistral-medium-latest
         agent_id:
           anyOf:
             - type: string
             - type: 'null'
           title: Agent Id
+          description: In case you want to use a specific agent from the **deprecated** agents api for batch inference, you can specify the agent ID here.
         metadata:
           anyOf:
             - additionalProperties:
@@ -6161,14 +6849,30 @@ components:
               type: object
             - type: 'null'
           title: Metadata
+          description: The metadata of your choice to be associated with the batch inference job.
         timeout_hours:
           default: 24
           title: Timeout Hours
           type: integer
+          description: The timeout in hours for the batch inference job.
       required:
-        - input_files
         - endpoint
       title: BatchJobIn
+      type: object
+    BatchRequest:
+      properties:
+        custom_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Custom Id
+        body:
+          additionalProperties: true
+          title: Body
+          type: object
+      required:
+        - body
+      title: BatchRequest
       type: object
     AssistantMessage:
       properties:
@@ -6191,10 +6895,7 @@ components:
           type: boolean
           title: Prefix
           default: false
-          description: >-
-            Set this to `true` when adding an assistant message as prefix to
-            condition the model response. The role of the prefix message is to
-            force the model to start its answer by the content of the message.
+          description: Set this to `true` when adding an assistant message as prefix to condition the model response. The role of the prefix message is to force the model to start its answer by the content of the message.
         role:
           type: string
           default: assistant
@@ -6228,13 +6929,9 @@ components:
         model:
           title: Model
           type: string
-          description: >-
-            ID of the model to use. You can use the [List Available
-            Models](/api/#tag/models/operation/list_models_v1_models_get) API to
-            see all of your available models, or see our [Model
-            overview](/models) for model descriptions.
+          description: ID of the model to use. You can use the [List Available Models](/api/#tag/models/operation/list_models_v1_models_get) API to see all of your available models, or see our [Model overview](/models) for model descriptions.
           examples:
-            - mistral-small-latest
+            - mistral-large-latest
         temperature:
           anyOf:
             - type: number
@@ -6242,44 +6939,26 @@ components:
               minimum: 0
             - type: 'null'
           title: Temperature
-          description: >-
-            What sampling temperature to use, we recommend between 0.0 and 0.7.
-            Higher values like 0.7 will make the output more random, while lower
-            values like 0.2 will make it more focused and deterministic. We
-            generally recommend altering this or `top_p` but not both. The
-            default value varies depending on the model you are targeting. Call
-            the `/models` endpoint to retrieve the appropriate value.
+          description: What sampling temperature to use, we recommend between 0.0 and 0.7. Higher values like 0.7 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. We generally recommend altering this or `top_p` but not both. The default value varies depending on the model you are targeting. Call the `/models` endpoint to retrieve the appropriate value.
         top_p:
           type: number
           maximum: 1
           minimum: 0
           title: Top P
-          default: 1
-          description: >-
-            Nucleus sampling, where the model considers the results of the
-            tokens with `top_p` probability mass. So 0.1 means only the tokens
-            comprising the top 10% probability mass are considered. We generally
-            recommend altering this or `temperature` but not both.
+          default: 1.0
+          description: Nucleus sampling, where the model considers the results of the tokens with `top_p` probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered. We generally recommend altering this or `temperature` but not both.
         max_tokens:
           anyOf:
             - type: integer
               minimum: 0
             - type: 'null'
           title: Max Tokens
-          description: >-
-            The maximum number of tokens to generate in the completion. The
-            token count of your prompt plus `max_tokens` cannot exceed the
-            model's context length.
+          description: The maximum number of tokens to generate in the completion. The token count of your prompt plus `max_tokens` cannot exceed the model's context length.
         stream:
           type: boolean
           title: Stream
           default: false
-          description: >-
-            Whether to stream back partial progress. If set, tokens will be sent
-            as data-only server-side events as they become available, with the
-            stream terminated by a data: [DONE] message. Otherwise, the server
-            will hold the request open until the timeout or until completion,
-            with the response containing the full result as JSON.
+          description: 'Whether to stream back partial progress. If set, tokens will be sent as data-only server-side events as they become available, with the stream terminated by a data: [DONE] message. Otherwise, the server will hold the request open until the timeout or until completion, with the response containing the full result as JSON.'
         stop:
           anyOf:
             - type: string
@@ -6287,18 +6966,20 @@ components:
                 type: string
               type: array
           title: Stop
-          description: >-
-            Stop generation if this token is detected. Or if one of these tokens
-            is detected when providing an array
+          description: Stop generation if this token is detected. Or if one of these tokens is detected when providing an array
         random_seed:
           anyOf:
             - type: integer
               minimum: 0
             - type: 'null'
           title: Random Seed
-          description: >-
-            The seed to use for random sampling. If set, different calls will
-            generate deterministic results.
+          description: The seed to use for random sampling. If set, different calls will generate deterministic results.
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
         messages:
           items:
             oneOf:
@@ -6315,9 +6996,7 @@ components:
                 user: '#/components/schemas/UserMessage'
           type: array
           title: Messages
-          description: >-
-            The prompt(s) to generate completions for, encoded as a list of dict
-            with role and content.
+          description: The prompt(s) to generate completions for, encoded as a list of dict with role and content.
           examples:
             - - role: user
                 content: Who is the best French painter? Answer in one short sentence.
@@ -6330,67 +7009,51 @@ components:
               type: array
             - type: 'null'
           title: Tools
+          description: A list of tools the model may call. Use this to provide a list of functions the model may generate JSON inputs for.
         tool_choice:
           anyOf:
             - $ref: '#/components/schemas/ToolChoice'
             - $ref: '#/components/schemas/ToolChoiceEnum'
           title: Tool Choice
           default: auto
+          description: 'Controls which (if any) tool is called by the model. `none` means the model will not call any tool and instead generates a message. `auto` means the model can pick between generating a message or calling one or more tools. `any` or `required` means the model must call one or more tools. Specifying a particular tool via `{"type": "function", "function": {"name": "my_function"}}` forces the model to call that tool.'
         presence_penalty:
           type: number
           maximum: 2
           minimum: -2
           title: Presence Penalty
-          default: 0
-          description: >-
-            presence_penalty determines how much the model penalizes the
-            repetition of words or phrases. A higher presence penalty encourages
-            the model to use a wider variety of words and phrases, making the
-            output more diverse and creative.
+          default: 0.0
+          description: The `presence_penalty` determines how much the model penalizes the repetition of words or phrases. A higher presence penalty encourages the model to use a wider variety of words and phrases, making the output more diverse and creative.
         frequency_penalty:
           type: number
           maximum: 2
           minimum: -2
           title: Frequency Penalty
-          default: 0
-          description: >-
-            frequency_penalty penalizes the repetition of words based on their
-            frequency in the generated text. A higher frequency penalty
-            discourages the model from repeating words that have already
-            appeared frequently in the output, promoting diversity and reducing
-            repetition.
-        'n':
+          default: 0.0
+          description: The `frequency_penalty` penalizes the repetition of words based on their frequency in the generated text. A higher frequency penalty discourages the model from repeating words that have already appeared frequently in the output, promoting diversity and reducing repetition.
+        n:
           anyOf:
             - type: integer
               minimum: 1
             - type: 'null'
-          title: 'N'
-          description: >-
-            Number of completions to return for each request, input tokens are
-            only billed once.
+          title: N
+          description: Number of completions to return for each request, input tokens are only billed once.
         prediction:
           $ref: '#/components/schemas/Prediction'
           default:
             type: content
             content: ''
-          description: >-
-            Enable users to specify expected results, optimizing response times
-            by leveraging known or predictable content. This approach is
-            especially effective for updating text documents or code files with
-            minimal changes, reducing latency while maintaining high-quality
-            results.
+          description: Enable users to specify expected results, optimizing response times by leveraging known or predictable content. This approach is especially effective for updating text documents or code files with minimal changes, reducing latency while maintaining high-quality results.
         parallel_tool_calls:
           type: boolean
           title: Parallel Tool Calls
           default: true
+          description: Whether to enable parallel function calling during tool use, when enabled the model can call multiple tools in parallel.
         prompt_mode:
           anyOf:
             - $ref: '#/components/schemas/MistralPromptMode'
             - type: 'null'
-          description: >-
-            Allows toggling between the reasoning mode and no system prompt.
-            When set to `reasoning` the system prompt for reasoning models will
-            be used.
+          description: Allows toggling between the reasoning mode and no system prompt. When set to `reasoning` the system prompt for reasoning models will be used.
         safe_prompt:
           type: boolean
           description: Whether to inject a safety prompt before all conversations.
@@ -6452,6 +7115,14 @@ components:
           title: Model
           description: ID of the model to use.
           type: string
+          examples:
+            - mistral-moderation-latest
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
         input:
           anyOf:
             - type: string
@@ -6464,7 +7135,6 @@ components:
       type: object
       required:
         - input
-        - model
         - model
       title: ClassificationRequest
     EmbeddingDtype:
@@ -6481,8 +7151,14 @@ components:
         model:
           title: Model
           type: string
-          description: ID of the model to use.
+          description: The ID of the model to be used for embedding.
           example: mistral-embed
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
         input:
           anyOf:
             - type: string
@@ -6493,17 +7169,21 @@ components:
           example:
             - Embed this sentence.
             - As well as this one.
-          description: Text to embed.
+          description: The text content to be embedded, can be a string or an array of strings for fast processing in bulk.
         output_dimension:
           anyOf:
             - type: integer
               exclusiveMinimum: 0
             - type: 'null'
           title: Output Dimension
-          description: The dimension of the output embeddings.
+          description: The dimension of the output embeddings when feature available. If not provided, a default output dimension will be used.
         output_dtype:
           $ref: '#/components/schemas/EmbeddingDtype'
-          description: The data type of the output embeddings.
+          description: The data type of the output embeddings when feature available. If not provided, a default output data type will be used.
+          default: float
+        encoding_format:
+          $ref: '#/components/schemas/EncodingFormat'
+          description: The format of embeddings in the response.
           default: float
       additionalProperties: false
       type: object
@@ -6511,18 +7191,21 @@ components:
         - input
         - model
       title: EmbeddingRequest
+    EncodingFormat:
+      type: string
+      enum:
+        - float
+        - base64
+      title: EncodingFormat
     FIMCompletionRequest:
       properties:
         model:
           title: Model
-          default: codestral-2405
+          default: codestral-2404
           type: string
-          description: |-
-            ID of the model to use. Only compatible for now with:
-              - `codestral-2405`
-              - `codestral-latest`
+          description: ID of the model with FIM to use.
           examples:
-            - codestral-2405
+            - codestral-latest
         temperature:
           anyOf:
             - type: number
@@ -6530,44 +7213,26 @@ components:
               minimum: 0
             - type: 'null'
           title: Temperature
-          description: >-
-            What sampling temperature to use, we recommend between 0.0 and 0.7.
-            Higher values like 0.7 will make the output more random, while lower
-            values like 0.2 will make it more focused and deterministic. We
-            generally recommend altering this or `top_p` but not both. The
-            default value varies depending on the model you are targeting. Call
-            the `/models` endpoint to retrieve the appropriate value.
+          description: What sampling temperature to use, we recommend between 0.0 and 0.7. Higher values like 0.7 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. We generally recommend altering this or `top_p` but not both. The default value varies depending on the model you are targeting. Call the `/models` endpoint to retrieve the appropriate value.
         top_p:
           type: number
           maximum: 1
           minimum: 0
           title: Top P
-          default: 1
-          description: >-
-            Nucleus sampling, where the model considers the results of the
-            tokens with `top_p` probability mass. So 0.1 means only the tokens
-            comprising the top 10% probability mass are considered. We generally
-            recommend altering this or `temperature` but not both.
+          default: 1.0
+          description: Nucleus sampling, where the model considers the results of the tokens with `top_p` probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered. We generally recommend altering this or `temperature` but not both.
         max_tokens:
           anyOf:
             - type: integer
               minimum: 0
             - type: 'null'
           title: Max Tokens
-          description: >-
-            The maximum number of tokens to generate in the completion. The
-            token count of your prompt plus `max_tokens` cannot exceed the
-            model's context length.
+          description: The maximum number of tokens to generate in the completion. The token count of your prompt plus `max_tokens` cannot exceed the model's context length.
         stream:
           type: boolean
           title: Stream
           default: false
-          description: >-
-            Whether to stream back partial progress. If set, tokens will be sent
-            as data-only server-side events as they become available, with the
-            stream terminated by a data: [DONE] message. Otherwise, the server
-            will hold the request open until the timeout or until completion,
-            with the response containing the full result as JSON.
+          description: 'Whether to stream back partial progress. If set, tokens will be sent as data-only server-side events as they become available, with the stream terminated by a data: [DONE] message. Otherwise, the server will hold the request open until the timeout or until completion, with the response containing the full result as JSON.'
         stop:
           anyOf:
             - type: string
@@ -6575,18 +7240,20 @@ components:
                 type: string
               type: array
           title: Stop
-          description: >-
-            Stop generation if this token is detected. Or if one of these tokens
-            is detected when providing an array
+          description: Stop generation if this token is detected. Or if one of these tokens is detected when providing an array
         random_seed:
           anyOf:
             - type: integer
               minimum: 0
             - type: 'null'
           title: Random Seed
-          description: >-
-            The seed to use for random sampling. If set, different calls will
-            generate deterministic results.
+          description: The seed to use for random sampling. If set, different calls will generate deterministic results.
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
         prompt:
           type: string
           title: Prompt
@@ -6599,11 +7266,7 @@ components:
             - type: 'null'
           title: Suffix
           default: ''
-          description: >-
-            Optional text/code that adds more context for the model. When given
-            a `prompt` and a `suffix` the model will fill what is between them.
-            When `suffix` is not provided, the model will simply execute
-            completion starting with `prompt`.
+          description: Optional text/code that adds more context for the model. When given a `prompt` and a `suffix` the model will fill what is between them. When `suffix` is not provided, the model will simply execute completion starting with `prompt`.
           examples:
             - return a+b
         min_tokens:
@@ -6662,9 +7325,7 @@ components:
       required:
         - name
       title: FunctionName
-      description: >-
-        this restriction of `Function` is used to select a specific function to
-        call
+      description: this restriction of `Function` is used to select a specific function to call
     ImageURL:
       properties:
         url:
@@ -6706,6 +7367,11 @@ components:
     MistralPromptMode:
       type: string
       title: MistralPromptMode
+      description: 'Available options to the prompt_mode argument on the chat completion endpoint.
+
+        Values represent high-level intent. Assignment to actual SPs is handled internally.
+
+        System prompt may include knowledge cutoff date, model capabilities, tone to use, safety guidelines, etc.'
       enum:
         - reasoning
     OCRImageObject:
@@ -6804,6 +7470,30 @@ components:
           type: array
           title: Images
           description: List of all extracted images in the page
+        tables:
+          items:
+            $ref: '#/components/schemas/OCRTableObject'
+          type: array
+          title: Tables
+          description: List of all extracted tables in the page
+        hyperlinks:
+          items:
+            type: string
+          type: array
+          title: Hyperlinks
+          description: List of all hyperlinks in the page
+        header:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Header
+          description: Header of the page
+        footer:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Footer
+          description: Footer of the page
         dimensions:
           anyOf:
             - $ref: '#/components/schemas/OCRPageDimensions'
@@ -6841,9 +7531,7 @@ components:
               type: array
             - type: 'null'
           title: Pages
-          description: >-
-            Specific pages user wants to process in various formats: single
-            number, range, or list of both. Starts from 0
+          description: 'Specific pages user wants to process in various formats: single number, range, or list of both. Starts from 0'
         include_image_base64:
           anyOf:
             - type: boolean
@@ -6866,17 +7554,34 @@ components:
           anyOf:
             - $ref: '#/components/schemas/ResponseFormat'
             - type: 'null'
-          description: >-
-            Structured output class for extracting useful information from each
-            extracted bounding box / image from document. Only json_schema is
-            valid for this field
+          description: Structured output class for extracting useful information from each extracted bounding box / image from document. Only json_schema is valid for this field
         document_annotation_format:
           anyOf:
             - $ref: '#/components/schemas/ResponseFormat'
             - type: 'null'
-          description: >-
-            Structured output class for extracting useful information from the
-            entire document. Only json_schema is valid for this field
+          description: Structured output class for extracting useful information from the entire document. Only json_schema is valid for this field
+        document_annotation_prompt:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Document Annotation Prompt
+          description: Optional prompt to guide the model in extracting structured output from the entire document. A document_annotation_format must be provided.
+        table_format:
+          anyOf:
+            - type: string
+              enum:
+                - markdown
+                - html
+            - type: 'null'
+          title: Table Format
+        extract_header:
+          type: boolean
+          title: Extract Header
+          default: false
+        extract_footer:
+          type: boolean
+          title: Extract Footer
+          default: false
       additionalProperties: false
       type: object
       required:
@@ -6911,6 +7616,30 @@ components:
         - model
         - usage_info
       title: OCRResponse
+    OCRTableObject:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Table ID for extracted table in a page
+        content:
+          type: string
+          title: Content
+          description: Content of the table in the given format
+        format:
+          type: string
+          enum:
+            - markdown
+            - html
+          title: Format
+          description: Format of the table
+      additionalProperties: false
+      type: object
+      required:
+        - id
+        - content
+        - format
+      title: OCRTableObject
     OCRUsageInfo:
       properties:
         pages_processed:
@@ -6950,12 +7679,12 @@ components:
     SystemMessage:
       properties:
         content:
+          title: Content
           anyOf:
             - type: string
             - items:
-                $ref: '#/components/schemas/TextChunk'
+                $ref: '#/components/schemas/SystemMessageContentChunks'
               type: array
-          title: Content
         role:
           type: string
           default: system
@@ -6966,33 +7695,6 @@ components:
       required:
         - content
       title: SystemMessage
-    ThinkChunk:
-      properties:
-        thinking:
-          items:
-            anyOf:
-              - $ref: '#/components/schemas/ReferenceChunk'
-              - $ref: '#/components/schemas/TextChunk'
-          type: array
-          title: Thinking
-        closed:
-          type: boolean
-          title: Closed
-          description: >-
-            Whether the thinking chunk is closed or not. Currently only used for
-            prefixing.
-          default: true
-        type:
-          type: string
-          enum:
-            - thinking
-          title: Type
-          default: thinking
-      additionalProperties: false
-      type: object
-      required:
-        - thinking
-      title: ThinkChunk
     Tool:
       properties:
         type:
@@ -7113,6 +7815,16 @@ components:
         end:
           type: number
           title: End
+        score:
+          anyOf:
+            - type: number
+            - type: 'null'
+          title: Score
+        speaker_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Speaker Id
         type:
           type: string
           default: transcription_segment
@@ -7175,31 +7887,27 @@ components:
       type: string
       format: binary
       title: File
-      description: |-
-        The File object (not file name) to be uploaded.
-         To upload a file and specify a custom file name you should format your request as such:
-         ```bash
-         file=@path/to/your/file.jsonl;filename=custom_name.jsonl
-         ```
-         Otherwise, you can just keep the original file name:
-         ```bash
-         file=@path/to/your/file.jsonl
-         ```
+      description: "The File object (not file name) to be uploaded.\n To upload a file and specify a custom file name you should format your request as such:\n ```bash\n file=@path/to/your/file.jsonl;filename=custom_name.jsonl\n ```\n Otherwise, you can just keep the original file name:\n ```bash\n file=@path/to/your/file.jsonl\n ```"
     TimestampGranularity:
       type: string
       enum:
         - segment
+        - word
       title: TimestampGranularity
     AudioTranscriptionRequest:
       properties:
         model:
           title: Model
           type: string
+          description: ID of the model to be used.
+          examples:
+            - voxtral-mini-latest
+            - voxtral-mini-2507
         file:
           anyOf:
             - $ref: '#/components/schemas/File'
             - type: 'null'
-          default: null
+          default:
           title: File
         file_url:
           anyOf:
@@ -7208,14 +7916,14 @@ components:
               minLength: 1
               type: string
             - type: 'null'
-          default: null
+          default:
           description: Url of a file to be transcribed
           title: File Url
         file_id:
           anyOf:
             - type: string
             - type: 'null'
-          default: null
+          default:
           description: ID of a file uploaded to /v1/files
           title: File Id
         language:
@@ -7223,22 +7931,31 @@ components:
             - pattern: ^\w{2}$
               type: string
             - type: 'null'
-          default: null
-          description: >-
-            Language of the audio, e.g. 'en'. Providing the language can boost
-            accuracy.
+          default:
+          description: Language of the audio, e.g. 'en'. Providing the language can boost accuracy.
           title: Language
         temperature:
           anyOf:
             - type: number
             - type: 'null'
-          default: null
+          default:
           title: Temperature
         stream:
           const: false
           default: false
           title: Stream
           type: boolean
+        diarize:
+          default: false
+          title: Diarize
+          type: boolean
+        context_bias:
+          default: []
+          items:
+            pattern: ^[^,\s]+$
+            type: string
+          title: Context Bias
+          type: array
         timestamp_granularities:
           description: Granularities of timestamps to include in the response.
           items:
@@ -7258,7 +7975,7 @@ components:
           anyOf:
             - $ref: '#/components/schemas/File'
             - type: 'null'
-          default: null
+          default:
           title: File
         file_url:
           anyOf:
@@ -7267,14 +7984,14 @@ components:
               minLength: 1
               type: string
             - type: 'null'
-          default: null
+          default:
           description: Url of a file to be transcribed
           title: File Url
         file_id:
           anyOf:
             - type: string
             - type: 'null'
-          default: null
+          default:
           description: ID of a file uploaded to /v1/files
           title: File Id
         language:
@@ -7282,22 +7999,31 @@ components:
             - pattern: ^\w{2}$
               type: string
             - type: 'null'
-          default: null
-          description: >-
-            Language of the audio, e.g. 'en'. Providing the language can boost
-            accuracy.
+          default:
+          description: Language of the audio, e.g. 'en'. Providing the language can boost accuracy.
           title: Language
         temperature:
           anyOf:
             - type: number
             - type: 'null'
-          default: null
+          default:
           title: Temperature
         stream:
           const: true
           default: true
           title: Stream
           type: boolean
+        diarize:
+          default: false
+          title: Diarize
+          type: boolean
+        context_bias:
+          default: []
+          items:
+            pattern: ^[^,\s]+$
+            type: string
+          title: Context Bias
+          type: array
         timestamp_granularities:
           description: Granularities of timestamps to include in the response.
           items:
@@ -7336,6 +8062,12 @@ components:
         end:
           title: End
           type: number
+        speaker_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          default:
+          title: Speaker Id
         type:
           type: string
           default: transcription.segment
@@ -7428,6 +8160,31 @@ components:
         - transcription.done
       title: TranscriptionStreamEventTypes
       type: string
+    AudioEncoding:
+      enum:
+        - pcm_s16le
+        - pcm_s32le
+        - pcm_f16le
+        - pcm_f32le
+        - pcm_mulaw
+        - pcm_alaw
+      title: AudioEncoding
+      type: string
+    AudioFormat:
+      additionalProperties: false
+      properties:
+        encoding:
+          $ref: '#/components/schemas/AudioEncoding'
+        sample_rate:
+          maximum: 96000
+          minimum: 8000
+          title: Sample Rate
+          type: integer
+      required:
+        - encoding
+        - sample_rate
+      title: AudioFormat
+      type: object
     AgentsCompletionRequest:
       properties:
         max_tokens:
@@ -7436,20 +8193,12 @@ components:
               minimum: 0
             - type: 'null'
           title: Max Tokens
-          description: >-
-            The maximum number of tokens to generate in the completion. The
-            token count of your prompt plus `max_tokens` cannot exceed the
-            model's context length.
+          description: The maximum number of tokens to generate in the completion. The token count of your prompt plus `max_tokens` cannot exceed the model's context length.
         stream:
           type: boolean
           title: Stream
           default: false
-          description: >-
-            Whether to stream back partial progress. If set, tokens will be sent
-            as data-only server-side events as they become available, with the
-            stream terminated by a data: [DONE] message. Otherwise, the server
-            will hold the request open until the timeout or until completion,
-            with the response containing the full result as JSON.
+          description: 'Whether to stream back partial progress. If set, tokens will be sent as data-only server-side events as they become available, with the stream terminated by a data: [DONE] message. Otherwise, the server will hold the request open until the timeout or until completion, with the response containing the full result as JSON.'
         stop:
           anyOf:
             - type: string
@@ -7457,18 +8206,20 @@ components:
                 type: string
               type: array
           title: Stop
-          description: >-
-            Stop generation if this token is detected. Or if one of these tokens
-            is detected when providing an array
+          description: Stop generation if this token is detected. Or if one of these tokens is detected when providing an array
         random_seed:
           anyOf:
             - type: integer
               minimum: 0
             - type: 'null'
           title: Random Seed
-          description: >-
-            The seed to use for random sampling. If set, different calls will
-            generate deterministic results.
+          description: The seed to use for random sampling. If set, different calls will generate deterministic results.
+        metadata:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Metadata
         messages:
           items:
             oneOf:
@@ -7485,9 +8236,7 @@ components:
                 user: '#/components/schemas/UserMessage'
           type: array
           title: Messages
-          description: >-
-            The prompt(s) to generate completions for, encoded as a list of dict
-            with role and content.
+          description: The prompt(s) to generate completions for, encoded as a list of dict with role and content.
           examples:
             - - role: user
                 content: Who is the best French painter? Answer in one short sentence.
@@ -7511,44 +8260,28 @@ components:
           maximum: 2
           minimum: -2
           title: Presence Penalty
-          default: 0
-          description: >-
-            presence_penalty determines how much the model penalizes the
-            repetition of words or phrases. A higher presence penalty encourages
-            the model to use a wider variety of words and phrases, making the
-            output more diverse and creative.
+          default: 0.0
+          description: The `presence_penalty` determines how much the model penalizes the repetition of words or phrases. A higher presence penalty encourages the model to use a wider variety of words and phrases, making the output more diverse and creative.
         frequency_penalty:
           type: number
           maximum: 2
           minimum: -2
           title: Frequency Penalty
-          default: 0
-          description: >-
-            frequency_penalty penalizes the repetition of words based on their
-            frequency in the generated text. A higher frequency penalty
-            discourages the model from repeating words that have already
-            appeared frequently in the output, promoting diversity and reducing
-            repetition.
-        'n':
+          default: 0.0
+          description: The `frequency_penalty` penalizes the repetition of words based on their frequency in the generated text. A higher frequency penalty discourages the model from repeating words that have already appeared frequently in the output, promoting diversity and reducing repetition.
+        n:
           anyOf:
             - type: integer
               minimum: 1
             - type: 'null'
-          title: 'N'
-          description: >-
-            Number of completions to return for each request, input tokens are
-            only billed once.
+          title: N
+          description: Number of completions to return for each request, input tokens are only billed once.
         prediction:
           $ref: '#/components/schemas/Prediction'
           default:
             type: content
             content: ''
-          description: >-
-            Enable users to specify expected results, optimizing response times
-            by leveraging known or predictable content. This approach is
-            especially effective for updating text documents or code files with
-            minimal changes, reducing latency while maintaining high-quality
-            results.
+          description: Enable users to specify expected results, optimizing response times by leveraging known or predictable content. This approach is especially effective for updating text documents or code files with minimal changes, reducing latency while maintaining high-quality results.
         parallel_tool_calls:
           type: boolean
           title: Parallel Tool Calls
@@ -7557,10 +8290,7 @@ components:
           anyOf:
             - $ref: '#/components/schemas/MistralPromptMode'
             - type: 'null'
-          description: >-
-            Allows toggling between the reasoning mode and no system prompt.
-            When set to `reasoning` the system prompt for reasoning models will
-            be used.
+          description: Allows toggling between the reasoning mode and no system prompt. When set to `reasoning` the system prompt for reasoning models will be used.
         agent_id:
           type: string
           description: The ID of the agent to use for this completion.
@@ -7601,6 +8331,27 @@ components:
             type: number
       required:
         - scores
+    ChatClassificationRequest:
+      properties:
+        model:
+          title: Model
+          type: string
+        input:
+          $ref: '#/components/schemas/ChatClassificationRequestInputs'
+      additionalProperties: false
+      type: object
+      required:
+        - input
+        - model
+      title: ChatClassificationRequest
+    ChatClassificationRequestInputs:
+      anyOf:
+        - $ref: '#/components/schemas/InstructRequest'
+        - items:
+            $ref: '#/components/schemas/InstructRequest'
+          type: array
+      title: ChatClassificationRequestInputs
+      description: Chat to classify
     ModerationResponse:
       type: object
       title: ModerationResponse
@@ -7652,27 +8403,16 @@ components:
           thinking: '#/components/schemas/ThinkChunk'
           input_audio: '#/components/schemas/AudioChunk'
       title: ContentChunk
-    ChatClassificationRequest:
-      properties:
-        model:
-          title: Model
-          type: string
-        input:
-          $ref: '#/components/schemas/ChatClassificationRequestInputs'
-      additionalProperties: false
-      type: object
-      required:
-        - input
-        - model
-      title: ChatClassificationRequest
-    ChatClassificationRequestInputs:
-      anyOf:
-        - $ref: '#/components/schemas/InstructRequest'
-        - items:
-            $ref: '#/components/schemas/InstructRequest'
-          type: array
-      title: ChatClassificationRequestInputs
-      description: Chat to classify
+    SystemMessageContentChunks:
+      oneOf:
+        - $ref: '#/components/schemas/TextChunk'
+        - $ref: '#/components/schemas/ThinkChunk'
+      discriminator:
+        propertyName: type
+        mapping:
+          text: '#/components/schemas/TextChunk'
+          thinking: '#/components/schemas/ThinkChunk'
+      title: SystemMessageContentChunks
     DocumentOut:
       properties:
         id:
@@ -7684,16 +8424,24 @@ components:
           format: uuid
           title: Library Id
         hash:
-          type: string
+          anyOf:
+            - type: string
+            - type: 'null'
           title: Hash
         mime_type:
-          type: string
+          anyOf:
+            - type: string
+            - type: 'null'
           title: Mime Type
         extension:
-          type: string
+          anyOf:
+            - type: string
+            - type: 'null'
           title: Extension
         size:
-          type: integer
+          anyOf:
+            - type: integer
+            - type: 'null'
           title: Size
         name:
           type: string
@@ -7721,8 +8469,10 @@ components:
         processing_status:
           type: string
         uploaded_by_id:
-          type: string
-          format: uuid
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
           title: Uploaded By Id
         uploaded_by_type:
           type: string
@@ -7736,6 +8486,17 @@ components:
             - type: integer
             - type: 'null'
           title: Tokens Processing Summary
+        url:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Url
+        attributes:
+          anyOf:
+            - additionalProperties: true
+              type: object
+            - type: 'null'
+          title: Attributes
         tokens_processing_total:
           type: integer
           title: Tokens Processing Total
@@ -7771,6 +8532,31 @@ components:
             - type: string
             - type: 'null'
           title: Name
+        attributes:
+          anyOf:
+            - additionalProperties:
+                anyOf:
+                  - type: boolean
+                  - type: string
+                  - type: integer
+                  - type: number
+                  - type: string
+                    format: date-time
+                  - items:
+                      type: string
+                    type: array
+                  - items:
+                      type: integer
+                    type: array
+                  - items:
+                      type: number
+                    type: array
+                  - items:
+                      type: boolean
+                    type: array
+              type: object
+            - type: 'null'
+          title: Attributes
       type: object
       title: DocumentUpdateIn
     LibraryIn:
@@ -7824,8 +8610,10 @@ components:
           format: date-time
           title: Updated At
         owner_id:
-          type: string
-          format: uuid
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
           title: Owner Id
         owner_type:
           type: string
@@ -7850,11 +8638,6 @@ components:
             - type: string
             - type: 'null'
           title: Description
-        generated_name:
-          anyOf:
-            - type: string
-            - type: 'null'
-          title: Generated Name
         generated_description:
           anyOf:
             - type: string
@@ -7874,6 +8657,11 @@ components:
           anyOf:
             - type: string
             - type: 'null'
+        generated_name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          description: Generated Name
       type: object
       required:
         - id
@@ -7970,8 +8758,10 @@ components:
     SharingDelete:
       properties:
         org_id:
-          type: string
-          format: uuid
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
           title: Org Id
         share_with_uuid:
           type: string
@@ -7984,13 +8774,14 @@ components:
       required:
         - share_with_uuid
         - share_with_type
-        - org_id
         - level
     SharingIn:
       properties:
         org_id:
-          type: string
-          format: uuid
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
           title: Org Id
         level:
           $ref: '#/components/schemas/ShareEnum'
@@ -8005,7 +8796,6 @@ components:
       required:
         - share_with_uuid
         - share_with_type
-        - org_id
         - level
     SharingOut:
       properties:
@@ -8028,8 +8818,10 @@ components:
         share_with_type:
           type: string
         share_with_uuid:
-          type: string
-          format: uuid
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
           title: Share With Uuid
       type: object
       required:
@@ -8232,7 +9024,7 @@ components:
             data:
               type: array
               items:
-                - $ref: '#/components/schemas/EmbeddingResponseData'
+                $ref: '#/components/schemas/EmbeddingResponseData'
           required:
             - id
             - object
@@ -8285,9 +9077,7 @@ tags:
     description: (beta) Conversations API
   - name: beta.libraries
     x-displayName: (beta) Libraries  API - Main
-    description: >-
-      (beta) Libraries API to create and manage libraries - index your documents
-      to enhance agent capabilities.
+    description: (beta) Libraries API to create and manage libraries - index your documents to enhance agent capabilities.
   - name: beta.libraries.documents
     x-displayName: (beta) Libraries  API - Documents
     description: (beta) Libraries API - manage documents in a library.
