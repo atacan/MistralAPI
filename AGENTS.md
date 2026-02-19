@@ -5,3 +5,6 @@ uvx --from git+https://github.com/atacan/swift-package-generator-based-on-openap
 ```
 
 As this is a Swift package, you can find the code of the Swift package dependencies in the ".build/checkouts" directory. Look at that folder when you need to understand how to use the code from the Swift package dependencies.
+
+To update, download the latest openapi document via `make download-openapi`. 
+Run the tests. Check the errors if you need to update the openapi-overlay.yaml
