@@ -169,6 +169,10 @@ public enum Components {
             public var start: Swift.Double
             /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/end`.
             public var end: Swift.Double
+            /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/score`.
+            public var score: Swift.Double?
+            /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/speaker_id`.
+            public var speaker_id: Swift.String?
             /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/type`.
             @frozen public enum _typePayload: String, Codable, Hashable, Sendable, CaseIterable {
                 case transcription_segment = "transcription_segment"
@@ -181,22 +185,30 @@ public enum Components {
             ///   - text:
             ///   - start:
             ///   - end:
+            ///   - score:
+            ///   - speaker_id:
             ///   - _type:
             public init(
                 text: Swift.String,
                 start: Swift.Double,
                 end: Swift.Double,
+                score: Swift.Double? = nil,
+                speaker_id: Swift.String? = nil,
                 _type: Components.Schemas.TranscriptionSegmentChunk._typePayload? = nil
             ) {
                 self.text = text
                 self.start = start
                 self.end = end
+                self.score = score
+                self.speaker_id = speaker_id
                 self._type = _type
             }
             public enum CodingKeys: String, CodingKey {
                 case text
                 case start
                 case end
+                case score
+                case speaker_id
                 case _type = "type"
             }
             public init(from decoder: any Decoder) throws {
@@ -213,6 +225,14 @@ public enum Components {
                     Swift.Double.self,
                     forKey: .end
                 )
+                self.score = try container.decodeIfPresent(
+                    Swift.Double.self,
+                    forKey: .score
+                )
+                self.speaker_id = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .speaker_id
+                )
                 self._type = try container.decodeIfPresent(
                     Components.Schemas.TranscriptionSegmentChunk._typePayload.self,
                     forKey: ._type
@@ -221,6 +241,8 @@ public enum Components {
                     "text",
                     "start",
                     "end",
+                    "score",
+                    "speaker_id",
                     "type"
                 ])
             }
@@ -611,6 +633,8 @@ public enum Components {
             public var start: Swift.Double
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamSegmentDelta/end`.
             public var end: Swift.Double
+            /// - Remark: Generated from `#/components/schemas/TranscriptionStreamSegmentDelta/speaker_id`.
+            public var speaker_id: Swift.String?
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamSegmentDelta/type`.
             @frozen public enum _typePayload: String, Codable, Hashable, Sendable, CaseIterable {
                 case transcription_period_segment = "transcription.segment"
@@ -623,22 +647,26 @@ public enum Components {
             ///   - text:
             ///   - start:
             ///   - end:
+            ///   - speaker_id:
             ///   - _type:
             public init(
                 text: Swift.String,
                 start: Swift.Double,
                 end: Swift.Double,
+                speaker_id: Swift.String? = nil,
                 _type: Components.Schemas.TranscriptionStreamSegmentDelta._typePayload? = nil
             ) {
                 self.text = text
                 self.start = start
                 self.end = end
+                self.speaker_id = speaker_id
                 self._type = _type
             }
             public enum CodingKeys: String, CodingKey {
                 case text
                 case start
                 case end
+                case speaker_id
                 case _type = "type"
             }
             public init(from decoder: any Decoder) throws {
@@ -655,6 +683,10 @@ public enum Components {
                     Swift.Double.self,
                     forKey: .end
                 )
+                self.speaker_id = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .speaker_id
+                )
                 self._type = try container.decodeIfPresent(
                     Components.Schemas.TranscriptionStreamSegmentDelta._typePayload.self,
                     forKey: ._type
@@ -663,6 +695,7 @@ public enum Components {
                     "text",
                     "start",
                     "end",
+                    "speaker_id",
                     "type"
                 ])
             }
@@ -715,6 +748,8 @@ public enum Components {
             public var model: Swift.String
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamDone/text`.
             public var text: Swift.String
+            /// - Remark: Generated from `#/components/schemas/TranscriptionStreamDone/language`.
+            public var language: Swift.String
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamDone/segments`.
             public var segments: [Components.Schemas.TranscriptionSegmentChunk]?
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamDone/usage`.
@@ -730,18 +765,21 @@ public enum Components {
             /// - Parameters:
             ///   - model:
             ///   - text:
+            ///   - language:
             ///   - segments:
             ///   - usage:
             ///   - _type:
             public init(
                 model: Swift.String,
                 text: Swift.String,
+                language: Swift.String,
                 segments: [Components.Schemas.TranscriptionSegmentChunk]? = nil,
                 usage: Components.Schemas.UsageInfo,
                 _type: Components.Schemas.TranscriptionStreamDone._typePayload? = nil
             ) {
                 self.model = model
                 self.text = text
+                self.language = language
                 self.segments = segments
                 self.usage = usage
                 self._type = _type
@@ -749,6 +787,7 @@ public enum Components {
             public enum CodingKeys: String, CodingKey {
                 case model
                 case text
+                case language
                 case segments
                 case usage
                 case _type = "type"
@@ -762,6 +801,10 @@ public enum Components {
                 self.text = try container.decode(
                     Swift.String.self,
                     forKey: .text
+                )
+                self.language = try container.decode(
+                    Swift.String.self,
+                    forKey: .language
                 )
                 self.segments = try container.decodeIfPresent(
                     [Components.Schemas.TranscriptionSegmentChunk].self,
@@ -778,6 +821,7 @@ public enum Components {
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "model",
                     "text",
+                    "language",
                     "segments",
                     "usage",
                     "type"

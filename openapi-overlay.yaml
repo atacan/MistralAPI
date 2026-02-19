@@ -1,0 +1,229 @@
+# OpenAPI Overlay for MistralAPI
+# This file allows you to make manual corrections to the OpenAPI specification
+# without modifying the original file. The bootstrapper will apply this overlay
+# on top of the cleaned openapi.yaml file.
+#
+# For overlay syntax, see: https://github.com/OAI/Overlay-Specification
+
+overlay: 1.0.0
+info:
+  title: MistralAPI API Overlay
+  version: 1.0.0
+
+# Example actions (uncomment and modify as needed):
+# actions:
+#   # Make a field required
+#   - target: "$.components.schemas.User"
+#     update:
+#       required:
+#         - user_id
+#         - email
+#
+#   # Add a missing property
+#   - target: "$.components.schemas.Product"
+#     update:
+#       properties:
+#         newField:
+#           type: string
+#           description: "A field that was missing in the original spec"
+#
+#   # Fix an incorrect type
+#   - target: "$.components.schemas.Order.properties.total"
+#     update:
+#       type: number
+#       format: double
+#
+#   # Remove a deprecated field
+#   - target: "$.components.schemas.LegacyModel.properties.oldField"
+#     remove: true
+
+actions:
+  - remove: 1e+0
+    target: $.components.schemas.TranscriptionResponse.required
+  - target: $.components.schemas.TranscriptionResponse
+    update:
+      required:
+      - model
+      - text
+      - usage
+  - remove: 1e+0
+    target: $.components.schemas.EmbeddingResponse.allOf[1].properties.data.items
+  - remove: 1e+0
+    target: $.components.schemas.TranscriptionResponse.properties.language.anyOf
+  - target: $.components.schemas.TranscriptionResponse.properties.language
+    update:
+      pattern: ^\w{2}$
+      title: Language
+      type: string
+  - target: $.components.schemas.EmbeddingResponse.allOf[1].properties.data
+    update:
+      items:
+        $ref: '#/components/schemas/EmbeddingResponseData'
+  - target: $.components.schemas.UsageInfo.properties.prompt_audio_seconds
+    update:
+      title: Prompt Audio Seconds
+      type: integer
+  - remove: 1e+0
+    target: $.components.schemas.UsageInfo.properties.prompt_audio_seconds.anyOf
+  - remove: 1e+0
+    target: $.components.schemas.UsageInfo.properties.prompt_audio_seconds.nullable
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequest.properties.file.anyOf
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequest.properties.file.default
+  - target: $.components.schemas.AudioTranscriptionRequest.properties.file
+    update:
+      $ref: '#/components/schemas/File'
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequest.properties.file_url.anyOf
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequest.properties.file_url.default
+  - target: $.components.schemas.AudioTranscriptionRequest.properties.file_url
+    update:
+      format: uri
+      maxLength: 2.083e+3
+      minLength: 1e+0
+      type: string
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequest.properties.file_id.anyOf
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequest.properties.file_id.default
+  - target: $.components.schemas.AudioTranscriptionRequest.properties.file_id
+    update:
+      type: string
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequest.properties.language.anyOf
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequest.properties.language.default
+  - target: $.components.schemas.AudioTranscriptionRequest.properties.language
+    update:
+      pattern: ^\w{2}$
+      type: string
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequest.properties.temperature.anyOf
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequest.properties.temperature.default
+  - target: $.components.schemas.AudioTranscriptionRequest.properties.temperature
+    update:
+      type: number
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequestStream.properties.file.anyOf
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequestStream.properties.file.default
+  - target: $.components.schemas.AudioTranscriptionRequestStream.properties.file
+    update:
+      $ref: '#/components/schemas/File'
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_url.anyOf
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_url.default
+  - target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_url
+    update:
+      format: uri
+      maxLength: 2.083e+3
+      minLength: 1e+0
+      type: string
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_id.anyOf
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_id.default
+  - target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_id
+    update:
+      type: string
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequestStream.properties.language.anyOf
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequestStream.properties.language.default
+  - target: $.components.schemas.AudioTranscriptionRequestStream.properties.language
+    update:
+      pattern: ^\w{2}$
+      type: string
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequestStream.properties.temperature.anyOf
+  - remove: 1e+0
+    target: $.components.schemas.AudioTranscriptionRequestStream.properties.temperature.default
+  - target: $.components.schemas.AudioTranscriptionRequestStream.properties.temperature
+    update:
+      type: number
+  - target: $.components.schemas
+    update:
+      APIError:
+        properties:
+          code:
+            nullable: 1e+0
+            title: Code
+            type: string
+          message:
+            properties:
+              detail:
+                items:
+                  properties:
+                    ctx:
+                      description: Context information related to the error (e.g., error
+                        details from an underlying library).
+                      type: object
+                    input:
+                      description: The input parameters that caused the error.
+                      type: object
+                    loc:
+                      description: Location of the error in the request data structure.
+                      items: {}
+                      type: array
+                    msg:
+                      description: The specific error message.
+                      type: string
+                    type:
+                      description: The type of the specific error (e.g., 'assertion_error').
+                      type: string
+                  required:
+                  - msg
+                  - type
+                  type: object
+                type: array
+            required:
+            - detail
+            title: Message
+            type: object
+          object:
+            enum:
+            - error
+            title: Object
+            type: string
+          param:
+            nullable: 1e+0
+            title: Param
+            type: string
+          type:
+            title: Type
+            type: string
+        required:
+        - message
+        - object
+        - type
+        title: APIError
+        type: object
+  - target: $.paths./v1/audio/transcriptions.post.responses
+    update:
+      '400':
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APIError'
+        description: Bad Request - Invalid model or request parameters
+      '422':
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APIError'
+        description: Unprocessable Entity - Missing required parameters
+  - target: $.components.schemas.TranscriptionResponse.properties
+    update:
+      finish_reason:
+        title: Finish Reason
+        type: string
+  - target: $.components.schemas.UsageInfo.properties
+    update:
+      num_cached_tokens:
+        default: 0e+0
+        title: Num Cached Tokens
+        type: integer
