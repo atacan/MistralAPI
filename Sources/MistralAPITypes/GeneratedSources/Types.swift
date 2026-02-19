@@ -93,6 +93,8 @@ public enum Components {
             public var usage: Components.Schemas.UsageInfo
             /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/finish_reason`.
             public var finish_reason: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/type`.
+            public var _type: Swift.String?
             /// Creates a new `TranscriptionResponse`.
             ///
             /// - Parameters:
@@ -102,13 +104,15 @@ public enum Components {
             ///   - segments:
             ///   - usage:
             ///   - finish_reason:
+            ///   - _type:
             public init(
                 model: Swift.String,
                 text: Swift.String,
                 language: Swift.String? = nil,
                 segments: [Components.Schemas.TranscriptionSegmentChunk]? = nil,
                 usage: Components.Schemas.UsageInfo,
-                finish_reason: Swift.String? = nil
+                finish_reason: Swift.String? = nil,
+                _type: Swift.String? = nil
             ) {
                 self.model = model
                 self.text = text
@@ -116,6 +120,7 @@ public enum Components {
                 self.segments = segments
                 self.usage = usage
                 self.finish_reason = finish_reason
+                self._type = _type
             }
             public enum CodingKeys: String, CodingKey {
                 case model
@@ -124,6 +129,7 @@ public enum Components {
                 case segments
                 case usage
                 case finish_reason
+                case _type = "type"
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -151,13 +157,18 @@ public enum Components {
                     Swift.String.self,
                     forKey: .finish_reason
                 )
+                self._type = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: ._type
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "model",
                     "text",
                     "language",
                     "segments",
                     "usage",
-                    "finish_reason"
+                    "finish_reason",
+                    "type"
                 ])
             }
         }
@@ -259,6 +270,8 @@ public enum Components {
             public var prompt_audio_seconds: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/UsageInfo/num_cached_tokens`.
             public var num_cached_tokens: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/UsageInfo/request_count`.
+            public var request_count: Swift.Int?
             /// Creates a new `UsageInfo`.
             ///
             /// - Parameters:
@@ -267,18 +280,21 @@ public enum Components {
             ///   - total_tokens:
             ///   - prompt_audio_seconds:
             ///   - num_cached_tokens:
+            ///   - request_count:
             public init(
                 prompt_tokens: Swift.Int,
                 completion_tokens: Swift.Int,
                 total_tokens: Swift.Int,
                 prompt_audio_seconds: Swift.Int? = nil,
-                num_cached_tokens: Swift.Int? = nil
+                num_cached_tokens: Swift.Int? = nil,
+                request_count: Swift.Int? = nil
             ) {
                 self.prompt_tokens = prompt_tokens
                 self.completion_tokens = completion_tokens
                 self.total_tokens = total_tokens
                 self.prompt_audio_seconds = prompt_audio_seconds
                 self.num_cached_tokens = num_cached_tokens
+                self.request_count = request_count
             }
             public enum CodingKeys: String, CodingKey {
                 case prompt_tokens
@@ -286,6 +302,7 @@ public enum Components {
                 case total_tokens
                 case prompt_audio_seconds
                 case num_cached_tokens
+                case request_count
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -309,12 +326,17 @@ public enum Components {
                     Swift.Int.self,
                     forKey: .num_cached_tokens
                 )
+                self.request_count = try container.decodeIfPresent(
+                    Swift.Int.self,
+                    forKey: .request_count
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "prompt_tokens",
                     "completion_tokens",
                     "total_tokens",
                     "prompt_audio_seconds",
-                    "num_cached_tokens"
+                    "num_cached_tokens",
+                    "request_count"
                 ])
             }
         }

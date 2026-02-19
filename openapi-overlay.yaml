@@ -221,9 +221,19 @@ actions:
       finish_reason:
         title: Finish Reason
         type: string
+  - target: $.components.schemas.TranscriptionResponse.properties
+    update:
+      type:
+        title: Type
+        type: string
   - target: $.components.schemas.UsageInfo.properties
     update:
       num_cached_tokens:
         default: 0e+0
         title: Num Cached Tokens
+        type: integer
+  - target: $.components.schemas.UsageInfo.properties
+    update:
+      request_count:
+        title: Request Count
         type: integer

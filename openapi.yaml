@@ -7280,6 +7280,9 @@ components:
         finish_reason:
           title: Finish Reason
           type: string
+        type:
+          title: Type
+          type: string
       additionalProperties: false
       type: object
       title: TranscriptionResponse
@@ -7336,6 +7339,9 @@ components:
         num_cached_tokens:
           default: 0
           title: Num Cached Tokens
+          type: integer
+        request_count:
+          title: Request Count
           type: integer
       additionalProperties: false
       type: object
