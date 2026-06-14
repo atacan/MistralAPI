@@ -8,6 +8,10 @@
     "completion_tokens": 235,
     "prompt_audio_seconds": 86,
     "prompt_tokens": 3,
+    "prompt_tokens_details": {
+      "audio_tokens": 375,
+      "cached_tokens": 0
+    },
     "total_tokens": 1363
   }
 }

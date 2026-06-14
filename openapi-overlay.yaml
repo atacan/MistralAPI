@@ -237,3 +237,20 @@ actions:
       request_count:
         title: Request Count
         type: integer
+  - target: $.components.schemas
+    update:
+      PromptTokensDetails:
+        additionalProperties: false
+        properties:
+          audio_tokens:
+            title: Audio Tokens
+            type: integer
+          cached_tokens:
+            title: Cached Tokens
+            type: integer
+        title: Prompt Tokens Details
+        type: object
+  - target: $.components.schemas.UsageInfo.properties
+    update:
+      prompt_tokens_details:
+        $ref: '#/components/schemas/PromptTokensDetails'

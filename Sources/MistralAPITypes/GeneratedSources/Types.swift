@@ -272,6 +272,8 @@ public enum Components {
             public var num_cached_tokens: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/UsageInfo/request_count`.
             public var request_count: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/UsageInfo/prompt_tokens_details`.
+            public var prompt_tokens_details: Components.Schemas.PromptTokensDetails?
             /// Creates a new `UsageInfo`.
             ///
             /// - Parameters:
@@ -281,13 +283,15 @@ public enum Components {
             ///   - prompt_audio_seconds:
             ///   - num_cached_tokens:
             ///   - request_count:
+            ///   - prompt_tokens_details:
             public init(
                 prompt_tokens: Swift.Int,
                 completion_tokens: Swift.Int,
                 total_tokens: Swift.Int,
                 prompt_audio_seconds: Swift.Int? = nil,
                 num_cached_tokens: Swift.Int? = nil,
-                request_count: Swift.Int? = nil
+                request_count: Swift.Int? = nil,
+                prompt_tokens_details: Components.Schemas.PromptTokensDetails? = nil
             ) {
                 self.prompt_tokens = prompt_tokens
                 self.completion_tokens = completion_tokens
@@ -295,6 +299,7 @@ public enum Components {
                 self.prompt_audio_seconds = prompt_audio_seconds
                 self.num_cached_tokens = num_cached_tokens
                 self.request_count = request_count
+                self.prompt_tokens_details = prompt_tokens_details
             }
             public enum CodingKeys: String, CodingKey {
                 case prompt_tokens
@@ -303,6 +308,7 @@ public enum Components {
                 case prompt_audio_seconds
                 case num_cached_tokens
                 case request_count
+                case prompt_tokens_details
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -330,13 +336,18 @@ public enum Components {
                     Swift.Int.self,
                     forKey: .request_count
                 )
+                self.prompt_tokens_details = try container.decodeIfPresent(
+                    Components.Schemas.PromptTokensDetails.self,
+                    forKey: .prompt_tokens_details
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "prompt_tokens",
                     "completion_tokens",
                     "total_tokens",
                     "prompt_audio_seconds",
                     "num_cached_tokens",
-                    "request_count"
+                    "request_count",
+                    "prompt_tokens_details"
                 ])
             }
         }
@@ -1055,6 +1066,44 @@ public enum Components {
                 case object
                 case param
                 case _type = "type"
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/PromptTokensDetails`.
+        public struct PromptTokensDetails: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/PromptTokensDetails/audio_tokens`.
+            public var audio_tokens: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/PromptTokensDetails/cached_tokens`.
+            public var cached_tokens: Swift.Int?
+            /// Creates a new `PromptTokensDetails`.
+            ///
+            /// - Parameters:
+            ///   - audio_tokens:
+            ///   - cached_tokens:
+            public init(
+                audio_tokens: Swift.Int? = nil,
+                cached_tokens: Swift.Int? = nil
+            ) {
+                self.audio_tokens = audio_tokens
+                self.cached_tokens = cached_tokens
+            }
+            public enum CodingKeys: String, CodingKey {
+                case audio_tokens
+                case cached_tokens
+            }
+            public init(from decoder: any Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.audio_tokens = try container.decodeIfPresent(
+                    Swift.Int.self,
+                    forKey: .audio_tokens
+                )
+                self.cached_tokens = try container.decodeIfPresent(
+                    Swift.Int.self,
+                    forKey: .cached_tokens
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "audio_tokens",
+                    "cached_tokens"
+                ])
             }
         }
     }

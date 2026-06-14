@@ -7343,6 +7343,8 @@ components:
         request_count:
           title: Request Count
           type: integer
+        prompt_tokens_details:
+          $ref: '#/components/schemas/PromptTokensDetails'
       additionalProperties: false
       type: object
       title: UsageInfo
@@ -8453,6 +8455,17 @@ components:
         - object
         - type
       title: APIError
+      type: object
+    PromptTokensDetails:
+      additionalProperties: false
+      properties:
+        audio_tokens:
+          title: Audio Tokens
+          type: integer
+        cached_tokens:
+          title: Cached Tokens
+          type: integer
+      title: Prompt Tokens Details
       type: object
   securitySchemes:
     ApiKey:
