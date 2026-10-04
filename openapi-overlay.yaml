@@ -38,7 +38,7 @@ info:
 #     remove: true
 
 actions:
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.TranscriptionResponse.required
   - target: $.components.schemas.TranscriptionResponse
     update:
@@ -46,9 +46,9 @@ actions:
       - model
       - text
       - usage
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.EmbeddingResponse.allOf[1].properties.data.items
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.TranscriptionResponse.properties.language.anyOf
   - target: $.components.schemas.TranscriptionResponse.properties.language
     update:
@@ -63,20 +63,20 @@ actions:
     update:
       title: Prompt Audio Seconds
       type: integer
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.UsageInfo.properties.prompt_audio_seconds.anyOf
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.UsageInfo.properties.prompt_audio_seconds.nullable
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequest.properties.file.anyOf
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequest.properties.file.default
   - target: $.components.schemas.AudioTranscriptionRequest.properties.file
     update:
       $ref: '#/components/schemas/File'
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequest.properties.file_url.anyOf
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequest.properties.file_url.default
   - target: $.components.schemas.AudioTranscriptionRequest.properties.file_url
     update:
@@ -84,38 +84,38 @@ actions:
       maxLength: 2.083e+3
       minLength: 1e+0
       type: string
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequest.properties.file_id.anyOf
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequest.properties.file_id.default
   - target: $.components.schemas.AudioTranscriptionRequest.properties.file_id
     update:
       type: string
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequest.properties.language.anyOf
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequest.properties.language.default
   - target: $.components.schemas.AudioTranscriptionRequest.properties.language
     update:
       pattern: ^\w{2}$
       type: string
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequest.properties.temperature.anyOf
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequest.properties.temperature.default
   - target: $.components.schemas.AudioTranscriptionRequest.properties.temperature
     update:
       type: number
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequestStream.properties.file.anyOf
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequestStream.properties.file.default
   - target: $.components.schemas.AudioTranscriptionRequestStream.properties.file
     update:
       $ref: '#/components/schemas/File'
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_url.anyOf
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_url.default
   - target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_url
     update:
@@ -123,24 +123,24 @@ actions:
       maxLength: 2.083e+3
       minLength: 1e+0
       type: string
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_id.anyOf
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_id.default
   - target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_id
     update:
       type: string
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequestStream.properties.language.anyOf
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequestStream.properties.language.default
   - target: $.components.schemas.AudioTranscriptionRequestStream.properties.language
     update:
       pattern: ^\w{2}$
       type: string
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequestStream.properties.temperature.anyOf
-  - remove: 1e+0
+  - remove: true
     target: $.components.schemas.AudioTranscriptionRequestStream.properties.temperature.default
   - target: $.components.schemas.AudioTranscriptionRequestStream.properties.temperature
     update:
@@ -150,7 +150,7 @@ actions:
       APIError:
         properties:
           code:
-            nullable: 1e+0
+            nullable: true
             title: Code
             type: string
           message:
@@ -190,7 +190,7 @@ actions:
             title: Object
             type: string
           param:
-            nullable: 1e+0
+            nullable: true
             title: Param
             type: string
           type:
@@ -202,7 +202,7 @@ actions:
         - type
         title: APIError
         type: object
-  - target: $.paths./v1/audio/transcriptions.post.responses
+  - target: $.paths['/v1/audio/transcriptions'].post.responses
     update:
       '400':
         content:
@@ -240,7 +240,7 @@ actions:
   - target: $.components.schemas
     update:
       PromptTokensDetails:
-        additionalProperties: false
+        additionalProperties: true
         properties:
           audio_tokens:
             title: Audio Tokens
@@ -254,3 +254,15 @@ actions:
     update:
       prompt_tokens_details:
         $ref: '#/components/schemas/PromptTokensDetails'
+  # Live transcription responses can include fields absent from the published spec.
+  - target: $.components.schemas.TranscriptionResponse
+    update:
+      additionalProperties: true
+  - target: $.components.schemas.UsageInfo
+    update:
+      additionalProperties: true
+      properties:
+        service_tier:
+          title: Service Tier
+          type: string
+          description: The service tier at which the request was processed.

@@ -41,6 +41,8 @@ public struct Client: APIProtocol {
     }
     /// Create Transcription
     ///
+    /// Create Transcription
+    ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions`.
     /// - Remark: Generated from `#/paths//v1/audio/transcriptions/post(audio_api_v1_transcriptions_post)`.
     public func audio_api_v1_transcriptions_post(_ input: Operations.audio_api_v1_transcriptions_post.Input) async throws -> Operations.audio_api_v1_transcriptions_post.Output {
@@ -316,6 +318,8 @@ public struct Client: APIProtocol {
             }
         )
     }
+    /// Create Streaming Transcription (SSE)
+    ///
     /// Create Streaming Transcription (SSE)
     ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions#stream`.

@@ -13,9 +13,13 @@ import struct Foundation.Date
 public protocol APIProtocol: Sendable {
     /// Create Transcription
     ///
+    /// Create Transcription
+    ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions`.
     /// - Remark: Generated from `#/paths//v1/audio/transcriptions/post(audio_api_v1_transcriptions_post)`.
     func audio_api_v1_transcriptions_post(_ input: Operations.audio_api_v1_transcriptions_post.Input) async throws -> Operations.audio_api_v1_transcriptions_post.Output
+    /// Create Streaming Transcription (SSE)
+    ///
     /// Create Streaming Transcription (SSE)
     ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions#stream`.
@@ -25,6 +29,8 @@ public protocol APIProtocol: Sendable {
 
 /// Convenience overloads for operation inputs.
 extension APIProtocol {
+    /// Create Transcription
+    ///
     /// Create Transcription
     ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions`.
@@ -38,6 +44,8 @@ extension APIProtocol {
             body: body
         ))
     }
+    /// Create Streaming Transcription (SSE)
+    ///
     /// Create Streaming Transcription (SSE)
     ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions#stream`.
@@ -95,6 +103,8 @@ public enum Components {
             public var finish_reason: Swift.String?
             /// - Remark: Generated from `#/components/schemas/TranscriptionResponse/type`.
             public var _type: Swift.String?
+            /// A container of undocumented properties.
+            public var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
             /// Creates a new `TranscriptionResponse`.
             ///
             /// - Parameters:
@@ -105,6 +115,7 @@ public enum Components {
             ///   - usage:
             ///   - finish_reason:
             ///   - _type:
+            ///   - additionalProperties: A container of undocumented properties.
             public init(
                 model: Swift.String,
                 text: Swift.String,
@@ -112,7 +123,8 @@ public enum Components {
                 segments: [Components.Schemas.TranscriptionSegmentChunk]? = nil,
                 usage: Components.Schemas.UsageInfo,
                 finish_reason: Swift.String? = nil,
-                _type: Swift.String? = nil
+                _type: Swift.String? = nil,
+                additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
             ) {
                 self.model = model
                 self.text = text
@@ -121,6 +133,7 @@ public enum Components {
                 self.usage = usage
                 self.finish_reason = finish_reason
                 self._type = _type
+                self.additionalProperties = additionalProperties
             }
             public enum CodingKeys: String, CodingKey {
                 case model
@@ -161,7 +174,7 @@ public enum Components {
                     Swift.String.self,
                     forKey: ._type
                 )
-                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
                     "model",
                     "text",
                     "language",
@@ -171,9 +184,47 @@ public enum Components {
                     "type"
                 ])
             }
+            public func encode(to encoder: any Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encode(
+                    self.model,
+                    forKey: .model
+                )
+                try container.encode(
+                    self.text,
+                    forKey: .text
+                )
+                try container.encodeIfPresent(
+                    self.language,
+                    forKey: .language
+                )
+                try container.encodeIfPresent(
+                    self.segments,
+                    forKey: .segments
+                )
+                try container.encode(
+                    self.usage,
+                    forKey: .usage
+                )
+                try container.encodeIfPresent(
+                    self.finish_reason,
+                    forKey: .finish_reason
+                )
+                try container.encodeIfPresent(
+                    self._type,
+                    forKey: ._type
+                )
+                try encoder.encodeAdditionalProperties(additionalProperties)
+            }
         }
         /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk`.
         public struct TranscriptionSegmentChunk: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/type`.
+            @frozen public enum _typePayload: String, Codable, Hashable, Sendable, CaseIterable {
+                case transcription_segment = "transcription_segment"
+            }
+            /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/type`.
+            public var _type: Components.Schemas.TranscriptionSegmentChunk._typePayload?
             /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/text`.
             public var text: Swift.String
             /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/start`.
@@ -184,46 +235,44 @@ public enum Components {
             public var score: Swift.Double?
             /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/speaker_id`.
             public var speaker_id: Swift.String?
-            /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/type`.
-            @frozen public enum _typePayload: String, Codable, Hashable, Sendable, CaseIterable {
-                case transcription_segment = "transcription_segment"
-            }
-            /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/type`.
-            public var _type: Components.Schemas.TranscriptionSegmentChunk._typePayload?
             /// Creates a new `TranscriptionSegmentChunk`.
             ///
             /// - Parameters:
+            ///   - _type:
             ///   - text:
             ///   - start:
             ///   - end:
             ///   - score:
             ///   - speaker_id:
-            ///   - _type:
             public init(
+                _type: Components.Schemas.TranscriptionSegmentChunk._typePayload? = nil,
                 text: Swift.String,
                 start: Swift.Double,
                 end: Swift.Double,
                 score: Swift.Double? = nil,
-                speaker_id: Swift.String? = nil,
-                _type: Components.Schemas.TranscriptionSegmentChunk._typePayload? = nil
+                speaker_id: Swift.String? = nil
             ) {
+                self._type = _type
                 self.text = text
                 self.start = start
                 self.end = end
                 self.score = score
                 self.speaker_id = speaker_id
-                self._type = _type
             }
             public enum CodingKeys: String, CodingKey {
+                case _type = "type"
                 case text
                 case start
                 case end
                 case score
                 case speaker_id
-                case _type = "type"
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
+                self._type = try container.decodeIfPresent(
+                    Components.Schemas.TranscriptionSegmentChunk._typePayload.self,
+                    forKey: ._type
+                )
                 self.text = try container.decode(
                     Swift.String.self,
                     forKey: .text
@@ -244,17 +293,13 @@ public enum Components {
                     Swift.String.self,
                     forKey: .speaker_id
                 )
-                self._type = try container.decodeIfPresent(
-                    Components.Schemas.TranscriptionSegmentChunk._typePayload.self,
-                    forKey: ._type
-                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "type",
                     "text",
                     "start",
                     "end",
                     "score",
-                    "speaker_id",
-                    "type"
+                    "speaker_id"
                 ])
             }
         }
@@ -268,12 +313,18 @@ public enum Components {
             public var total_tokens: Swift.Int
             /// - Remark: Generated from `#/components/schemas/UsageInfo/prompt_audio_seconds`.
             public var prompt_audio_seconds: Swift.Int?
+            /// The service tier at which the request was processed.
+            ///
+            /// - Remark: Generated from `#/components/schemas/UsageInfo/service_tier`.
+            public var service_tier: Swift.String?
             /// - Remark: Generated from `#/components/schemas/UsageInfo/num_cached_tokens`.
             public var num_cached_tokens: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/UsageInfo/request_count`.
             public var request_count: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/UsageInfo/prompt_tokens_details`.
             public var prompt_tokens_details: Components.Schemas.PromptTokensDetails?
+            /// A container of undocumented properties.
+            public var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
             /// Creates a new `UsageInfo`.
             ///
             /// - Parameters:
@@ -281,31 +332,38 @@ public enum Components {
             ///   - completion_tokens:
             ///   - total_tokens:
             ///   - prompt_audio_seconds:
+            ///   - service_tier: The service tier at which the request was processed.
             ///   - num_cached_tokens:
             ///   - request_count:
             ///   - prompt_tokens_details:
+            ///   - additionalProperties: A container of undocumented properties.
             public init(
                 prompt_tokens: Swift.Int,
                 completion_tokens: Swift.Int,
                 total_tokens: Swift.Int,
                 prompt_audio_seconds: Swift.Int? = nil,
+                service_tier: Swift.String? = nil,
                 num_cached_tokens: Swift.Int? = nil,
                 request_count: Swift.Int? = nil,
-                prompt_tokens_details: Components.Schemas.PromptTokensDetails? = nil
+                prompt_tokens_details: Components.Schemas.PromptTokensDetails? = nil,
+                additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
             ) {
                 self.prompt_tokens = prompt_tokens
                 self.completion_tokens = completion_tokens
                 self.total_tokens = total_tokens
                 self.prompt_audio_seconds = prompt_audio_seconds
+                self.service_tier = service_tier
                 self.num_cached_tokens = num_cached_tokens
                 self.request_count = request_count
                 self.prompt_tokens_details = prompt_tokens_details
+                self.additionalProperties = additionalProperties
             }
             public enum CodingKeys: String, CodingKey {
                 case prompt_tokens
                 case completion_tokens
                 case total_tokens
                 case prompt_audio_seconds
+                case service_tier
                 case num_cached_tokens
                 case request_count
                 case prompt_tokens_details
@@ -328,6 +386,10 @@ public enum Components {
                     Swift.Int.self,
                     forKey: .prompt_audio_seconds
                 )
+                self.service_tier = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .service_tier
+                )
                 self.num_cached_tokens = try container.decodeIfPresent(
                     Swift.Int.self,
                     forKey: .num_cached_tokens
@@ -340,15 +402,52 @@ public enum Components {
                     Components.Schemas.PromptTokensDetails.self,
                     forKey: .prompt_tokens_details
                 )
-                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
                     "prompt_tokens",
                     "completion_tokens",
                     "total_tokens",
                     "prompt_audio_seconds",
+                    "service_tier",
                     "num_cached_tokens",
                     "request_count",
                     "prompt_tokens_details"
                 ])
+            }
+            public func encode(to encoder: any Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encode(
+                    self.prompt_tokens,
+                    forKey: .prompt_tokens
+                )
+                try container.encode(
+                    self.completion_tokens,
+                    forKey: .completion_tokens
+                )
+                try container.encode(
+                    self.total_tokens,
+                    forKey: .total_tokens
+                )
+                try container.encodeIfPresent(
+                    self.prompt_audio_seconds,
+                    forKey: .prompt_audio_seconds
+                )
+                try container.encodeIfPresent(
+                    self.service_tier,
+                    forKey: .service_tier
+                )
+                try container.encodeIfPresent(
+                    self.num_cached_tokens,
+                    forKey: .num_cached_tokens
+                )
+                try container.encodeIfPresent(
+                    self.request_count,
+                    forKey: .request_count
+                )
+                try container.encodeIfPresent(
+                    self.prompt_tokens_details,
+                    forKey: .prompt_tokens_details
+                )
+                try encoder.encodeAdditionalProperties(additionalProperties)
             }
         }
         /// The File object (not file name) to be uploaded.
@@ -618,48 +717,54 @@ public enum Components {
         }
         /// - Remark: Generated from `#/components/schemas/TranscriptionStreamLanguage`.
         public struct TranscriptionStreamLanguage: Codable, Hashable, Sendable {
-            /// - Remark: Generated from `#/components/schemas/TranscriptionStreamLanguage/audio_language`.
-            public var audio_language: Swift.String
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamLanguage/type`.
             @frozen public enum _typePayload: String, Codable, Hashable, Sendable, CaseIterable {
                 case transcription_period_language = "transcription.language"
             }
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamLanguage/type`.
             public var _type: Components.Schemas.TranscriptionStreamLanguage._typePayload?
+            /// - Remark: Generated from `#/components/schemas/TranscriptionStreamLanguage/audio_language`.
+            public var audio_language: Swift.String
             /// Creates a new `TranscriptionStreamLanguage`.
             ///
             /// - Parameters:
-            ///   - audio_language:
             ///   - _type:
+            ///   - audio_language:
             public init(
-                audio_language: Swift.String,
-                _type: Components.Schemas.TranscriptionStreamLanguage._typePayload? = nil
+                _type: Components.Schemas.TranscriptionStreamLanguage._typePayload? = nil,
+                audio_language: Swift.String
             ) {
-                self.audio_language = audio_language
                 self._type = _type
+                self.audio_language = audio_language
             }
             public enum CodingKeys: String, CodingKey {
-                case audio_language
                 case _type = "type"
+                case audio_language
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
-                self.audio_language = try container.decode(
-                    Swift.String.self,
-                    forKey: .audio_language
-                )
                 self._type = try container.decodeIfPresent(
                     Components.Schemas.TranscriptionStreamLanguage._typePayload.self,
                     forKey: ._type
                 )
+                self.audio_language = try container.decode(
+                    Swift.String.self,
+                    forKey: .audio_language
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
-                    "audio_language",
-                    "type"
+                    "type",
+                    "audio_language"
                 ])
             }
         }
         /// - Remark: Generated from `#/components/schemas/TranscriptionStreamSegmentDelta`.
         public struct TranscriptionStreamSegmentDelta: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/TranscriptionStreamSegmentDelta/type`.
+            @frozen public enum _typePayload: String, Codable, Hashable, Sendable, CaseIterable {
+                case transcription_period_segment = "transcription.segment"
+            }
+            /// - Remark: Generated from `#/components/schemas/TranscriptionStreamSegmentDelta/type`.
+            public var _type: Components.Schemas.TranscriptionStreamSegmentDelta._typePayload?
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamSegmentDelta/text`.
             public var text: Swift.String
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamSegmentDelta/start`.
@@ -668,42 +773,40 @@ public enum Components {
             public var end: Swift.Double
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamSegmentDelta/speaker_id`.
             public var speaker_id: Swift.String?
-            /// - Remark: Generated from `#/components/schemas/TranscriptionStreamSegmentDelta/type`.
-            @frozen public enum _typePayload: String, Codable, Hashable, Sendable, CaseIterable {
-                case transcription_period_segment = "transcription.segment"
-            }
-            /// - Remark: Generated from `#/components/schemas/TranscriptionStreamSegmentDelta/type`.
-            public var _type: Components.Schemas.TranscriptionStreamSegmentDelta._typePayload?
             /// Creates a new `TranscriptionStreamSegmentDelta`.
             ///
             /// - Parameters:
+            ///   - _type:
             ///   - text:
             ///   - start:
             ///   - end:
             ///   - speaker_id:
-            ///   - _type:
             public init(
+                _type: Components.Schemas.TranscriptionStreamSegmentDelta._typePayload? = nil,
                 text: Swift.String,
                 start: Swift.Double,
                 end: Swift.Double,
-                speaker_id: Swift.String? = nil,
-                _type: Components.Schemas.TranscriptionStreamSegmentDelta._typePayload? = nil
+                speaker_id: Swift.String? = nil
             ) {
+                self._type = _type
                 self.text = text
                 self.start = start
                 self.end = end
                 self.speaker_id = speaker_id
-                self._type = _type
             }
             public enum CodingKeys: String, CodingKey {
+                case _type = "type"
                 case text
                 case start
                 case end
                 case speaker_id
-                case _type = "type"
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
+                self._type = try container.decodeIfPresent(
+                    Components.Schemas.TranscriptionStreamSegmentDelta._typePayload.self,
+                    forKey: ._type
+                )
                 self.text = try container.decode(
                     Swift.String.self,
                     forKey: .text
@@ -720,58 +823,54 @@ public enum Components {
                     Swift.String.self,
                     forKey: .speaker_id
                 )
-                self._type = try container.decodeIfPresent(
-                    Components.Schemas.TranscriptionStreamSegmentDelta._typePayload.self,
-                    forKey: ._type
-                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "type",
                     "text",
                     "start",
                     "end",
-                    "speaker_id",
-                    "type"
+                    "speaker_id"
                 ])
             }
         }
         /// - Remark: Generated from `#/components/schemas/TranscriptionStreamTextDelta`.
         public struct TranscriptionStreamTextDelta: Codable, Hashable, Sendable {
-            /// - Remark: Generated from `#/components/schemas/TranscriptionStreamTextDelta/text`.
-            public var text: Swift.String
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamTextDelta/type`.
             @frozen public enum _typePayload: String, Codable, Hashable, Sendable, CaseIterable {
                 case transcription_period_text_period_delta = "transcription.text.delta"
             }
             /// - Remark: Generated from `#/components/schemas/TranscriptionStreamTextDelta/type`.
             public var _type: Components.Schemas.TranscriptionStreamTextDelta._typePayload?
+            /// - Remark: Generated from `#/components/schemas/TranscriptionStreamTextDelta/text`.
+            public var text: Swift.String
             /// Creates a new `TranscriptionStreamTextDelta`.
             ///
             /// - Parameters:
-            ///   - text:
             ///   - _type:
+            ///   - text:
             public init(
-                text: Swift.String,
-                _type: Components.Schemas.TranscriptionStreamTextDelta._typePayload? = nil
+                _type: Components.Schemas.TranscriptionStreamTextDelta._typePayload? = nil,
+                text: Swift.String
             ) {
-                self.text = text
                 self._type = _type
+                self.text = text
             }
             public enum CodingKeys: String, CodingKey {
-                case text
                 case _type = "type"
+                case text
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
-                self.text = try container.decode(
-                    Swift.String.self,
-                    forKey: .text
-                )
                 self._type = try container.decodeIfPresent(
                     Components.Schemas.TranscriptionStreamTextDelta._typePayload.self,
                     forKey: ._type
                 )
+                self.text = try container.decode(
+                    Swift.String.self,
+                    forKey: .text
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
-                    "text",
-                    "type"
+                    "type",
+                    "text"
                 ])
             }
         }
@@ -1074,17 +1173,22 @@ public enum Components {
             public var audio_tokens: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/PromptTokensDetails/cached_tokens`.
             public var cached_tokens: Swift.Int?
+            /// A container of undocumented properties.
+            public var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
             /// Creates a new `PromptTokensDetails`.
             ///
             /// - Parameters:
             ///   - audio_tokens:
             ///   - cached_tokens:
+            ///   - additionalProperties: A container of undocumented properties.
             public init(
                 audio_tokens: Swift.Int? = nil,
-                cached_tokens: Swift.Int? = nil
+                cached_tokens: Swift.Int? = nil,
+                additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
             ) {
                 self.audio_tokens = audio_tokens
                 self.cached_tokens = cached_tokens
+                self.additionalProperties = additionalProperties
             }
             public enum CodingKeys: String, CodingKey {
                 case audio_tokens
@@ -1100,10 +1204,22 @@ public enum Components {
                     Swift.Int.self,
                     forKey: .cached_tokens
                 )
-                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
                     "audio_tokens",
                     "cached_tokens"
                 ])
+            }
+            public func encode(to encoder: any Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encodeIfPresent(
+                    self.audio_tokens,
+                    forKey: .audio_tokens
+                )
+                try container.encodeIfPresent(
+                    self.cached_tokens,
+                    forKey: .cached_tokens
+                )
+                try encoder.encodeAdditionalProperties(additionalProperties)
             }
         }
     }
@@ -1119,6 +1235,8 @@ public enum Components {
 
 /// API operations, with input and output types, generated from `#/paths` in the OpenAPI document.
 public enum Operations {
+    /// Create Transcription
+    ///
     /// Create Transcription
     ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions`.
@@ -1342,6 +1460,8 @@ public enum Operations {
             }
         }
     }
+    /// Create Streaming Transcription (SSE)
+    ///
     /// Create Streaming Transcription (SSE)
     ///
     /// - Remark: HTTP `POST /v1/audio/transcriptions#stream`.

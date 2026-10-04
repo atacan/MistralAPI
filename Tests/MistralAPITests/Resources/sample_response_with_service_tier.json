@@ -1,0 +1,18 @@
+{
+  "model": "voxtral-mini-latest",
+  "text": "They love vulnerability. It's very attractive when a woman is",
+  "language": null,
+  "segments": [],
+  "usage": {
+    "prompt_audio_seconds": 5,
+    "prompt_tokens": 3,
+    "total_tokens": 391,
+    "completion_tokens": 13,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "audio_tokens": 375
+    },
+    "service_tier": "standard"
+  },
+  "finish_reason": null
+}
