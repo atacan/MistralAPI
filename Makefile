@@ -26,7 +26,7 @@ RESET  := \033[0m
 # Meta Targets
 # ------------------------------------------------------------------------------
 
-.PHONY: all help check-clean merge-main format test-on-linux generate build test
+.PHONY: regenerate test-offline all help check-clean merge-main format test-on-linux generate build test
 
 # Default target runs help
 all: help
@@ -106,3 +106,9 @@ test: ## Run tests for the package
 	@echo "$(YELLOW)Running tests for MistralAPI...$(RESET)"
 	swift test
 	@echo "$(GREEN)Tests complete!$(RESET)"
+
+regenerate: ## Regenerate specification, sources, and operation security metadata
+	uvx --from git+https://github.com/atacan/swift-package-generator-based-on-openapi.git swift-bootstrapper bootstrap .
+
+test-offline: ## Run fixture, factory, and authentication tests without API requests
+	swift test --filter 'TranscriptionResponseDecodingTests|ResponseDecodingTests|FactoryDefaultsTests|AuthenticationTests|MistralAPITypesTests|MistralAPIURLSessionTests|MistralAPIAsyncHTTPClientTests'

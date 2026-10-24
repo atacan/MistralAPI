@@ -81,8 +81,8 @@ actions:
   - target: $.components.schemas.AudioTranscriptionRequest.properties.file_url
     update:
       format: uri
-      maxLength: 2.083e+3
-      minLength: 1e+0
+      maxLength: 2083
+      minLength: 1
       type: string
   - remove: true
     target: $.components.schemas.AudioTranscriptionRequest.properties.file_id.anyOf
@@ -120,8 +120,8 @@ actions:
   - target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_url
     update:
       format: uri
-      maxLength: 2.083e+3
-      minLength: 1e+0
+      maxLength: 2083
+      minLength: 1
       type: string
   - remove: true
     target: $.components.schemas.AudioTranscriptionRequestStream.properties.file_id.anyOf
@@ -229,7 +229,7 @@ actions:
   - target: $.components.schemas.UsageInfo.properties
     update:
       num_cached_tokens:
-        default: 0e+0
+        default: 0
         title: Num Cached Tokens
         type: integer
   - target: $.components.schemas.UsageInfo.properties

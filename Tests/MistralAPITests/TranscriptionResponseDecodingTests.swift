@@ -56,4 +56,11 @@ struct TranscriptionResponseDecodingTests {
         let roundTripDetails = try #require(roundTripUsage["prompt_tokens_details"] as? [String: Any])
         #expect(roundTripDetails["future_tokens"] as? Int == 7)
     }
+    @Test func decodeNullableSegmentTimestamps() throws {
+        let data = Data(#"{"text":"offline","start":null,"end":null}"#.utf8)
+        let segment = try JSONDecoder().decode(Components.Schemas.TranscriptionSegmentChunk.self, from: data)
+        #expect(segment.start == nil)
+        #expect(segment.end == nil)
+    }
+
 }
