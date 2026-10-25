@@ -33,7 +33,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-openapi-urlsession", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-http-types", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-nio", from: "2.0.0"),
-        .package(url: "https://github.com/atacan/UsefulThings", branch: "main"),
     ],
     targets: [
         // Types target: Contains generated types from OpenAPI spec
@@ -93,7 +92,6 @@ let package = Package(
                 .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
                 .product(name: "HTTPTypes", package: "swift-http-types"),
                 .product(name: "NIOCore", package: "swift-nio"),
-                .product(name: "UsefulThings", package: "UsefulThings"),
             ],
             resources: [.process("Resources")]
         ),

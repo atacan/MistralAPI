@@ -6,9 +6,14 @@ public enum MistralModelID {
         /// Voxtral Mini Transcribe (voxtral-mini-latest via audio/transcriptions), with an efficient transcription only service.
         public static let voxtralMiniLatest = "voxtral-mini-latest"
         /// Voxtral Mini Transcribe (voxtral-mini-2507 via audio/transcriptions), with an efficient transcription only service.
+        @available(*, deprecated, message: "Deprecated 2026-02-27; retired 2026-05-31. Use voxtralMini2602 or voxtralMiniLatest. The API may route this ID to voxtral-mini-latest.")
         public static let voxtralMini2507 = "voxtral-mini-2507"
         /// Voxtral Mini Transcribe 2 (voxtral-mini-2602 via audio/transcriptions), with an efficient transcription only service.
         public static let voxtralMini2602 = "voxtral-mini-2602"
+        /// Voxtral Mini Transcribe 3 public preview. Exact API identifier verified live on 2026-10-25.
+        public static let voxtralMiniTranscribe3 = "voxtral-mini-transcribe-3-0"
+        /// Voxtral Small Transcribe 3 public preview. Exact API identifier verified live on 2026-10-25.
+        public static let voxtralSmallTranscribe3 = "voxtral-small-transcribe-3-0"
     }
     public enum Chat {
         /// Voxtral Small (voxtral-small-latest) with audio input for chat use cases.
@@ -16,6 +21,7 @@ public enum MistralModelID {
         /// Voxtral Mini (voxtral-mini-latest) with audio input for chat use cases
         public static let voxtralMiniLatest = "voxtral-mini-latest"
         /// Voxtral Mini (voxtral-mini-2507) with audio input for chat use cases
+        @available(*, deprecated, message: "Deprecated 2026-02-27; retired 2026-05-31. Use voxtralMini2602 or voxtralMiniLatest. The API may route this ID to voxtral-mini-latest.")
         public static let voxtralMini2507 = "voxtral-mini-2507"
         /// Voxtral Mini (voxtral-mini-2602) with audio input for chat use cases
         public static let voxtralMini2602 = "voxtral-mini-2602"

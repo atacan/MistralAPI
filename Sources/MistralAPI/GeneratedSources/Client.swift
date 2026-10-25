@@ -70,18 +70,17 @@ public struct Client: APIProtocol {
                         ],
                         requiredAtLeastOncePartNames: [],
                         atMostOncePartNames: [
+                            "context_bias",
                             "diarize",
                             "file",
                             "file_id",
                             "file_url",
                             "language",
                             "stream",
-                            "temperature"
-                        ],
-                        zeroOrMoreTimesPartNames: [
-                            "context_bias",
+                            "temperature",
                             "timestamp_granularities"
                         ],
+                        zeroOrMoreTimesPartNames: [],
                         encoding: { part in
                             switch part {
                             case let .model(wrapped):
@@ -300,6 +299,28 @@ public struct Client: APIProtocol {
                         preconditionFailure("bestContentType chose an invalid content type.")
                     }
                     return .unprocessableContent(.init(body: body))
+                case 401:
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Operations.audio_api_v1_transcriptions_post.Output.Unauthorized.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            Components.Schemas.AuthenticationErrorResponse.self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .unauthorized(.init(body: body))
                 default:
                     return .undocumented(
                         statusCode: response.status.code,
@@ -349,18 +370,17 @@ public struct Client: APIProtocol {
                         ],
                         requiredAtLeastOncePartNames: [],
                         atMostOncePartNames: [
+                            "context_bias",
                             "diarize",
                             "file",
                             "file_id",
                             "file_url",
                             "language",
                             "stream",
-                            "temperature"
-                        ],
-                        zeroOrMoreTimesPartNames: [
-                            "context_bias",
+                            "temperature",
                             "timestamp_granularities"
                         ],
+                        zeroOrMoreTimesPartNames: [],
                         encoding: { part in
                             switch part {
                             case let .model(wrapped):
@@ -535,6 +555,72 @@ public struct Client: APIProtocol {
                         preconditionFailure("bestContentType chose an invalid content type.")
                     }
                     return .ok(.init(body: body))
+                case 401:
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Operations.audio_api_v1_transcriptions_post_stream.Output.Unauthorized.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            Components.Schemas.AuthenticationErrorResponse.self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .unauthorized(.init(body: body))
+                case 400:
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Operations.audio_api_v1_transcriptions_post_stream.Output.BadRequest.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            Components.Schemas.APIError.self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .badRequest(.init(body: body))
+                case 422:
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Operations.audio_api_v1_transcriptions_post_stream.Output.UnprocessableContent.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            Components.Schemas.APIError.self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .unprocessableContent(.init(body: body))
                 default:
                     return .undocumented(
                         statusCode: response.status.code,

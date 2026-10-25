@@ -1,0 +1,1 @@
+{"object":"error","message":{"object":"Error","message":"Either file, file_url or file_id must be provided","type":"invalid_request_no_input","code":3050},"type":"invalid_request_error","param":null,"code":null,"raw_status_code":422}

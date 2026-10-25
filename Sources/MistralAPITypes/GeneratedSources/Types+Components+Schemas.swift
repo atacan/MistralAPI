@@ -136,6 +136,8 @@ extension Components {
                 try encoder.encodeAdditionalProperties(additionalProperties)
             }
         }
+        /// A timed transcription chunk. With timestamp_granularities=word, voxtral-mini-2602 returns one transcription_segment chunk per word, with a leading space, rather than a separate word list. With diarize=true, speaker_id is speaker_1, speaker_2, and so on (observed 2026-10-25).
+        ///
         /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk`.
         public struct TranscriptionSegmentChunk: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/type`.
@@ -154,6 +156,8 @@ extension Components {
             public var score: Swift.Double?
             /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/speaker_id`.
             public var speaker_id: Swift.String?
+            /// A container of undocumented properties.
+            public var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
             /// Creates a new `TranscriptionSegmentChunk`.
             ///
             /// - Parameters:
@@ -163,13 +167,15 @@ extension Components {
             ///   - end:
             ///   - score:
             ///   - speaker_id:
+            ///   - additionalProperties: A container of undocumented properties.
             public init(
                 _type: Components.Schemas.TranscriptionSegmentChunk._typePayload? = nil,
                 text: Swift.String,
                 start: Swift.Double? = nil,
                 end: Swift.Double? = nil,
                 score: Swift.Double? = nil,
-                speaker_id: Swift.String? = nil
+                speaker_id: Swift.String? = nil,
+                additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
             ) {
                 self._type = _type
                 self.text = text
@@ -177,6 +183,7 @@ extension Components {
                 self.end = end
                 self.score = score
                 self.speaker_id = speaker_id
+                self.additionalProperties = additionalProperties
             }
             public enum CodingKeys: String, CodingKey {
                 case _type = "type"
@@ -212,7 +219,7 @@ extension Components {
                     Swift.String.self,
                     forKey: .speaker_id
                 )
-                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
                     "type",
                     "text",
                     "start",
@@ -220,6 +227,34 @@ extension Components {
                     "score",
                     "speaker_id"
                 ])
+            }
+            public func encode(to encoder: any Swift.Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encodeIfPresent(
+                    self._type,
+                    forKey: ._type
+                )
+                try container.encode(
+                    self.text,
+                    forKey: .text
+                )
+                try container.encodeIfPresent(
+                    self.start,
+                    forKey: .start
+                )
+                try container.encodeIfPresent(
+                    self.end,
+                    forKey: .end
+                )
+                try container.encodeIfPresent(
+                    self.score,
+                    forKey: .score
+                )
+                try container.encodeIfPresent(
+                    self.speaker_id,
+                    forKey: .speaker_id
+                )
+                try encoder.encodeAdditionalProperties(additionalProperties)
             }
         }
         /// - Remark: Generated from `#/components/schemas/UsageInfo`.
@@ -975,115 +1010,468 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/APIError`.
         public struct APIError: Codable, Hashable, Sendable {
-            /// - Remark: Generated from `#/components/schemas/APIError/code`.
-            public var code: Swift.String?
-            /// - Remark: Generated from `#/components/schemas/APIError/message`.
-            public struct messagePayload: Codable, Hashable, Sendable {
-                /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload`.
-                public struct detailPayloadPayload: Codable, Hashable, Sendable {
-                    /// Context information related to the error (e.g., error details from an underlying library).
-                    ///
-                    /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload/ctx`.
-                    public var ctx: OpenAPIRuntime.OpenAPIObjectContainer?
-                    /// The input parameters that caused the error.
-                    ///
-                    /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload/input`.
-                    public var input: OpenAPIRuntime.OpenAPIObjectContainer?
-                    /// Location of the error in the request data structure.
-                    ///
-                    /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload/loc`.
-                    public var loc: [OpenAPIRuntime.OpenAPIValueContainer]?
-                    /// The specific error message.
-                    ///
-                    /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload/msg`.
-                    public var msg: Swift.String
-                    /// The type of the specific error (e.g., 'assertion_error').
-                    ///
-                    /// - Remark: Generated from `#/components/schemas/APIError/message/detailPayload/type`.
-                    public var _type: Swift.String
-                    /// Creates a new `detailPayloadPayload`.
-                    ///
-                    /// - Parameters:
-                    ///   - ctx: Context information related to the error (e.g., error details from an underlying library).
-                    ///   - input: The input parameters that caused the error.
-                    ///   - loc: Location of the error in the request data structure.
-                    ///   - msg: The specific error message.
-                    ///   - _type: The type of the specific error (e.g., 'assertion_error').
-                    public init(
-                        ctx: OpenAPIRuntime.OpenAPIObjectContainer? = nil,
-                        input: OpenAPIRuntime.OpenAPIObjectContainer? = nil,
-                        loc: [OpenAPIRuntime.OpenAPIValueContainer]? = nil,
-                        msg: Swift.String,
-                        _type: Swift.String
-                    ) {
-                        self.ctx = ctx
-                        self.input = input
-                        self.loc = loc
-                        self.msg = msg
-                        self._type = _type
-                    }
-                    public enum CodingKeys: String, CodingKey {
-                        case ctx
-                        case input
-                        case loc
-                        case msg
-                        case _type = "type"
-                    }
-                }
-                /// - Remark: Generated from `#/components/schemas/APIError/message/detail`.
-                public typealias detailPayload = [Components.Schemas.APIError.messagePayload.detailPayloadPayload]
-                /// - Remark: Generated from `#/components/schemas/APIError/message/detail`.
-                public var detail: Components.Schemas.APIError.messagePayload.detailPayload
-                /// Creates a new `messagePayload`.
-                ///
-                /// - Parameters:
-                ///   - detail:
-                public init(detail: Components.Schemas.APIError.messagePayload.detailPayload) {
-                    self.detail = detail
-                }
-                public enum CodingKeys: String, CodingKey {
-                    case detail
-                }
-            }
-            /// - Remark: Generated from `#/components/schemas/APIError/message`.
-            public var message: Components.Schemas.APIError.messagePayload
             /// - Remark: Generated from `#/components/schemas/APIError/object`.
             @frozen public enum objectPayload: String, Codable, Hashable, Sendable, CaseIterable {
                 case error = "error"
             }
             /// - Remark: Generated from `#/components/schemas/APIError/object`.
             public var object: Components.Schemas.APIError.objectPayload
-            /// - Remark: Generated from `#/components/schemas/APIError/param`.
-            public var param: Swift.String?
             /// - Remark: Generated from `#/components/schemas/APIError/type`.
             public var _type: Swift.String
+            /// - Remark: Generated from `#/components/schemas/APIError/param`.
+            public var param: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/APIError/code`.
+            @frozen public enum codePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/APIError/code/case1`.
+                case case1(Swift.String)
+                /// - Remark: Generated from `#/components/schemas/APIError/code/case2`.
+                case case2(Swift.Int)
+                public init(from decoder: any Swift.Decoder) throws {
+                    var errors: [any Swift.Error] = []
+                    do {
+                        self = .case1(try decoder.decodeFromSingleValueContainer())
+                        return
+                    } catch {
+                        errors.append(error)
+                    }
+                    do {
+                        self = .case2(try decoder.decodeFromSingleValueContainer())
+                        return
+                    } catch {
+                        errors.append(error)
+                    }
+                    throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                        type: Self.self,
+                        codingPath: decoder.codingPath,
+                        errors: errors
+                    )
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    switch self {
+                    case let .case1(value):
+                        try encoder.encodeToSingleValueContainer(value)
+                    case let .case2(value):
+                        try encoder.encodeToSingleValueContainer(value)
+                    }
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/APIError/code`.
+            public var code: Components.Schemas.APIError.codePayload?
+            /// - Remark: Generated from `#/components/schemas/APIError/raw_status_code`.
+            public var raw_status_code: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/APIError/message`.
+            @frozen public enum messagePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/APIError/message/case1`.
+                case case1(Swift.String)
+                /// - Remark: Generated from `#/components/schemas/APIError/message/case2`.
+                public struct Case2Payload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/case2/message`.
+                    public var message: Swift.String?
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/case2/type`.
+                    public var _type: Swift.String?
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/case2/code`.
+                    @frozen public enum codePayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/schemas/APIError/message/case2/code/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/schemas/APIError/message/case2/code/case2`.
+                        case case2(Swift.Int)
+                        public init(from decoder: any Swift.Decoder) throws {
+                            var errors: [any Swift.Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Swift.Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/case2/code`.
+                    public var code: Components.Schemas.APIError.messagePayload.Case2Payload.codePayload?
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/case2/detailPayload`.
+                    public struct detailPayloadPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/schemas/APIError/message/case2/detailPayload/msg`.
+                        public var msg: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/APIError/message/case2/detailPayload/type`.
+                        public var _type: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/APIError/message/case2/detailPayload/loc`.
+                        public var loc: [OpenAPIRuntime.OpenAPIValueContainer]?
+                        /// - Remark: Generated from `#/components/schemas/APIError/message/case2/detailPayload/input`.
+                        public var input: OpenAPIRuntime.OpenAPIValueContainer?
+                        /// - Remark: Generated from `#/components/schemas/APIError/message/case2/detailPayload/ctx`.
+                        public var ctx: OpenAPIRuntime.OpenAPIValueContainer?
+                        /// - Remark: Generated from `#/components/schemas/APIError/message/case2/detailPayload/url`.
+                        public var url: Swift.String?
+                        /// A container of undocumented properties.
+                        public var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
+                        /// Creates a new `detailPayloadPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - msg:
+                        ///   - _type:
+                        ///   - loc:
+                        ///   - input:
+                        ///   - ctx:
+                        ///   - url:
+                        ///   - additionalProperties: A container of undocumented properties.
+                        public init(
+                            msg: Swift.String,
+                            _type: Swift.String,
+                            loc: [OpenAPIRuntime.OpenAPIValueContainer]? = nil,
+                            input: OpenAPIRuntime.OpenAPIValueContainer? = nil,
+                            ctx: OpenAPIRuntime.OpenAPIValueContainer? = nil,
+                            url: Swift.String? = nil,
+                            additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
+                        ) {
+                            self.msg = msg
+                            self._type = _type
+                            self.loc = loc
+                            self.input = input
+                            self.ctx = ctx
+                            self.url = url
+                            self.additionalProperties = additionalProperties
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case msg
+                            case _type = "type"
+                            case loc
+                            case input
+                            case ctx
+                            case url
+                        }
+                        public init(from decoder: any Swift.Decoder) throws {
+                            let container = try decoder.container(keyedBy: CodingKeys.self)
+                            self.msg = try container.decode(
+                                Swift.String.self,
+                                forKey: .msg
+                            )
+                            self._type = try container.decode(
+                                Swift.String.self,
+                                forKey: ._type
+                            )
+                            self.loc = try container.decodeIfPresent(
+                                [OpenAPIRuntime.OpenAPIValueContainer].self,
+                                forKey: .loc
+                            )
+                            self.input = try container.decodeIfPresent(
+                                OpenAPIRuntime.OpenAPIValueContainer.self,
+                                forKey: .input
+                            )
+                            self.ctx = try container.decodeIfPresent(
+                                OpenAPIRuntime.OpenAPIValueContainer.self,
+                                forKey: .ctx
+                            )
+                            self.url = try container.decodeIfPresent(
+                                Swift.String.self,
+                                forKey: .url
+                            )
+                            additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
+                                "msg",
+                                "type",
+                                "loc",
+                                "input",
+                                "ctx",
+                                "url"
+                            ])
+                        }
+                        public func encode(to encoder: any Swift.Encoder) throws {
+                            var container = encoder.container(keyedBy: CodingKeys.self)
+                            try container.encode(
+                                self.msg,
+                                forKey: .msg
+                            )
+                            try container.encode(
+                                self._type,
+                                forKey: ._type
+                            )
+                            try container.encodeIfPresent(
+                                self.loc,
+                                forKey: .loc
+                            )
+                            try container.encodeIfPresent(
+                                self.input,
+                                forKey: .input
+                            )
+                            try container.encodeIfPresent(
+                                self.ctx,
+                                forKey: .ctx
+                            )
+                            try container.encodeIfPresent(
+                                self.url,
+                                forKey: .url
+                            )
+                            try encoder.encodeAdditionalProperties(additionalProperties)
+                        }
+                    }
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/case2/detail`.
+                    public typealias detailPayload = [Components.Schemas.APIError.messagePayload.Case2Payload.detailPayloadPayload]
+                    /// - Remark: Generated from `#/components/schemas/APIError/message/case2/detail`.
+                    public var detail: Components.Schemas.APIError.messagePayload.Case2Payload.detailPayload?
+                    /// A container of undocumented properties.
+                    public var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
+                    /// Creates a new `Case2Payload`.
+                    ///
+                    /// - Parameters:
+                    ///   - message:
+                    ///   - _type:
+                    ///   - code:
+                    ///   - detail:
+                    ///   - additionalProperties: A container of undocumented properties.
+                    public init(
+                        message: Swift.String? = nil,
+                        _type: Swift.String? = nil,
+                        code: Components.Schemas.APIError.messagePayload.Case2Payload.codePayload? = nil,
+                        detail: Components.Schemas.APIError.messagePayload.Case2Payload.detailPayload? = nil,
+                        additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
+                    ) {
+                        self.message = message
+                        self._type = _type
+                        self.code = code
+                        self.detail = detail
+                        self.additionalProperties = additionalProperties
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case message
+                        case _type = "type"
+                        case code
+                        case detail
+                    }
+                    public init(from decoder: any Swift.Decoder) throws {
+                        let container = try decoder.container(keyedBy: CodingKeys.self)
+                        self.message = try container.decodeIfPresent(
+                            Swift.String.self,
+                            forKey: .message
+                        )
+                        self._type = try container.decodeIfPresent(
+                            Swift.String.self,
+                            forKey: ._type
+                        )
+                        self.code = try container.decodeIfPresent(
+                            Components.Schemas.APIError.messagePayload.Case2Payload.codePayload.self,
+                            forKey: .code
+                        )
+                        self.detail = try container.decodeIfPresent(
+                            Components.Schemas.APIError.messagePayload.Case2Payload.detailPayload.self,
+                            forKey: .detail
+                        )
+                        additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
+                            "message",
+                            "type",
+                            "code",
+                            "detail"
+                        ])
+                    }
+                    public func encode(to encoder: any Swift.Encoder) throws {
+                        var container = encoder.container(keyedBy: CodingKeys.self)
+                        try container.encodeIfPresent(
+                            self.message,
+                            forKey: .message
+                        )
+                        try container.encodeIfPresent(
+                            self._type,
+                            forKey: ._type
+                        )
+                        try container.encodeIfPresent(
+                            self.code,
+                            forKey: .code
+                        )
+                        try container.encodeIfPresent(
+                            self.detail,
+                            forKey: .detail
+                        )
+                        try encoder.encodeAdditionalProperties(additionalProperties)
+                    }
+                }
+                /// - Remark: Generated from `#/components/schemas/APIError/message/case2`.
+                case case2(Components.Schemas.APIError.messagePayload.Case2Payload)
+                public init(from decoder: any Swift.Decoder) throws {
+                    var errors: [any Swift.Error] = []
+                    do {
+                        self = .case1(try decoder.decodeFromSingleValueContainer())
+                        return
+                    } catch {
+                        errors.append(error)
+                    }
+                    do {
+                        self = .case2(try .init(from: decoder))
+                        return
+                    } catch {
+                        errors.append(error)
+                    }
+                    throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                        type: Self.self,
+                        codingPath: decoder.codingPath,
+                        errors: errors
+                    )
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    switch self {
+                    case let .case1(value):
+                        try encoder.encodeToSingleValueContainer(value)
+                    case let .case2(value):
+                        try value.encode(to: encoder)
+                    }
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/APIError/message`.
+            public var message: Components.Schemas.APIError.messagePayload
+            /// A container of undocumented properties.
+            public var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
             /// Creates a new `APIError`.
             ///
             /// - Parameters:
-            ///   - code:
-            ///   - message:
             ///   - object:
-            ///   - param:
             ///   - _type:
+            ///   - param:
+            ///   - code:
+            ///   - raw_status_code:
+            ///   - message:
+            ///   - additionalProperties: A container of undocumented properties.
             public init(
-                code: Swift.String? = nil,
-                message: Components.Schemas.APIError.messagePayload,
                 object: Components.Schemas.APIError.objectPayload,
+                _type: Swift.String,
                 param: Swift.String? = nil,
-                _type: Swift.String
+                code: Components.Schemas.APIError.codePayload? = nil,
+                raw_status_code: Swift.Int? = nil,
+                message: Components.Schemas.APIError.messagePayload,
+                additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
             ) {
-                self.code = code
-                self.message = message
                 self.object = object
-                self.param = param
                 self._type = _type
+                self.param = param
+                self.code = code
+                self.raw_status_code = raw_status_code
+                self.message = message
+                self.additionalProperties = additionalProperties
             }
             public enum CodingKeys: String, CodingKey {
-                case code
-                case message
                 case object
-                case param
                 case _type = "type"
+                case param
+                case code
+                case raw_status_code
+                case message
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.object = try container.decode(
+                    Components.Schemas.APIError.objectPayload.self,
+                    forKey: .object
+                )
+                self._type = try container.decode(
+                    Swift.String.self,
+                    forKey: ._type
+                )
+                self.param = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .param
+                )
+                self.code = try container.decodeIfPresent(
+                    Components.Schemas.APIError.codePayload.self,
+                    forKey: .code
+                )
+                self.raw_status_code = try container.decodeIfPresent(
+                    Swift.Int.self,
+                    forKey: .raw_status_code
+                )
+                self.message = try container.decode(
+                    Components.Schemas.APIError.messagePayload.self,
+                    forKey: .message
+                )
+                additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
+                    "object",
+                    "type",
+                    "param",
+                    "code",
+                    "raw_status_code",
+                    "message"
+                ])
+            }
+            public func encode(to encoder: any Swift.Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encode(
+                    self.object,
+                    forKey: .object
+                )
+                try container.encode(
+                    self._type,
+                    forKey: ._type
+                )
+                try container.encodeIfPresent(
+                    self.param,
+                    forKey: .param
+                )
+                try container.encodeIfPresent(
+                    self.code,
+                    forKey: .code
+                )
+                try container.encodeIfPresent(
+                    self.raw_status_code,
+                    forKey: .raw_status_code
+                )
+                try container.encode(
+                    self.message,
+                    forKey: .message
+                )
+                try encoder.encodeAdditionalProperties(additionalProperties)
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/AuthenticationErrorResponse`.
+        public struct AuthenticationErrorResponse: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AuthenticationErrorResponse/detail`.
+            public var detail: Swift.String
+            /// A container of undocumented properties.
+            public var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
+            /// Creates a new `AuthenticationErrorResponse`.
+            ///
+            /// - Parameters:
+            ///   - detail:
+            ///   - additionalProperties: A container of undocumented properties.
+            public init(
+                detail: Swift.String,
+                additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
+            ) {
+                self.detail = detail
+                self.additionalProperties = additionalProperties
+            }
+            public enum CodingKeys: String, CodingKey {
+                case detail
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.detail = try container.decode(
+                    Swift.String.self,
+                    forKey: .detail
+                )
+                additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
+                    "detail"
+                ])
+            }
+            public func encode(to encoder: any Swift.Encoder) throws {
+                var container = encoder.container(keyedBy: CodingKeys.self)
+                try container.encode(
+                    self.detail,
+                    forKey: .detail
+                )
+                try encoder.encodeAdditionalProperties(additionalProperties)
             }
         }
         /// - Remark: Generated from `#/components/schemas/PromptTokensDetails`.

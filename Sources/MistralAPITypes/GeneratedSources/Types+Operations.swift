@@ -199,6 +199,57 @@ public enum Operations {
                     }
                 }
             }
+            public struct Unauthorized: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/v1/audio/transcriptions/POST/responses/401/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/v1/audio/transcriptions/POST/responses/401/content/application\/json`.
+                    case json(Components.Schemas.AuthenticationErrorResponse)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    public var json: Components.Schemas.AuthenticationErrorResponse {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                public var body: Operations.audio_api_v1_transcriptions_post.Output.Unauthorized.Body
+                /// Creates a new `Unauthorized`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                public init(body: Operations.audio_api_v1_transcriptions_post.Output.Unauthorized.Body) {
+                    self.body = body
+                }
+            }
+            /// Invalid API key
+            ///
+            /// - Remark: Generated from `#/paths//v1/audio/transcriptions/post(audio_api_v1_transcriptions_post)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Operations.audio_api_v1_transcriptions_post.Output.Unauthorized)
+            /// The associated value of the enum case if `self` is `.unauthorized`.
+            ///
+            /// - Throws: An error if `self` is not `.unauthorized`.
+            /// - SeeAlso: `.unauthorized`.
+            public var unauthorized: Operations.audio_api_v1_transcriptions_post.Output.Unauthorized {
+                get throws {
+                    switch self {
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
+                    }
+                }
+            }
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.
@@ -322,6 +373,159 @@ public enum Operations {
                     }
                 }
             }
+            public struct Unauthorized: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/v1/audio/transcriptions#stream/POST/responses/401/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/v1/audio/transcriptions#stream/POST/responses/401/content/application\/json`.
+                    case json(Components.Schemas.AuthenticationErrorResponse)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    public var json: Components.Schemas.AuthenticationErrorResponse {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                public var body: Operations.audio_api_v1_transcriptions_post_stream.Output.Unauthorized.Body
+                /// Creates a new `Unauthorized`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                public init(body: Operations.audio_api_v1_transcriptions_post_stream.Output.Unauthorized.Body) {
+                    self.body = body
+                }
+            }
+            /// Invalid API key
+            ///
+            /// - Remark: Generated from `#/paths//v1/audio/transcriptions#stream/post(audio_api_v1_transcriptions_post_stream)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Operations.audio_api_v1_transcriptions_post_stream.Output.Unauthorized)
+            /// The associated value of the enum case if `self` is `.unauthorized`.
+            ///
+            /// - Throws: An error if `self` is not `.unauthorized`.
+            /// - SeeAlso: `.unauthorized`.
+            public var unauthorized: Operations.audio_api_v1_transcriptions_post_stream.Output.Unauthorized {
+                get throws {
+                    switch self {
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
+                    }
+                }
+            }
+            public struct BadRequest: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/v1/audio/transcriptions#stream/POST/responses/400/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/v1/audio/transcriptions#stream/POST/responses/400/content/application\/json`.
+                    case json(Components.Schemas.APIError)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    public var json: Components.Schemas.APIError {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                public var body: Operations.audio_api_v1_transcriptions_post_stream.Output.BadRequest.Body
+                /// Creates a new `BadRequest`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                public init(body: Operations.audio_api_v1_transcriptions_post_stream.Output.BadRequest.Body) {
+                    self.body = body
+                }
+            }
+            /// Invalid model or request parameters
+            ///
+            /// - Remark: Generated from `#/paths//v1/audio/transcriptions#stream/post(audio_api_v1_transcriptions_post_stream)/responses/400`.
+            ///
+            /// HTTP response code: `400 badRequest`.
+            case badRequest(Operations.audio_api_v1_transcriptions_post_stream.Output.BadRequest)
+            /// The associated value of the enum case if `self` is `.badRequest`.
+            ///
+            /// - Throws: An error if `self` is not `.badRequest`.
+            /// - SeeAlso: `.badRequest`.
+            public var badRequest: Operations.audio_api_v1_transcriptions_post_stream.Output.BadRequest {
+                get throws {
+                    switch self {
+                    case let .badRequest(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "badRequest",
+                            response: self
+                        )
+                    }
+                }
+            }
+            public struct UnprocessableContent: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/v1/audio/transcriptions#stream/POST/responses/422/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/v1/audio/transcriptions#stream/POST/responses/422/content/application\/json`.
+                    case json(Components.Schemas.APIError)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    public var json: Components.Schemas.APIError {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                public var body: Operations.audio_api_v1_transcriptions_post_stream.Output.UnprocessableContent.Body
+                /// Creates a new `UnprocessableContent`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                public init(body: Operations.audio_api_v1_transcriptions_post_stream.Output.UnprocessableContent.Body) {
+                    self.body = body
+                }
+            }
+            /// Invalid request parameters
+            ///
+            /// - Remark: Generated from `#/paths//v1/audio/transcriptions#stream/post(audio_api_v1_transcriptions_post_stream)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableContent`.
+            case unprocessableContent(Operations.audio_api_v1_transcriptions_post_stream.Output.UnprocessableContent)
+            /// The associated value of the enum case if `self` is `.unprocessableContent`.
+            ///
+            /// - Throws: An error if `self` is not `.unprocessableContent`.
+            /// - SeeAlso: `.unprocessableContent`.
+            public var unprocessableContent: Operations.audio_api_v1_transcriptions_post_stream.Output.UnprocessableContent {
+                get throws {
+                    switch self {
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
+                    }
+                }
+            }
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.
@@ -329,11 +533,14 @@ public enum Operations {
         }
         @frozen public enum AcceptableContentType: AcceptableProtocol {
             case text_event_hyphen_stream
+            case json
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
                 case "text/event-stream":
                     self = .text_event_hyphen_stream
+                case "application/json":
+                    self = .json
                 default:
                     self = .other(rawValue)
                 }
@@ -344,11 +551,14 @@ public enum Operations {
                     return string
                 case .text_event_hyphen_stream:
                     return "text/event-stream"
+                case .json:
+                    return "application/json"
                 }
             }
             public static var allCases: [Self] {
                 [
-                    .text_event_hyphen_stream
+                    .text_event_hyphen_stream,
+                    .json
                 ]
             }
         }

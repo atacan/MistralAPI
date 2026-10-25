@@ -5,7 +5,6 @@ import MistralAPITypes
 import OpenAPIAsyncHTTPClient
 import OpenAPIRuntime
 import Testing
-import UsefulThings
 
 #if os(Linux)
 @preconcurrency import struct Foundation.URL
@@ -18,17 +17,15 @@ import struct Foundation.Date
 #endif
 
 struct MistralAPITests {
-    let client = {
-        let envFileUrl = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent(".env")
-        return try! createClient(apiKey: getEnvironmentVariable("MISTRAL_API_KEY", from: envFileUrl)!)
-    }()
-    let audioData = try! Data(contentsOf: URL(fileURLWithPath: "/Users/atacan/Developer/Repositories/MistralAPI/60s_speech.wav"))
-
     @Test(arguments: [
         MistralModelID.Transcription.voxtralMini2507,
         MistralModelID.Transcription.voxtralMini2602,
     ])
     func transcription(model: String) async throws {
+        let apiKey = try #require(ProcessInfo.processInfo.environment["MISTRAL_API_KEY"])
+        let client = try createClient(apiKey: apiKey)
+        let audioURL = try #require(Bundle.module.url(forResource: "speech", withExtension: "wav"))
+        let audioData = try Data(contentsOf: audioURL)
         let response = try await client.audio_api_v1_transcriptions_post(
             body: .multipartForm([
                 .model(
@@ -47,15 +44,13 @@ struct MistralAPITests {
                                 audioData
                             )
                         ),
-                        filename: "speech.mp3"
+                        filename: "speech.wav"
                     )
                 ),
                 .timestamp_granularities(
                     .init(
                         payload: .init(
-                            body: HTTPBody(
-                                MistralAPITypes.Components.Schemas.TimestampGranularity.segment.rawValue
-                            )
+                            body: HTTPBody(Components.Schemas.TimestampGranularity.segment.rawValue)
                         )
                     )
                 ),
@@ -66,6 +61,8 @@ struct MistralAPITests {
             dump(ok)
         case .badRequest(let badRequest):
             dump(badRequest)
+        case .unauthorized(let unauthorized):
+            dump(unauthorized)
         case .unprocessableContent(let unprocessableContent):
             dump(unprocessableContent)
         case .undocumented(let statusCode, let payload):

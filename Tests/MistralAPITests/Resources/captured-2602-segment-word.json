@@ -1,0 +1,1 @@
+{"object":"error","message":{"detail":[{"type":"enum","loc":["timestamp_granularities",0],"msg":"Input should be 'segment' or 'word'","input":"segmentword","ctx":{"expected":"'segment' or 'word'"},"url":"https://errors.pydantic.dev/2.11/v/enum"}]},"type":"invalid_request_error","param":null,"code":null,"raw_status_code":422}

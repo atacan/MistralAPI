@@ -1,0 +1,1 @@
+{"object":"error","message":{"detail":[{"type":"less_than_equal","loc":["temperature"],"msg":"Input should be less than or equal to 1.5","input":3.0,"ctx":{"le":1.5},"url":"https://errors.pydantic.dev/2.11/v/less_than_equal"}]},"type":"invalid_request_error","param":null,"code":null,"raw_status_code":422}

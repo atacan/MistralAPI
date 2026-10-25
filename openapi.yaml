@@ -3309,6 +3309,12 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/APIError'
                     description: Unprocessable Entity - Missing required parameters
+                '401':
+                    description: Invalid API key
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthenticationErrorResponse'
             description: Create Transcription
     /v1/audio/transcriptions#stream:
         post:
@@ -3329,6 +3335,24 @@ paths:
                         text/event-stream:
                             schema:
                                 $ref: '#/components/schemas/TranscriptionStreamEvents'
+                '401':
+                    description: Invalid API key
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthenticationErrorResponse'
+                '400':
+                    description: Invalid model or request parameters
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/APIError'
+                '422':
+                    description: Invalid request parameters
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/APIError'
             description: Create Streaming Transcription (SSE)
     /v1/libraries:
         get:
@@ -17456,7 +17480,8 @@ components:
             title: TranscriptionSegmentChunk
             required:
                 - text
-            additionalProperties: false
+            additionalProperties: true
+            description: "A timed transcription chunk. With timestamp_granularities=word, voxtral-mini-2602 returns one transcription_segment chunk per word, with a leading space, rather than a separate word list. With diarize=true, speaker_id is speaker_1, speaker_2, and so on (observed 2026-10-25)."
         UsageInfo:
             type: object
             properties:
@@ -17538,7 +17563,7 @@ components:
                     $ref: '#/components/schemas/File'
                 file_url:
                     title: File Url
-                    description: Url of a file to be transcribed
+                    description: HTTP(S) URL of a file for Mistral to fetch and transcribe.
                     type: string
                     maxLength: 2083
                     minLength: 1
@@ -17549,12 +17574,14 @@ components:
                     type: string
                 language:
                     title: Language
-                    description: Language of the audio, e.g. 'en'. Providing the language can boost accuracy.
+                    description: Language of the audio, e.g. 'en'. Providing the language can boost accuracy. Although the documentation describes timestamps as incompatible, voxtral-mini-2602 accepts language=en with timestamp_granularities=segment (observed 2026-10-25).
                     type: string
                     pattern: ^\w{2}$
                 temperature:
                     title: Temperature
                     type: number
+                    minimum: 0
+                    maximum: 1.5
                 stream:
                     type: boolean
                     title: Stream
@@ -17565,19 +17592,13 @@ components:
                     type: boolean
                     title: Diarize
                     default: false
+                    description: "Speaker diarization. When not streaming, requires timestamp_granularities=segment. Speaker IDs are speaker_1, speaker_2, and so on."
                 context_bias:
-                    type: array
-                    items:
-                        type: string
-                        pattern: ^[^,\s]+$
-                    title: Context Bias
-                    default: []
+                    type: string
+                    description: "Comma-separated terms, without whitespace or commas inside a term (voxtral-mini-2602); at most 100."
+                    pattern: '^[^,\s]+(,[^,\s]+)*$'
                 timestamp_granularities:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/TimestampGranularity'
-                    title: Timestamp Granularities
-                    description: Granularities of timestamps to include in the response.
+                    $ref: '#/components/schemas/TimestampGranularity'
             $defs:
                 TimestampGranularity:
                     type: string
@@ -17599,7 +17620,7 @@ components:
                     $ref: '#/components/schemas/File'
                 file_url:
                     title: File Url
-                    description: Url of a file to be transcribed
+                    description: HTTP(S) URL of a file for Mistral to fetch and transcribe.
                     type: string
                     maxLength: 2083
                     minLength: 1
@@ -17610,12 +17631,14 @@ components:
                     type: string
                 language:
                     title: Language
-                    description: Language of the audio, e.g. 'en'. Providing the language can boost accuracy.
+                    description: Language of the audio, e.g. 'en'. Providing the language can boost accuracy. Although the documentation describes timestamps as incompatible, voxtral-mini-2602 accepts language=en with timestamp_granularities=segment (observed 2026-10-25).
                     type: string
                     pattern: ^\w{2}$
                 temperature:
                     title: Temperature
                     type: number
+                    minimum: 0
+                    maximum: 1.5
                 stream:
                     type: boolean
                     title: Stream
@@ -17626,19 +17649,13 @@ components:
                     type: boolean
                     title: Diarize
                     default: false
+                    description: "Speaker diarization. When not streaming, requires timestamp_granularities=segment. Speaker IDs are speaker_1, speaker_2, and so on."
                 context_bias:
-                    type: array
-                    items:
-                        type: string
-                        pattern: ^[^,\s]+$
-                    title: Context Bias
-                    default: []
+                    type: string
+                    description: "Comma-separated terms, without whitespace or commas inside a term (voxtral-mini-2602); at most 100."
+                    pattern: '^[^,\s]+(,[^,\s]+)*$'
                 timestamp_granularities:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/TimestampGranularity'
-                    title: Timestamp Granularities
-                    description: Granularities of timestamps to include in the response.
+                    $ref: '#/components/schemas/TimestampGranularity'
             $defs:
                 TimestampGranularity:
                     type: string
@@ -35122,59 +35139,65 @@ components:
             title: ManagedIndexFields
             additionalProperties: false
         APIError:
+            type: object
+            additionalProperties: true
+            required: [message, object, type]
             properties:
-                code:
-                    nullable: true
-                    title: Code
-                    type: string
-                message:
-                    properties:
-                        detail:
-                            items:
-                                properties:
-                                    ctx:
-                                        description: Context information related to the error (e.g., error details from an underlying library).
-                                        type: object
-                                    input:
-                                        description: The input parameters that caused the error.
-                                        type: object
-                                    loc:
-                                        description: Location of the error in the request data structure.
-                                        items: {}
-                                        type: array
-                                    msg:
-                                        description: The specific error message.
-                                        type: string
-                                    type:
-                                        description: The type of the specific error (e.g., 'assertion_error').
-                                        type: string
-                                required:
-                                    - msg
-                                    - type
-                                type: object
-                            type: array
-                    required:
-                        - detail
-                    title: Message
-                    type: object
                 object:
-                    enum:
-                        - error
-                    title: Object
+                    type: string
+                    enum: [error]
+                type:
                     type: string
                 param:
+                    type: string
                     nullable: true
-                    title: Param
-                    type: string
-                type:
-                    title: Type
-                    type: string
-            required:
-                - message
-                - object
-                - type
-            title: APIError
+                code:
+                    nullable: true
+                    oneOf:
+                        - type: string
+                        - type: integer
+                raw_status_code:
+                    type: integer
+                message:
+                    oneOf:
+                        - type: string
+                        - type: object
+                          additionalProperties: true
+                          properties:
+                            message:
+                                type: string
+                            type:
+                                type: string
+                            code:
+                                nullable: true
+                                oneOf:
+                                    - type: string
+                                    - type: integer
+                            detail:
+                                type: array
+                                items:
+                                    type: object
+                                    additionalProperties: true
+                                    required: [msg, type]
+                                    properties:
+                                        msg:
+                                            type: string
+                                        type:
+                                            type: string
+                                        loc:
+                                            type: array
+                                            items: {}
+                                        input: {}
+                                        ctx: {}
+                                        url:
+                                            type: string
+        AuthenticationErrorResponse:
             type: object
+            required: [detail]
+            additionalProperties: true
+            properties:
+                detail:
+                    type: string
         PromptTokensDetails:
             additionalProperties: true
             properties:

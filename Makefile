@@ -111,4 +111,4 @@ regenerate: ## Regenerate specification, sources, and operation security metadat
 	uvx --from git+https://github.com/atacan/swift-package-generator-based-on-openapi.git swift-bootstrapper bootstrap .
 
 test-offline: ## Run fixture, factory, and authentication tests without API requests
-	swift test --filter 'TranscriptionResponseDecodingTests|ResponseDecodingTests|FactoryDefaultsTests|AuthenticationTests|MistralAPITypesTests|MistralAPIURLSessionTests|MistralAPIAsyncHTTPClientTests'
+	swift test --filter 'MultipartEncodingTests|MultipartEpilogueTrimmingTests|CapturedResponseDecodingTests|TranscriptionResponseDecodingTests|ResponseDecodingTests|FactoryDefaultsTests|AuthenticationTests|MistralAPITypesTests|MistralAPIURLSessionTests|MistralAPIAsyncHTTPClientTests'

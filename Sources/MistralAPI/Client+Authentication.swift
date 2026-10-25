@@ -17,7 +17,10 @@ extension Client {
             serverURL: serverURL,
             configuration: configuration,
             transport: transport,
-            middlewares: middlewares + [AuthenticationMiddleware(authentication: authentication)]
+            middlewares: middlewares + [
+                MultipartEpilogueTrimmingMiddleware(),
+                AuthenticationMiddleware(authentication: authentication),
+            ]
         )
     }
 }
