@@ -36,13 +36,31 @@ struct CapturedResponseDecodingTests {
         let word = try JSONDecoder().decode(Components.Schemas.TranscriptionResponse.self, from: capture("captured-2602-word"))
         let words = try #require(word.segments)
         #expect(words.count == 11)
-        #expect(words.allSatisfy { $0._type == .transcription_segment && $0.start != nil && $0.end != nil })
+        #expect(words.allSatisfy { $0._type == "transcription_segment" && $0.start != nil && $0.end != nil })
         #expect(words.dropFirst().allSatisfy { $0.text.hasPrefix(" ") })
         let segment = try JSONDecoder().decode(Components.Schemas.TranscriptionResponse.self, from: capture("captured-2602-segment"))
         #expect(segment.segments?.count == 2)
         let diarized = try JSONDecoder().decode(Components.Schemas.TranscriptionResponse.self, from: capture("captured-2602-diarize-segment-remote"))
         #expect(diarized.segments?.count == 4)
         #expect(Set(diarized.segments?.compactMap(\.speaker_id) ?? []) == ["speaker_1", "speaker_2"])
+    }
+
+    @Test(arguments: ["transcription_word", "future_segment_kind"])
+    func unknownSegmentTypesPreserveEntireResponse(type: String) throws {
+        var json = try #require(JSONSerialization.jsonObject(with: capture("captured-2602-segment")) as? [String: Any])
+        var segments = try #require(json["segments"] as? [[String: Any]])
+        segments[0]["type"] = type
+        json["segments"] = segments
+        let response = try JSONDecoder().decode(Components.Schemas.TranscriptionResponse.self, from: JSONSerialization.data(withJSONObject: json))
+        let first = try #require(response.segments?.first)
+        #expect(first._type == type)
+        #expect(first.text == segments[0]["text"] as? String)
+        #expect(first.start == segments[0]["start"] as? Double)
+        #expect(first.end == segments[0]["end"] as? Double)
+        #expect(response.text == json["text"] as? String)
+        #expect(response.segments?.count == segments.count)
+        let roundTrip = try JSONDecoder().decode(Components.Schemas.TranscriptionResponse.self, from: JSONEncoder().encode(response))
+        #expect(roundTrip == response)
     }
 
     @Test func segmentUnknownFieldsRoundTrip() throws {

@@ -60,6 +60,27 @@ struct MultipartEpilogueTrimmingTests {
         #expect(try await wrap(nil) == nil)
     }
 
+    @Test func largeChunksRetainTheirOriginalStorage() async throws {
+        let bytes = [UInt8](repeating: 42, count: 64 * 1024)
+        let source = HTTPBody(
+            ChunkSequence([Array("ab".utf8)[...], bytes[...], Array("--test--\r\n\r\n".utf8)[...]]),
+            length: .unknown,
+            iterationBehavior: .single
+        )
+        let body = try #require(try await wrap(source))
+        var iterator = body.makeAsyncIterator()
+        #expect(try await iterator.next() == Array("ab".utf8)[...])
+        let prefix = try #require(try await iterator.next())
+        #expect(prefix.count == bytes.count - 2)
+        let sharesStorage = bytes.withUnsafeBufferPointer { original in
+            prefix.withUnsafeBufferPointer { $0.baseAddress == original.baseAddress }
+        }
+        #expect(sharesStorage)
+        var remaining: [UInt8] = []
+        while let chunk = try await iterator.next() { remaining.append(contentsOf: chunk) }
+        #expect(remaining == Array(bytes.suffix(2)) + Array("--test--\r\n".utf8))
+    }
+
     @Test func emitsBeforeEndAndPropagatesUpstreamError() async throws {
         struct FailingSequence: AsyncSequence, Sendable {
             typealias Element = ArraySlice<UInt8>

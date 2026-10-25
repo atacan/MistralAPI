@@ -355,3 +355,9 @@ actions:
           application/json:
             schema:
               $ref: '#/components/schemas/APIError'
+  # Segment type labels are extensible; unknown values must not discard a response.
+  - target: $.components.schemas.TranscriptionSegmentChunk.properties.type.enum
+    remove: true
+  - target: $.components.schemas.TranscriptionSegmentChunk.properties.type
+    update:
+      description: "Chunk type, normally transcription_segment. Preserve unknown type labels from future API responses."

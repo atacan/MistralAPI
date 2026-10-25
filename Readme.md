@@ -97,7 +97,7 @@ requires `timestamp_granularities=segment`.
 Import `OpenAPIRuntime` for `HTTPBody`. Word timestamps arrive in `segments`, one
 `transcription_segment` per word; subsequent words include a leading space.
 Diarized segments use `speaker_1`, `speaker_2`, and so on. Unknown segment properties
-are preserved. The captured 2602 response accepts `language=en` with segment
+and `type` labels are preserved; `TranscriptionSegmentChunk._type` is an optional string. The captured 2602 response accepts `language=en` with segment
 timestamps despite the older documented restriction.
 
 `MultipartEpilogueTrimmingMiddleware` streams the request while holding back its
@@ -122,6 +122,36 @@ capture tests for examples and the resource README for request provenance.
 returned 200 in a fixture upload on 2026-10-25. The 2507 constants are deprecated;
 the retired transcription ID still routed to `voxtral-mini-latest` in the capture.
 
+## Streaming transcription
+
+Call `audio_api_v1_transcriptions_post_stream` with an explicit
+`.stream(.init(payload: .init(body: HTTPBody("true"))))` part. The schema's
+`default: true` does **not** insert the part. Without it, Mistral may return
+ordinary JSON, which the streaming operation does not accept.
+
+```swift
+let response = try await client.audio_api_v1_transcriptions_post_stream(
+    body: .multipartForm([
+        .model(.init(payload: .init(body: HTTPBody("voxtral-mini-2602")))),
+        .file_url(.init(payload: .init(body: HTTPBody("https://example.com/audio.mp3")))),
+        .stream(.init(payload: .init(body: HTTPBody("true")))),
+    ])
+)
+let body = try response.ok.body.text_event_hyphen_stream
+for try await event in body.asDecodedServerSentEventsWithJSONData(
+    of: Components.Schemas.TranscriptionStreamEvents.dataPayload.self
+) {
+    print(event.data)
+}
+```
+
+Import `MistralAPITypes` for the event payload union. The schema uses the synthetic
+path `/v1/audio/transcriptions#stream` to name this operation separately. Both
+URLSession and AsyncHTTPClient send `/v1/audio/transcriptions` on the wire, verified
+by the offline loopback tests. Those tests decode all four known event payloads
+from a synthetic SSE fixture; they do not establish compatibility with a live
+Mistral stream. Stream event discriminators remain closed.
+
 ## Generation and tests
 
 ```bash
@@ -136,17 +166,21 @@ Swift code, and operation security metadata. Keep manual edits outside
 factory defaults, helpers, configuration, custom tests, documentation, and resources.
 `make download-openapi` updates the original specification when explicitly wanted.
 
-`make test-offline` selects fixture, factory, and authentication suites explicitly.
+`make test-offline` selects fixture, factory, authentication, and streaming transport suites explicitly.
+Streaming transport tests use only an ephemeral loopback HTTP server.
 Factory tests return fixtures from middleware without contacting Mistral. The
 transcription-only models contain no dates, so those fixtures do not exercise date
 decoding. For a date decoding failure, check whether a custom runtime configuration
 replaced the factory's fractional-second transcoder. Standalone `JSONDecoder`
 instances need their own date strategy.
 
-`swift test` / `make test` also run live transcription tests which read
-`MISTRAL_API_KEY` from the process environment and upload the bundled `speech.wav`.
-Run them only when API calls are intended. Keep real credentials
-out of examples and test output.
+`swift test` / `make test` discover the live transcription suite too. That suite
+is skipped when `MISTRAL_API_KEY` is absent or empty. It reads only the process
+environment; a key stored in `.env` is not loaded automatically. With a nonempty
+key exported, the suite uploads the bundled `speech.wav` and makes real API calls.
+Use `make test-offline` to exclude live requests even when a key is exported.
+The live parameters use the latest alias and 2602; retired 2507 behavior remains
+covered by the recorded fixture. Keep real credentials out of test output.
 
 ## License
 

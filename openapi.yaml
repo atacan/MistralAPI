@@ -17460,8 +17460,7 @@ components:
                     type: string
                     title: Type
                     default: transcription_segment
-                    enum:
-                        - transcription_segment
+                    description: "Chunk type, normally transcription_segment. Preserve unknown type labels from future API responses."
                 text:
                     type: string
                     title: Text

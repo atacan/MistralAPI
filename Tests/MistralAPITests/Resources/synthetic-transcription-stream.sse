@@ -1,0 +1,12 @@
+event: transcription.language
+data: {"type":"transcription.language","audio_language":"en"}
+
+event: transcription.text.delta
+data: {"type":"transcription.text.delta","text":"Hello"}
+
+event: transcription.segment
+data: {"type":"transcription.segment","text":"Hello","start":0.1,"end":0.5,"speaker_id":"speaker_1"}
+
+event: transcription.done
+data: {"type":"transcription.done","model":"offline-fixture","text":"Hello","segments":[{"type":"transcription_segment","text":"Hello","start":0.1,"end":0.5}],"usage":{"prompt_tokens":1,"completion_tokens":1,"total_tokens":2}}
+

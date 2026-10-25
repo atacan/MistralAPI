@@ -41,20 +41,36 @@ private struct EpilogueTrimmingSequence: AsyncSequence, Sendable {
         var upstream: HTTPBody.AsyncIterator
         var pending: [UInt8] = []
         var suffix: [UInt8] = []
+        var queued: Element?
         var finished = false
 
         mutating func next() async throws -> Element? {
+            if let queued {
+                self.queued = nil
+                return queued
+            }
             guard !finished else { return nil }
             while let chunk = try await upstream.next() {
                 suffix =
                     chunk.count >= 6
                     ? Array(chunk.suffix(6))
                     : Array((suffix + chunk).suffix(6))
-                var bytes = pending
-                bytes.append(contentsOf: chunk)
-                pending = Array(bytes.suffix(2))
-                if bytes.count > 2 {
-                    return bytes.dropLast(2)
+                if chunk.count >= 2 {
+                    let previous = pending
+                    pending = Array(chunk.suffix(2))
+                    let prefix = chunk.dropLast(2)
+                    // Return the held bytes separately, retaining the upstream slice without copying it.
+                    if !previous.isEmpty {
+                        if !prefix.isEmpty { queued = prefix }
+                        return previous[...]
+                    }
+                    if !prefix.isEmpty { return prefix }
+                } else {
+                    // At most three bytes are copied when a chunk has fewer than two bytes.
+                    var bytes = pending
+                    bytes.append(contentsOf: chunk)
+                    pending = Array(bytes.suffix(2))
+                    if bytes.count > 2 { return bytes.dropLast(2) }
                 }
             }
             finished = true

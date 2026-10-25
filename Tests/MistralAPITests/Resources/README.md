@@ -73,3 +73,11 @@ whose files the bisection replaced: changing the `file_url` part's own headers d
 Mistral's error bodies include these shapes: `{"object":"error","message":"…"}` (400),
 `{"object":"error","message":{"detail":[{"msg":…}]}}` (422, the SDK's `APIError`), `{"object":"error","message":{"message":"…","type":"invalid_request_no_input","code":3050}}`
 (422 without detail), and `{"detail":"…"}` (401). Every 400 and 422 body also has `raw_status_code`.
+
+## Synthetic streaming fixture
+
+`synthetic-transcription-stream.sse` is hand-written from the current OpenAPI
+schemas, not a live capture. It includes language, text delta, segment, and done
+events. The local recording server returns it to both real transports to verify
+the request target, explicit stream part, and SSE payload decoding. It does not
+prove that Mistral currently emits these exact events.

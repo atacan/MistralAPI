@@ -16,9 +16,15 @@ import struct Foundation.Data
 import struct Foundation.Date
 #endif
 
+@Suite(
+    .enabled(
+        if: ProcessInfo.processInfo.environment["MISTRAL_API_KEY"]?.isEmpty == false,
+        "Set MISTRAL_API_KEY in the process environment to run live transcription requests."
+    )
+)
 struct MistralAPITests {
     @Test(arguments: [
-        MistralModelID.Transcription.voxtralMini2507,
+        MistralModelID.Transcription.voxtralMiniLatest,
         MistralModelID.Transcription.voxtralMini2602,
     ])
     func transcription(model: String) async throws {

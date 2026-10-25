@@ -140,12 +140,10 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk`.
         public struct TranscriptionSegmentChunk: Codable, Hashable, Sendable {
+            /// Chunk type, normally transcription_segment. Preserve unknown type labels from future API responses.
+            ///
             /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/type`.
-            @frozen public enum _typePayload: String, Codable, Hashable, Sendable, CaseIterable {
-                case transcription_segment = "transcription_segment"
-            }
-            /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/type`.
-            public var _type: Components.Schemas.TranscriptionSegmentChunk._typePayload?
+            public var _type: Swift.String?
             /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/text`.
             public var text: Swift.String
             /// - Remark: Generated from `#/components/schemas/TranscriptionSegmentChunk/start`.
@@ -161,7 +159,7 @@ extension Components {
             /// Creates a new `TranscriptionSegmentChunk`.
             ///
             /// - Parameters:
-            ///   - _type:
+            ///   - _type: Chunk type, normally transcription_segment. Preserve unknown type labels from future API responses.
             ///   - text:
             ///   - start:
             ///   - end:
@@ -169,7 +167,7 @@ extension Components {
             ///   - speaker_id:
             ///   - additionalProperties: A container of undocumented properties.
             public init(
-                _type: Components.Schemas.TranscriptionSegmentChunk._typePayload? = nil,
+                _type: Swift.String? = nil,
                 text: Swift.String,
                 start: Swift.Double? = nil,
                 end: Swift.Double? = nil,
@@ -196,7 +194,7 @@ extension Components {
             public init(from decoder: any Swift.Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
                 self._type = try container.decodeIfPresent(
-                    Components.Schemas.TranscriptionSegmentChunk._typePayload.self,
+                    Swift.String.self,
                     forKey: ._type
                 )
                 self.text = try container.decode(

@@ -43,7 +43,8 @@ initialization bypasses factory defaults; standalone JSONDecoder needs its own
 strategy. The currently filtered transcription models have no date properties.
 
 Verify with `swift build` and `make test-offline`. Do not run unfiltered tests
-without authorization: `MistralAPITests` reads `MISTRAL_API_KEY` from the environment and sends live audio requests.
+without authorization: `MistralAPITests` sends live audio requests when a nonempty
+`MISTRAL_API_KEY` is present in the process environment; otherwise its suite is skipped.
 Offline fixture suites are separate to avoid live network requests.
 Check dependency tools-version headers after resolution; the current dependency
 set requires Swift 6.2+, verified with Swift 6.4. Update generated files only by
